@@ -4,21 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import DeleteButton from './DeleteButton'
 import Dompurify from './Dompurify'
-interface Author {
-  id: string
-  name: string
-  email: string
-}
-
-interface Article {
-  id: string
-  title: string
-  body: string
-  authorId: string
-  author: Author
-  createdAt: string
-  updatedAt: string
-}
+import type { Article, Field, Author } from '@/lib/types'
+import ArticleFields from './ArticleFields'
 
 interface ArticleListProps {
   articles: Article[]
@@ -46,6 +33,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
               
               <div className="mb-4">
                 <div className="text-gray-700 line-clamp-6 leading-relaxed">
+                  <ArticleFields article={article} />
                   <Dompurify html={article.body} />
                 </div>
               </div>

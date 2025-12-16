@@ -13,6 +13,13 @@ export async function GET() {
             name: true,
             email: true
           }
+        },
+        fields: {
+          select: {
+            id: true,
+            type: true,
+            value: true
+          }
         }
       },
       orderBy: {

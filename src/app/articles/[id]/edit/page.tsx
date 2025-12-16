@@ -4,22 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
+import type { Article, Field, Author } from '@/lib/types'
 
-interface Author {
-  id: string
-  name: string
-  email: string
-}
-
-interface Article {
-  id: string
-  title: string
-  body: string
-  authorId: string
-  author: Author
-  createdAt: string
-  updatedAt: string
-}
 
 interface EditArticlePageProps {
   params: Promise<{
@@ -33,7 +19,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const [article, setArticle] = useState<Article | null>(null)
   const [formData, setFormData] = useState({
     title: '',
-    body: ''
+    body: '',
+    fields: [] as Field[]
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -50,7 +37,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
         setArticle(articleData)
         setFormData({
           title: articleData.title,
-          body: articleData.body
+          body: articleData.body,
+          fields: articleData.fields
         })
       } catch (err: any) {
         setError(err.message)
@@ -163,7 +151,82 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
               </div>
+
+              <div>
+                <label htmlFor="fields" className="block text-sm font-medium text-gray-700">
+                  Fields
+                </label>
+                <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-4 bg-gray-50 text-sm text-gray-500">
+                  {/* load each field value of fields in inputs */}
+                  {article?.fields && article.fields.length > 0 ? (
+                    article.fields.map((field) => (
+                      <div key={field.id} className="mb-4">
+                        <label className="block text-gray-700 font-medium mb-1">
+                          {field.type.charAt(0).toUpperCase() + field.type.slice(1)} Field
+                          {/* circle with an x to remove field when clicked */}
+                          <button
+                            type="button"
+                            onClick={() => alert('Remove Field functionality not implemented yet')}
+                            className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            &times;
+                          </button>
+                        </label>
+                        {/* for type code, use textarea, for image, use file upload, for link, use input */}
+                        {field.type === 'code' ? (
+                          <textarea
+                            name="fields[]"
+                            id={field.id}
+                            rows={6}
+                            value={field.value}
+                            readOnly
+                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
+                          />
+                        ) : field.type === 'image' ? (
+                          <input
+                            name="fields[]"
+                            id={field.id}
+                            type="file"
+                            value={field.value}
+                            readOnly
+                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
+                          />
+                        ) : field.type === 'link' ? (
+                          <input
+                            name="fields[]"
+                            id={field.id}
+                            type="text"
+                            value={field.value}
+                            readOnly
+                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
+                          />
+                        ) : (
+                          <input
+                            name="fields[]"
+                            id={field.id}
+                            type="text"
+                            value={field.value}
+                            readOnly
+                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
+                          />
+                        )}    
+                      </div>
+                    ))
+                  ) : (
+                    <div>No fields available.</div>
+                  )}
+                </div>
+                {/* add field button */}
+                <button
+                  type="button"
+                  className="mt-2 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Add Field
+                </button>
+              </div>
             </div>
+
+            
 
             <div className="mt-6 flex items-center justify-end space-x-3">
               <Link

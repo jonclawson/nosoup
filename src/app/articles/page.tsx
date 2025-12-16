@@ -11,7 +11,14 @@ export default async function ArticlesPage() {
           name: true,
           email: true
         }
-      }
+      },
+      fields: {
+        select: {
+          id: true,
+          type: true,
+          value: true
+        }
+      },
     },
     orderBy: {
       createdAt: 'desc'

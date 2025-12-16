@@ -6,22 +6,8 @@ import DeleteButton from '@/components/DeleteButton'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
 import Dompurify from '@/components/Dompurify'
-
-interface Author {
-  id: string
-  name: string
-  email: string
-}
-
-interface Article {
-  id: string
-  title: string
-  body: string
-  authorId: string
-  author: Author
-  createdAt: string
-  updatedAt: string
-}
+import type { Article, Field, Author } from '@/lib/types'
+import ArticleFields from '@/components/ArticleFields'
 
 interface ArticlePageProps {
   params: Promise<{
@@ -84,7 +70,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <Link
           href="/articles"
@@ -110,7 +96,10 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div className="px-4 py-5 sm:px-6">
             <div className="prose max-w-none">
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                 <Dompurify html={article.body} />
+                <ArticleFields article={article} />
+              </div>
+              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6">
+                <Dompurify html={article.body} />
               </div>
             </div>
           </div>
