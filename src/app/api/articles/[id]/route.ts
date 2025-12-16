@@ -8,8 +8,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const id = await params.id;
+    console.log('Fetching article with ID:', id)
     const article = await prisma.article.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         author: {
           select: {
@@ -17,9 +19,17 @@ export async function GET(
             name: true,
             email: true
           }
+        },
+        fields: {
+          select: {
+            id: true,
+            type: true,
+            value: true
+          }
         }
       }
     })
+    console.log('Fetched article:', article)
 
     if (!article) {
       return NextResponse.json(
