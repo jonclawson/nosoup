@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import DeleteButton from './DeleteButton'
-
+import Dompurify from './Dompurify'
 interface Author {
   id: string
   name: string
@@ -45,9 +45,9 @@ export default function ArticleList({ articles }: ArticleListProps) {
               </div>
               
               <div className="mb-4">
-                <p className="text-gray-700 line-clamp-6 leading-relaxed">
-                  {article.body}
-                </p>
+                <div className="text-gray-700 line-clamp-6 leading-relaxed">
+                  <Dompurify html={article.body} />
+                </div>
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">

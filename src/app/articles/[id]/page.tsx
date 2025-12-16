@@ -5,6 +5,7 @@ import Link from 'next/link'
 import DeleteButton from '@/components/DeleteButton'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
+import Dompurify from '@/components/Dompurify'
 
 interface Author {
   id: string
@@ -109,7 +110,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <div className="px-4 py-5 sm:px-6">
             <div className="prose max-w-none">
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {article.body}
+                 <Dompurify html={article.body} />
               </div>
             </div>
           </div>
