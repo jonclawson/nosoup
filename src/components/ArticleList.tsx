@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 
 export default function ArticleList() {
   const router = useRouter()
+  const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
   const fetchArticles = async (page: number = 1) => {
@@ -18,6 +19,7 @@ export default function ArticleList() {
       const response = await fetch(`/api/articles?page=${page}&size=${pagination.size}`);
       if (response.ok) {
         const { data, pagination } = await response.json();
+        setLoading(false);
         setArticles([...articles, ...data]);
         setPagination(pagination);
         console.log('Fetched articles:', data);
@@ -86,13 +88,18 @@ export default function ArticleList() {
         ))}
       </div>
 
+      {loading && (
+        <div className="text-center py-12">
+          <div className="text-gray-500 text-lg">Loading articles...</div>
+        </div>
+      )}
       
-      {articles.length === 0 ? (
+      {articles.length === 0 && !loading ? (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg">No articles yet.</div>
           <div className="text-gray-400 text-sm mt-2">Be the first to write an article!</div>
         </div>
-      ) :
+      ) : !loading &&
       <div className="flex justify-center">
         <button
           onClick={() => fetchArticles(pagination.page + 1)}
