@@ -1,10 +1,7 @@
 // node script to migrate data from a drupal 6 database to this dev.db database.
 import dotenv from 'dotenv';
-// import sqlite3 from 'sqlite3';
 import mysql from 'mysql2/promise';
-// import { prisma } from '../src/lib/prisma'
 import { PrismaClient } from '@prisma/client'
-import { type } from 'os';
 
 const globalForPrisma = globalThis 
 const prisma = globalForPrisma.prisma ?? new PrismaClient()
@@ -12,7 +9,7 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 dotenv.config({ path: '../.env' });
 
-async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
+async function migrateDrupal6ToSqlite(drupalConfig) {
     // Connect to Drupal 6 MySQL database
     // console.log('Connecting to Drupal database...', drupalConfig);
     const drupalConnection = await mysql.createConnection({
@@ -23,13 +20,9 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
         database: drupalConfig.database
     });
 
-    // Connect to SQLite database
-    // const sqliteDb = new sqlite3.Database(sqlitePath);
-
     // Example: Migrate users from Drupal 6 to SQLite
-    // const [users] = await drupalConnection.execute('SELECT uid, name, mail FROM users');
     const [nodes] = await drupalConnection.execute(`
-      select n.nid, nr.title, nr.body from node as n
+      select n.nid, nr.title, nr.body, n.created, n.changed from node as n
       join node_revisions as nr on n.nid = nr.nid;
       `);
 
@@ -43,8 +36,10 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
         const article = await prisma.article.create({
           data: {
             title: node.title,
-            body: node.body.replace('sites/jonclawson.com/files/', 'files/'),
-            authorId: process.env.AUTHOR_DEFAULT_ID
+            body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+            authorId: process.env.AUTHOR_DEFAULT_ID,
+            createdAt: new Date(node.created * 1000),
+            updatedAt: new Date(node.changed * 1000)
           },
           include: {
             author: {
@@ -70,7 +65,7 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
           await prisma.field.create({
             data: {
               type: 'image',
-              value: image.filepath.replace('sites/jonclawson.com/files/', 'files/'),
+              value: image.filepath.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
               article: {
                 connect: {
                   id: article.id
@@ -90,7 +85,7 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
           await prisma.field.create({
             data: {
               type: 'code',
-              value: cd.field_code_value.replace('sites/jonclawson.com/files/', 'files/'),
+              value: cd.field_code_value.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
               article: {
                 connect: {
                   id: article.id
@@ -110,7 +105,7 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
           await prisma.field.create({
             data: {
               type: 'link',
-              value: link.field_link_url.replace('sites/jonclawson.com/files/', 'files/'),
+              value: link.field_link_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
               article: {
                 connect: {
                   id: article.id
@@ -121,31 +116,8 @@ async function migrateDrupal6ToSqlite(drupalConfig, sqlitePath) {
         }
       }
 
-    // sqliteDb.serialize(() => {
-        // sqliteDb.run(`CREATE TABLE IF NOT EXISTS users (
-        //     id INTEGER PRIMARY KEY,
-        //     username TEXT,
-        //     email TEXT
-        // )`);
-
-        // const insertStmt = sqliteDb.prepare('INSERT INTO users (id, username, email) VALUES (?, ?, ?)');
-
-        // users.forEach(user => {
-        //     insertStmt.run(user.uid, user.name, user.mail);
-        // });
-
-        // const insertStmt = sqliteDb.prepare('INSERT INTO article ( title, body) VALUES (?, ?)');
-        // articles.forEach(article => {
-        // console.log(article);
-          // insertStmt.run(article.title, article.body);
-        // });
-
-        // insertStmt.finalize();
-    // });
-
     // Close connections
     await drupalConnection.end();
-    // sqliteDb.close();
 }
 
 // Example usage
@@ -157,8 +129,7 @@ const drupalConfig = {
     database: process.env.DRUPAL_DB_NAME || 'drupal_database'
 };
 
-const sqlitePath = './dev.db';
 
-migrateDrupal6ToSqlite(drupalConfig, sqlitePath)
+migrateDrupal6ToSqlite(drupalConfig)
     .then(() => console.log('Migration completed successfully.'))
     .catch(err => console.error('Migration failed:', err)); 
