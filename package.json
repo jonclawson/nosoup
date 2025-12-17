@@ -42,7 +42,6 @@
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "mysql2": "^3.15.3",
-    "sqlite3": "^5.1.7",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
     "typescript": "^5"
