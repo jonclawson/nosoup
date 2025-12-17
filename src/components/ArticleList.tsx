@@ -6,13 +6,31 @@ import DeleteButton from './DeleteButton'
 import Dompurify from './Dompurify'
 import type { Article, Field, Author } from '@/lib/types'
 import ArticleFields from './ArticleFields'
+import { useEffect, useState } from 'react'
 
-interface ArticleListProps {
-  articles: Article[]
-}
 
-export default function ArticleList({ articles }: ArticleListProps) {
+export default function ArticleList() {
   const router = useRouter()
+  const [articles, setArticles] = useState<Article[]>([]);
+  useEffect(() => {
+    //  get articles from api/articles
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch('/api/articles');
+        if (response.ok) {
+          const data = await response.json();
+          setArticles(data);
+          console.log('Fetched articles:', data);
+        } else {
+          console.error('Failed to fetch articles:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    }
+    fetchArticles();
+  }, [articles]);
+  
   
   return (
     <div className="mt-8">
@@ -25,9 +43,9 @@ export default function ArticleList({ articles }: ArticleListProps) {
                   {article.title}
                 </h2>
                 <div className="flex items-center text-sm text-gray-500 mb-3">
-                  <span>By {article.author.name}</span>
+                  <span>By {article?.author?.name}</span>
                   <span className="mx-2">•</span>
-                  <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+                  <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
                 </div>
               </div>
               

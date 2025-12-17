@@ -1,36 +1,8 @@
-import { prisma } from '@/lib/prisma'
+
 import Link from 'next/link'
 import ArticleList from '@/components/ArticleList'
 
 export default async function ArticlesPage() {
-  const articles = await prisma.article.findMany({
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          email: true
-        }
-      },
-      fields: {
-        select: {
-          id: true,
-          type: true,
-          value: true
-        }
-      },
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
-  })
-
-  // Serialize dates to prevent hydration issues
-  const serializedArticles = articles.map(article => ({
-    ...article,
-    createdAt: article.createdAt.toISOString(),
-    updatedAt: article.updatedAt.toISOString()
-  }))
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -50,7 +22,7 @@ export default async function ArticlesPage() {
           </Link>
         </div>
       </div>
-      <ArticleList articles={serializedArticles} />
+      <ArticleList  />
     </div>
   )
 } 
