@@ -10,6 +10,7 @@ export interface Field {
   id?: string
   type: FieldType
   value: string
+  meta?: any
 }
 
 export interface Article {

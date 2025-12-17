@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
 import type { Article, Field, Author, FieldType } from '@/lib/types'
+import EditArticleFields from '@/components/EditArticleFields'
 
 
 interface EditArticlePageProps {
@@ -54,14 +55,19 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     e.preventDefault()
     setIsLoading(true)
     setError('')
-
+    const fd = new FormData();
+    fd.append('title', formData.title);
+    fd.append('body', formData.body);
+    formData.fields.forEach((field, index) => {
+      if (field.meta && field.meta.file) {
+        fd.append(`files[${index}]`, field.meta.file);
+      }
+    });
+    fd.append('fields', JSON.stringify(formData.fields));
     try {
       const response = await fetch(`/api/articles/${resolvedParams.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: fd,
       })
 
       if (!response.ok) {
@@ -77,22 +83,22 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     }
   }
 
-  const handleFieldChange = (index: number, value: string) => {
-    const updatedFields = [...formData.fields]
-    updatedFields[index].value = value
-    setFormData({ ...formData, fields: updatedFields })
-  }
+  // const handleFieldChange = (index: number, value: string) => {
+  //   const updatedFields = [...formData.fields]
+  //   updatedFields[index].value = value
+  //   setFormData({ ...formData, fields: updatedFields })
+  // }
 
-  const handleAddField = (type: FieldType) => {
-    const newField: Field = { type: type, value: '' }
-    setFormData({ ...formData, fields: [...formData.fields, newField] })
-  }
+  // const handleAddField = (type: FieldType) => {
+  //   const newField: Field = { type: type, value: '' }
+  //   setFormData({ ...formData, fields: [...formData.fields, newField] })
+  // }
 
-  const handleRemoveField = (index: number) => {
-    const updatedFields = [...formData.fields]
-    updatedFields.splice(index, 1)
-    setFormData({ ...formData, fields: updatedFields })
-  }
+  // const handleRemoveField = (index: number) => {
+  //   const updatedFields = [...formData.fields]
+  //   updatedFields.splice(index, 1)
+  //   setFormData({ ...formData, fields: updatedFields })
+  // }
 
   if (isLoadingArticle) {
     return (
@@ -131,7 +137,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
 
       <div className="bg-white shadow sm:rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             {error && (
               <div className="mb-4 rounded-md bg-red-50 p-4">
                 <div className="text-sm text-red-700">{error}</div>
@@ -168,19 +174,18 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
               </div>
-
-              <div>
+              
+              <EditArticleFields formData={formData} setFormData={setFormData} />
+              {/* <div>
                 <label htmlFor="fields" className="block text-sm font-medium text-gray-700">
                   Fields
                 </label>
                 <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-4 bg-gray-50 text-sm text-gray-500">
-                  {/* load each field value of fields in inputs */}
                   {formData?.fields && formData.fields.length > 0 ? (
                     formData.fields.map((field, index) => (
                       <div key={index} className="mb-4">
                         <label className="block text-gray-700 font-medium mb-1">
                           {field.type.charAt(0).toUpperCase() + field.type.slice(1)} Field
-                          {/* circle with an x to remove field when clicked */}
                           <button
                             type="button"
                             onClick={() => handleRemoveField(index)}
@@ -189,7 +194,6 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                             &times;
                           </button>
                         </label>
-                        {/* for type code, use textarea, for image, use file upload, for link, use input */}
                         {field.type === 'code' ? (
                           <textarea
                             name="fields[]"
@@ -233,8 +237,6 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                     <div>No fields available.</div>
                   )}
                 </div>
-                {/* add field button */}
-                {/* Change the button to be a select with values of code, image or link and resets the value on change */}
                 <select
                   onChange={(e) => {
                     handleAddField(e.target.value as FieldType);
@@ -247,7 +249,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                   <option value="image">Image</option>
                   <option value="link">Link</option>
                 </select>
-              </div>
+              </div> */}
             </div>
 
             

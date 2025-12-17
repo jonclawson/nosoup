@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import fs from 'fs/promises'
+import path from 'path';
 
 export async function GET(
   request: NextRequest,
@@ -68,8 +70,40 @@ export async function PUT(
       )
     }
 
-    const requestBody = await request.json()
-    const { title, body } = requestBody
+    // const requestBody = await request.json()
+    // const { title, body, fields } = requestBody
+
+    console.log('Processing PUT request for article ID:', await params.id);
+    const form = await request.formData()
+    console.log('Received form data:', form);
+    const title = form.get('title')?.toString() ?? ''
+    const body = form.get('body')?.toString() ?? ''
+    const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
+
+    console.log('Received field data for update:', fields);
+
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+    await fs.mkdir(uploadsDir, { recursive: true })
+
+    try {
+      for (const [index, field] of fields.entries()) {
+        console.log('Processing field:', field);
+        if (field.type === 'image' && form.get(`files[${index}]`)) {
+          const file = form.get(`files[${index}]`) as File
+          const arrayBuffer = await file.arrayBuffer()
+          const buffer = Buffer.from(arrayBuffer)
+          const filePath = path.join(uploadsDir, file.name)
+          await fs.writeFile(filePath, buffer)
+          field.value = `/uploads/${file.name}`
+        }
+      }
+    } catch (fileError) {
+      console.error('Error processing file uploads:', fileError)
+      return NextResponse.json(
+        { error: 'Failed to process file uploads' },
+        { status: 500 }
+      )
+    }
 
     if (!title || !body) {
       return NextResponse.json(
@@ -80,7 +114,7 @@ export async function PUT(
 
     // Check if article exists and user is the author
     const existingArticle = await prisma.article.findUnique({
-      where: { id: params.id }
+      where: { id: await params.id }
     })
 
     if (!existingArticle) {
@@ -98,10 +132,17 @@ export async function PUT(
     }
 
     const article = await prisma.article.update({
-      where: { id: params.id },
+      where: { id: await params.id },
       data: {
         title,
-        body
+        body,
+        fields: {
+          deleteMany: {},
+          create: (fields ?? []).map((f: any) => ({
+            type: f.type,
+            value: f.value
+          }))
+        }
       },
       include: {
         author: {
@@ -109,6 +150,13 @@ export async function PUT(
             id: true,
             name: true,
             email: true
+          }
+        },
+        fields: {
+          select: {
+            id: true,
+            type: true,
+            value: true
           }
         }
       }

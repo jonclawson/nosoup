@@ -17,13 +17,24 @@ export default function NewArticlePage() {
     setIsLoading(true)
     setError('')
 
+    const fd = new FormData();
+    fd.append('title', formData.title);
+    fd.append('body', formData.body);
+    formData.fields.forEach((field, index) => {
+      if (field.meta && field.meta.file) {
+        fd.append(`files[${index}]`, field.meta.file);
+      }
+    });
+    fd.append('fields', JSON.stringify(formData.fields));
+
     try {
       const response = await fetch('/api/articles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // },
+        // body: JSON.stringify(formData),
+        body: fd
       })
 
       if (!response.ok) {

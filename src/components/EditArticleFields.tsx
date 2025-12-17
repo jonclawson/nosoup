@@ -2,9 +2,12 @@
 import type { Article, Field, Author, FieldType } from '@/lib/types'
 
 export default function EditArticleFields({ formData, setFormData }: { formData: Article, setFormData: any }) {
-    const handleFieldChange = (index: number, value: string) => {
+    const handleFieldChange = (index: number, value: string, meta: File | null = null) => {
     const updatedFields = [...formData.fields]
     updatedFields[index].value = value
+    if (meta) {
+      updatedFields[index].meta = { file: meta }
+    }
     setFormData({ ...formData, fields: updatedFields })
   }
 
@@ -50,14 +53,16 @@ export default function EditArticleFields({ formData, setFormData }: { formData:
                   className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                 />
               ) : field.type === 'image' ? (
+                <span>{field.value}
                 <input
                   name="fields[]"
                   id={field.id}
                   type="file"
-                  value={field.value}
-                  onChange={(e) => handleFieldChange(index, e.target.value)}
+                  // value={field.value}
+                  onChange={(e) => handleFieldChange(index, e.target.value, e.target.files?.[0] ?? null)}
                   className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                />
+                  />
+                  </span>
               ) : field.type === 'link' ? (
                 <input
                   name="fields[]"
