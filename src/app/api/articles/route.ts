@@ -5,29 +5,39 @@ import { authOptions } from '@/lib/auth'
 import fs from 'fs/promises'
 import path from 'path';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const articles = await prisma.article.findMany({
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const size = parseInt(searchParams.get('size') || '10', 10)
+    const skip = (page - 1) * size
+
+    const [articles, total] = await Promise.all([
+      prisma.article.findMany({
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          },
+          fields: {
+            select: {
+              id: true,
+              type: true,
+              value: true
+            }
           }
         },
-        fields: {
-          select: {
-            id: true,
-            type: true,
-            value: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: size
+      }),
+      prisma.article.count()
+    ])
     
     // Serialize dates to prevent hydration issues
     const serializedArticles = articles.map(article => ({
@@ -36,7 +46,15 @@ export async function GET() {
       updatedAt: article.updatedAt.toISOString()
     }))
     
-    return NextResponse.json(serializedArticles)
+    return NextResponse.json({
+      data: serializedArticles,
+      pagination: {
+        page,
+        size,
+        total,
+        totalPages: Math.ceil(total / size)
+      }
+    })
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch articles' },

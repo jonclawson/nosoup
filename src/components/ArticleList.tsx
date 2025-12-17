@@ -12,24 +12,25 @@ import { useEffect, useState } from 'react'
 export default function ArticleList() {
   const router = useRouter()
   const [articles, setArticles] = useState<Article[]>([]);
-  useEffect(() => {
-    //  get articles from api/articles
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch('/api/articles');
-        if (response.ok) {
-          const data = await response.json();
-          setArticles(data);
-          console.log('Fetched articles:', data);
-        } else {
-          console.error('Failed to fetch articles:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching articles:', error);
+  const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
+  const fetchArticles = async (page: number = 1) => {
+    try {
+      const response = await fetch(`/api/articles?page=${page}&size=${pagination.size}`);
+      if (response.ok) {
+        const { data, pagination } = await response.json();
+        setArticles([...articles, ...data]);
+        setPagination(pagination);
+        console.log('Fetched articles:', data);
+      } else {
+        console.error('Failed to fetch articles:', response.statusText);
       }
+    } catch (error) {
+      console.error('Error fetching articles:', error);
     }
+  };
+  useEffect(() => {
     fetchArticles();
-  }, [articles]);
+  }, []);
   
   
   return (
@@ -84,13 +85,24 @@ export default function ArticleList() {
           </article>
         ))}
       </div>
+
       
-      {articles.length === 0 && (
+      {articles.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg">No articles yet.</div>
           <div className="text-gray-400 text-sm mt-2">Be the first to write an article!</div>
         </div>
-      )}
+      ) :
+      <div className="flex justify-center">
+        <button
+          onClick={() => fetchArticles(pagination.page + 1)}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+          disabled={pagination.page >= pagination.totalPages}
+        >
+          Load more
+        </button>
+      </div>
+      }
     </div>
   )
 } 
