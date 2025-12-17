@@ -48,3 +48,5 @@ prisma/*.db
 
 public/files
 public/uploads
+
+.swc
