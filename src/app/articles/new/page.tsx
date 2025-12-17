@@ -3,13 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import EditArticleFields from '@/components/EditArticleFields'
+import type { Article, Field, Author, FieldType } from '@/lib/types'
 
 export default function NewArticlePage() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    title: '',
-    body: ''
-  })
+  const [formData, setFormData] = useState<Article>({ title: '', body: '', fields: [] })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -41,7 +40,7 @@ export default function NewArticlePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <Link
           href="/articles"
@@ -91,6 +90,8 @@ export default function NewArticlePage() {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
               </div>
+
+              <EditArticleFields formData={formData} setFormData={setFormData} />
             </div>
 
             <div className="mt-6 flex items-center justify-end space-x-3">

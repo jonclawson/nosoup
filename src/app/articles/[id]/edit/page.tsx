@@ -118,7 +118,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <Link
           href={`/articles/${resolvedParams.id}`}

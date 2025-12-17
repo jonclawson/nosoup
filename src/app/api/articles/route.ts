@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
     }
 
     const requestBody = await request.json()
-    const { title, body } = requestBody
-
+    const { title, body, fields } = requestBody
+    console.log('Received article data:', fields);
     if (!title || !body) {
       return NextResponse.json(
         { error: 'Title and body are required' },
@@ -68,7 +68,13 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         body,
-        authorId: session.user.id
+        authorId: session.user.id,
+        fields: {
+          create: (fields ?? []).map((f: { type: string; value: string }) => ({
+            type: f.type,
+            value: f.value
+          }))
+        }
       },
       include: {
         author: {
@@ -76,6 +82,13 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             email: true
+          }
+        },
+        fields: {
+          select: {
+            id: true,
+            type: true,
+            value: true
           }
         }
       }

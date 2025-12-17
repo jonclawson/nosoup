@@ -13,12 +13,12 @@ export interface Field {
 }
 
 export interface Article {
-  id: string
+  id?: string
   title: string
   body: string
   fields: Field[]
-  authorId: string
-  author: Author
-  createdAt: string
-  updatedAt: string
+  authorId?: string
+  author?: Author
+  createdAt?: string
+  updatedAt?: string
 }
