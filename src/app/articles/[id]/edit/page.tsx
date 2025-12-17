@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
-import type { Article, Field, Author } from '@/lib/types'
+import type { Article, Field, Author, FieldType } from '@/lib/types'
 
 
 interface EditArticlePageProps {
@@ -75,6 +75,23 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleFieldChange = (index: number, value: string) => {
+    const updatedFields = [...formData.fields]
+    updatedFields[index].value = value
+    setFormData({ ...formData, fields: updatedFields })
+  }
+
+  const handleAddField = (type: FieldType) => {
+    const newField: Field = { type: type, value: '' }
+    setFormData({ ...formData, fields: [...formData.fields, newField] })
+  }
+
+  const handleRemoveField = (index: number) => {
+    const updatedFields = [...formData.fields]
+    updatedFields.splice(index, 1)
+    setFormData({ ...formData, fields: updatedFields })
   }
 
   if (isLoadingArticle) {
@@ -158,15 +175,15 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                 </label>
                 <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-4 bg-gray-50 text-sm text-gray-500">
                   {/* load each field value of fields in inputs */}
-                  {article?.fields && article.fields.length > 0 ? (
-                    article.fields.map((field) => (
-                      <div key={field.id} className="mb-4">
+                  {formData?.fields && formData.fields.length > 0 ? (
+                    formData.fields.map((field, index) => (
+                      <div key={index} className="mb-4">
                         <label className="block text-gray-700 font-medium mb-1">
                           {field.type.charAt(0).toUpperCase() + field.type.slice(1)} Field
                           {/* circle with an x to remove field when clicked */}
                           <button
                             type="button"
-                            onClick={() => alert('Remove Field functionality not implemented yet')}
+                            onClick={() => handleRemoveField(index)}
                             className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                           >
                             &times;
@@ -179,7 +196,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                             id={field.id}
                             rows={6}
                             value={field.value}
-                            readOnly
+                            onChange={(e) => handleFieldChange(index, e.target.value)}
                             className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                           />
                         ) : field.type === 'image' ? (
@@ -188,7 +205,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                             id={field.id}
                             type="file"
                             value={field.value}
-                            readOnly
+                            onChange={(e) => handleFieldChange(index, e.target.value)}
                             className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                           />
                         ) : field.type === 'link' ? (
@@ -197,7 +214,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                             id={field.id}
                             type="text"
                             value={field.value}
-                            readOnly
+                            onChange={(e) => handleFieldChange(index, e.target.value)}
                             className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                           />
                         ) : (
@@ -206,7 +223,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                             id={field.id}
                             type="text"
                             value={field.value}
-                            readOnly
+                            onChange={(e) => handleFieldChange(index, e.target.value)}
                             className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                           />
                         )}    
@@ -217,12 +234,19 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                   )}
                 </div>
                 {/* add field button */}
-                <button
-                  type="button"
+                {/* Change the button to be a select with values of code, image or link and resets the value on change */}
+                <select
+                  onChange={(e) => {
+                    handleAddField(e.target.value as FieldType);
+                    e.target.value = "";
+                  }}
                   className="mt-2 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                 >
-                  Add Field
-                </button>
+                  <option value="">Add Field</option>
+                  <option value="code">Code</option>
+                  <option value="image">Image</option>
+                  <option value="link">Link</option>
+                </select>
               </div>
             </div>
 

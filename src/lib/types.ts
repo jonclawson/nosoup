@@ -7,7 +7,7 @@ export interface Author {
 export type FieldType = 'image' | 'code' | 'link'
 
 export interface Field {
-  id: string
+  id?: string
   type: FieldType
   value: string
 }
