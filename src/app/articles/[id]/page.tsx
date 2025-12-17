@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import Dompurify from '@/components/Dompurify'
 import type { Article, Field, Author } from '@/lib/types'
 import ArticleFields from '@/components/ArticleFields'
+import SkeletonArticle from '@/components/SkeletonArticle'
 
 interface ArticlePageProps {
   params: Promise<{
@@ -48,17 +49,23 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-gray-500">Loading article...</div>
-        </div>
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <Link
+              href="/articles"
+              className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+            >
+              ← Back to Articles
+            </Link>
+          </div>
+          <SkeletonArticle />
       </div>
     )
   }
 
   if (error || !article) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center py-12">
           <div className="text-red-500">{error || 'Article not found'}</div>
           <Link href="/articles" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
@@ -70,7 +77,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <Link
           href="/articles"
