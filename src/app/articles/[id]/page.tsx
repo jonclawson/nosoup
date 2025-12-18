@@ -9,6 +9,8 @@ import Dompurify from '@/components/Dompurify'
 import type { Article, Field, Author } from '@/lib/types'
 import ArticleFields from '@/components/ArticleFields'
 import SkeletonArticle from '@/components/SkeletonArticle'
+import "@blocknote/mantine/style.css"
+import "@blocknote/core/fonts/inter.css";
 
 interface ArticlePageProps {
   params: Promise<{

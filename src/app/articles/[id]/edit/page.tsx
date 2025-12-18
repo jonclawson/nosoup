@@ -31,7 +31,17 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const [isLoadingArticle, setIsLoadingArticle] = useState(true)
   const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual')
 
-  const editor = useCreateBlockNote()
+  const uploadFile = async (file: File): Promise<string | Record<string, any>> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result); // This is the base64 string
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file); // Converts the file to a Data URL
+    });
+  };
+  const editor = useCreateBlockNote({
+    uploadFile,
+  })
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -66,7 +76,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const toggleEditorMode = async () => {
     if (editorMode === 'visual') {
       // Switch to HTML mode: convert editor content to HTML
-      const htmlContent = await editor.blocksToHTMLLossy(editor.document)
+      const htmlContent = await editor.blocksToFullHTML(editor.document)
       setFormData({ ...formData, body: htmlContent })
       setEditorMode('html')
     } else {
@@ -85,7 +95,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     fd.append('title', formData.title);
     
     // Convert BlockNote content to HTML
-    const htmlContent = await editor.blocksToHTMLLossy(editor.document)
+    const htmlContent = await editor.blocksToFullHTML(editor.document)
     fd.append('body', htmlContent);
     formData.fields.forEach((field, index) => {
       if (field.meta && field.meta.file) {
