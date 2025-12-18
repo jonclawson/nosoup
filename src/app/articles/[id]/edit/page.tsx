@@ -112,23 +112,6 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     }
   }
 
-  // const handleFieldChange = (index: number, value: string) => {
-  //   const updatedFields = [...formData.fields]
-  //   updatedFields[index].value = value
-  //   setFormData({ ...formData, fields: updatedFields })
-  // }
-
-  // const handleAddField = (type: FieldType) => {
-  //   const newField: Field = { type: type, value: '' }
-  //   setFormData({ ...formData, fields: [...formData.fields, newField] })
-  // }
-
-  // const handleRemoveField = (index: number) => {
-  //   const updatedFields = [...formData.fields]
-  //   updatedFields.splice(index, 1)
-  //   setFormData({ ...formData, fields: updatedFields })
-  // }
-
   if (isLoadingArticle) {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -219,80 +202,6 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
               </div>
               
               <EditArticleFields formData={formData} setFormData={setFormData} />
-              {/* <div>
-                <label htmlFor="fields" className="block text-sm font-medium text-gray-700">
-                  Fields
-                </label>
-                <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-4 bg-gray-50 text-sm text-gray-500">
-                  {formData?.fields && formData.fields.length > 0 ? (
-                    formData.fields.map((field, index) => (
-                      <div key={index} className="mb-4">
-                        <label className="block text-gray-700 font-medium mb-1">
-                          {field.type.charAt(0).toUpperCase() + field.type.slice(1)} Field
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveField(index)}
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            &times;
-                          </button>
-                        </label>
-                        {field.type === 'code' ? (
-                          <textarea
-                            name="fields[]"
-                            id={field.id}
-                            rows={6}
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(index, e.target.value)}
-                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                          />
-                        ) : field.type === 'image' ? (
-                          <input
-                            name="fields[]"
-                            id={field.id}
-                            type="file"
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(index, e.target.value)}
-                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                          />
-                        ) : field.type === 'link' ? (
-                          <input
-                            name="fields[]"
-                            id={field.id}
-                            type="text"
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(index, e.target.value)}
-                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                          />
-                        ) : (
-                          <input
-                            name="fields[]"
-                            id={field.id}
-                            type="text"
-                            value={field.value}
-                            onChange={(e) => handleFieldChange(index, e.target.value)}
-                            className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                          />
-                        )}    
-                      </div>
-                    ))
-                  ) : (
-                    <div>No fields available.</div>
-                  )}
-                </div>
-                <select
-                  onChange={(e) => {
-                    handleAddField(e.target.value as FieldType);
-                    e.target.value = "";
-                  }}
-                  className="mt-2 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <option value="">Add Field</option>
-                  <option value="code">Code</option>
-                  <option value="image">Image</option>
-                  <option value="link">Link</option>
-                </select>
-              </div> */}
             </div>
 
             
