@@ -30,10 +30,6 @@ export default function NewArticlePage() {
     try {
       const response = await fetch('/api/articles', {
         method: 'POST',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // },
-        // body: JSON.stringify(formData),
         body: fd
       })
 
