@@ -17,6 +17,9 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
+    "@blocknote/core": "^0.45.0",
+    "@blocknote/mantine": "^0.45.0",
+    "@blocknote/react": "^0.45.0",
     "@prisma/client": "^6.12.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
