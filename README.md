@@ -56,7 +56,7 @@ A NextJS 15 application with full CRUD operations for blog articles and user man
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd user-management-app
+cd nosoup
 ```
 
 2. Install dependencies:
