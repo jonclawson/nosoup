@@ -1,3 +1,4 @@
+'use client'
 import { Article, Tag } from "@/lib/types";
 import { useState } from "react";
 
@@ -7,14 +8,26 @@ export default function TagsComponent({ formData, setFormData }: { formData: Art
   const tags = formData.tags || [];
   const [newTag, setNewTag] = useState('');
   const [availableTags, setAvailableTags] = useState<Tag[]>([
-    { name: 'JavaScript' },
-    { name: 'TypeScript' },
-    { name: 'React' },
-    { name: 'Next.js' },
-    { name: 'Node.js' },
-    { name: 'CSS' },
-    { name: 'HTML' },
+    // { name: 'JavaScript' },
+    // { name: 'TypeScript' },
+    // { name: 'React' },
+    // { name: 'Next.js' },
+    // { name: 'Node.js' },
+    // { name: 'CSS' },
+    // { name: 'HTML' },
   ]);
+
+  const getAvailableTags = async (search: string) => {
+    try {
+      const response = await fetch(`/api/tags?search=${search}`);
+      if (response.ok) {
+        const tagsData = await response.json();
+        setAvailableTags(tagsData);
+      }
+    } catch (error) {
+      console.error('Error fetching available tags:', error);
+    }
+  }
 
   const addTag = () => {
     if (newTag.trim() !== '') {
@@ -60,7 +73,10 @@ export default function TagsComponent({ formData, setFormData }: { formData: Art
             type="text"
             id="new-tag"
             value={newTag}
-            onChange={(e) => setNewTag(e.target.value)}
+            onChange={(e) => {
+              setNewTag(e.target.value);
+              getAvailableTags(e.target.value);
+            }}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           />
           <button

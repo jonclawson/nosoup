@@ -1,4 +1,4 @@
-
+'use client'
 import type { Article, Field, Author, FieldType } from '@/lib/types'
 
 export default function EditArticleFields({ formData, setFormData }: { formData: Article, setFormData: any }) {
