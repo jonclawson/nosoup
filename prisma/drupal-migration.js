@@ -26,32 +26,53 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
       join node_revisions as nr on n.nid = nr.nid;
       `);
 
-    
+    const deleteeManyTermNodes = await prisma.tag.deleteMany({where: {}});
+    console.log(`Deleted ${deleteeManyTermNodes.count} existing tags.`);
     const deleteManyArticles = await prisma.article.deleteMany({where: {}});
-    const deleteManyFields = await prisma.field.deleteMany({where: {}});
     console.log(`Deleted ${deleteManyArticles.count} existing articles.`);
+    const deleteManyFields = await prisma.field.deleteMany({where: {}});
     console.log(`Deleted ${deleteManyFields.count} existing fields.`);
+
     for (const node of nodes) {
-        console.log(node.nid, node.title);
-        const article = await prisma.article.create({
-          data: {
-            title: node.title,
-            body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
-            authorId: process.env.AUTHOR_DEFAULT_ID,
-            createdAt: new Date(node.created * 1000),
-            updatedAt: new Date(node.changed * 1000)
-          },
-          include: {
-            author: {
-              select: {
-                id: true,
-                name: true,
-                email: true
+      console.log(node.nid, node.title);
+      const article = await prisma.article.create({
+        data: {
+          title: node.title,
+          body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+          authorId: process.env.AUTHOR_DEFAULT_ID,
+          createdAt: new Date(node.created * 1000),
+          updatedAt: new Date(node.changed * 1000)
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true
               }
             }
           }
         });
         console.log('Created article:', article.id);
+        const [terms] = await drupalConnection.execute(`
+          select td.tid, td.vid, tn.nid, td.name 
+          from term_data as td
+          join term_node as tn
+          on td.tid = tn.tid
+          where tn.nid = '${node.nid}';
+        `);
+        for (const term of terms) {
+          await prisma.tag.create({
+            data: {
+              name: term.name,
+              article: {
+                connect: {
+                  id: article.id
+                }
+              }
+            }
+          });
+        }
         const [images] = await drupalConnection.execute(`
           select * 
           from files as f
