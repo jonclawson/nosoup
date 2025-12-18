@@ -28,6 +28,12 @@ export async function GET(
             type: true,
             value: true
           }
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true
+          }
         }
       }
     })
@@ -79,6 +85,7 @@ export async function PUT(
     const title = form.get('title')?.toString() ?? ''
     const body = form.get('body')?.toString() ?? ''
     const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
+    const tags = JSON.parse(form.get('tags')?.toString() ?? '[]')
 
     console.log('Received field data for update:', fields);
 
@@ -142,6 +149,12 @@ export async function PUT(
             type: f.type,
             value: f.value
           }))
+        },
+        tags: {
+          deleteMany: {},
+          create: (tags ?? []).map((t: any) => ({
+            name: t.name
+          }))
         }
       },
       include: {
@@ -158,6 +171,12 @@ export async function PUT(
             type: true,
             value: true
           }
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true
+          } 
         }
       }
     })

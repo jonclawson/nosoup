@@ -8,6 +8,7 @@ import type { Article, Field, Author } from '@/lib/types'
 import ArticleFields from './ArticleFields'
 import { useEffect, useState } from 'react'
 import SkeletonArticle from './SkeletonArticle'
+import ArticleTags from './ArticleTags'
 
 export default function ArticleList() {
   const router = useRouter()
@@ -59,6 +60,7 @@ export default function ArticleList() {
                   <div className="text-gray-700 line-clamp-6 leading-relaxed">
                     <ArticleFields article={article} />
                     <Dompurify html={article.body} />
+                    <ArticleTags article={article} />
                   </div>
                 </div>
                 

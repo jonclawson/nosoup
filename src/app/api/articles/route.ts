@@ -28,7 +28,13 @@ export async function GET(request: NextRequest) {
               type: true,
               value: true
             }
-          }
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
         },
         orderBy: {
           createdAt: 'desc'
@@ -84,6 +90,7 @@ export async function POST(request: NextRequest) {
     const title = form.get('title')?.toString() ?? ''
     const body = form.get('body')?.toString() ?? ''
     const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
+    const tags = JSON.parse(form.get('tags')?.toString() ?? '[]')
 
     console.log('Received field data for update:', fields);
 
@@ -127,6 +134,11 @@ export async function POST(request: NextRequest) {
             type: f.type,
             value: f.value
           }))
+        },
+        tags: {
+          create: (tags ?? []).map((t: { name: string }) => ({
+            name: t.name
+          }))
         }
       },
       include: {
@@ -143,7 +155,13 @@ export async function POST(request: NextRequest) {
             type: true,
             value: true
           }
-        }
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true
+          }
+        } 
       }
     })
 

@@ -8,10 +8,11 @@ import type { Article, Field, Author, FieldType } from '@/lib/types'
 import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
+import TagsComponent from '@/components/TagsComponent'
 
 export default function NewArticlePage() {
   const router = useRouter()
-  const [formData, setFormData] = useState<Article>({ title: '', body: '', fields: [] })
+  const [formData, setFormData] = useState<Article>({ title: '', body: '', fields: [], tags: [] })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual')
@@ -54,12 +55,13 @@ export default function NewArticlePage() {
     const htmlContent = await editor.blocksToFullHTML(editor.document)
     fd.append('body', htmlContent);
     
-    formData.fields.forEach((field, index) => {
+    formData?.fields?.forEach((field, index) => {
       if (field.meta && field.meta.file) {
         fd.append(`files[${index}]`, field.meta.file);
       }
     });
     fd.append('fields', JSON.stringify(formData.fields));
+    fd.append('tags', JSON.stringify(formData.tags));
 
     try {
       const response = await fetch('/api/articles', {
@@ -147,6 +149,7 @@ export default function NewArticlePage() {
               </div>
 
               <EditArticleFields formData={formData} setFormData={setFormData} />
+              <TagsComponent formData={formData} setFormData={setFormData} />
             </div>
 
             <div className="mt-6 flex items-center justify-end space-x-3">

@@ -11,6 +11,7 @@ import ArticleFields from '@/components/ArticleFields'
 import SkeletonArticle from '@/components/SkeletonArticle'
 import "@blocknote/mantine/style.css"
 import "@blocknote/core/fonts/inter.css";
+import ArticleTags from '@/components/ArticleTags'
 
 interface ArticlePageProps {
   params: Promise<{
@@ -110,6 +111,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6">
                 <Dompurify html={article.body} />
               </div>
+              <ArticleTags article={article} />
             </div>
           </div>
         </div>

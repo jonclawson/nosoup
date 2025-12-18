@@ -13,11 +13,16 @@ export interface Field {
   meta?: any
 }
 
+export interface Tag {
+  id?: string
+  name: string
+} 
 export interface Article {
   id?: string
   title: string
   body: string
   fields: Field[]
+  tags?: Tag[]
   authorId?: string
   author?: Author
   createdAt?: string

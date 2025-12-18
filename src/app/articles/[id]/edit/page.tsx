@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
-import type { Article, Field, Author, FieldType } from '@/lib/types'
+import type { Article, Field, Author, FieldType, Tag } from '@/lib/types'
 import EditArticleFields from '@/components/EditArticleFields'
 import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
+import TagsComponent from '@/components/TagsComponent'
 
 
 interface EditArticlePageProps {
@@ -24,7 +25,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const [formData, setFormData] = useState({
     title: '',
     body: '',
-    fields: [] as Field[]
+    fields: [] as Field[],
+    tags: [] as Tag[]
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -55,7 +57,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
         setFormData({
           title: articleData.title,
           body: articleData.body,
-          fields: articleData.fields
+          fields: articleData.fields,
+          tags: articleData.tags || []
         })
         
         // Load HTML content into BlockNote editor
@@ -103,6 +106,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
       }
     });
     fd.append('fields', JSON.stringify(formData.fields));
+    fd.append('tags', JSON.stringify(formData.tags));
     try {
       const response = await fetch(`/api/articles/${resolvedParams.id}`, {
         method: 'PUT',
@@ -212,6 +216,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
               </div>
               
               <EditArticleFields formData={formData} setFormData={setFormData} />
+              <TagsComponent formData={formData} setFormData={setFormData} />
             </div>
 
             
