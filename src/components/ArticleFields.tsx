@@ -1,3 +1,4 @@
+'use client'
 import type { Article, Field, Author } from '@/lib/types'
 
 export default function ArticleFields({ article }: { article: Article }) {

@@ -96,9 +96,9 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             {article.title}
           </h1>
           <div className="flex items-center text-sm text-gray-500 mb-6">
-            <span>By {article.author.name}</span>
+            <span>By {article?.author?.name}</span>
             <span className="mx-2">•</span>
-            <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+            <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
           </div>
         </div>
         
@@ -125,7 +125,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           Edit Article
         </Link>
         <DeleteButton 
-          userId={article.id} 
+          userId={article.id || ''} 
           onDelete={() => router.push('/articles')}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           resourceType="article"

@@ -79,7 +79,7 @@ export default function ArticleList() {
                       Edit
                     </Link>
                     <DeleteButton 
-                      userId={article.id} 
+                      userId={article.id || ''} 
                       onDelete={() => router.push('/articles')}
                       className="text-red-600 hover:text-red-900 text-sm"
                       resourceType="article"

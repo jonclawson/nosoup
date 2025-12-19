@@ -1,3 +1,4 @@
+'use client'
 export default function SkeletonArticle() {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">

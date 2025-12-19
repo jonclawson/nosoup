@@ -7,10 +7,10 @@ import path from 'path';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = await params.id;
+    const id = (await params).id;
     console.log('Fetching article with ID:', id)
     const article = await prisma.article.findUnique({
       where: { id: id },
@@ -64,7 +64,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -76,7 +76,7 @@ export async function PUT(
       )
     }
 
-    console.log('Processing PUT request for article ID:', await params.id);
+    console.log('Processing PUT request for article ID:', (await params).id);
     const form = await request.formData()
     console.log('Received form data:', form);
     const title = form.get('title')?.toString() ?? ''
@@ -121,7 +121,7 @@ export async function PUT(
 
     // Check if article exists and user is the author
     const existingArticle = await prisma.article.findUnique({
-      where: { id: await params.id }
+      where: { id: (await params).id }
     })
 
     if (!existingArticle) {
@@ -139,7 +139,7 @@ export async function PUT(
     }
 
     const article = await prisma.article.update({
-      where: { id: await params.id },
+      where: { id: (await params).id },
       data: {
         title,
         body,
@@ -209,7 +209,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -223,7 +223,7 @@ export async function DELETE(
 
     // Check if article exists and user is the author
     const existingArticle = await prisma.article.findUnique({
-      where: { id: params.id }
+      where: { id: (await params).id }
     })
 
     if (!existingArticle) {
@@ -241,7 +241,7 @@ export async function DELETE(
     }
 
     await prisma.article.delete({
-      where: { id: params.id }
+      where: { id: (await params).id }
     })
 
     return NextResponse.json({ message: 'Article deleted successfully' })

@@ -1,3 +1,4 @@
+'use client'
 import { Article } from "@/lib/types";
 import EditArticleFields from "./EditArticleFields";
 import TagsComponent from "./TagsComponent";

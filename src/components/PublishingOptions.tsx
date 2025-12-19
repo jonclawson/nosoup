@@ -1,3 +1,4 @@
+'use client'
 import { Article } from "@/lib/types";
 
 export default function PublishingOptions({ formData, setFormData }: { formData: Article, setFormData: any }) {

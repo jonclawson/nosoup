@@ -14,7 +14,7 @@ export default function Dompurify({ html }: { html: string }) {
     import('dompurify')
       .then((mod) => {
         const createDOMPurify = (mod.default || mod)
-        const purifier = (typeof window !== 'undefined') ? createDOMPurify(window as unknown as Window) : null
+        const purifier = (typeof window !== 'undefined') ? createDOMPurify(window) : null
         const safe = purifier ? purifier.sanitize(html) : html
         if (mounted) setSanitized(safe)
       })
