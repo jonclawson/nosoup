@@ -43,7 +43,7 @@ export default function ArticleList() {
           Array.from({ length: 3 }).map((_, i) => <SkeletonArticle key={i} />)
         ) : (
           articles.map((article) => (
-            <article key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+            <article key={article.id} className={`${article.published ? 'bg-white' : 'bg-pink-100'} rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200`}>
               <div className="p-6">
                 <div className="mb-4">
                   <h2 className="text-2xl font-semibold text-gray-900 mb-2">
