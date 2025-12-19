@@ -23,7 +23,6 @@ export default function ArticleList() {
         setLoading(false);
         setArticles([...articles, ...data]);
         setPagination(pagination);
-        console.log('Fetched articles:', data);
       } else {
         console.error('Failed to fetch articles:', response.statusText);
       }
