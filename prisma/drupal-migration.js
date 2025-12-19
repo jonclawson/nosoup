@@ -23,7 +23,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
     // Example: Migrate users from Drupal 6 to SQLite
     const [nodes] = await drupalConnection.execute(`
       select n.nid, nr.title, nr.body, n.created, n.changed, n.status, n.promote, n.sticky from node as n
-      join node_revisions as nr on n.nid = nr.nid;
+      join node_revisions as nr on n.vid = nr.vid;
       `);
 
     const deleteeManyTermNodes = await prisma.tag.deleteMany({where: {}});
