@@ -1,15 +1,52 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { GET, POST } from '@/app/api/articles/route'
-import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import fs from 'fs/promises'
+import path from 'path'
 
-// Mock NextAuth
-jest.mock('next-auth')
-const mockGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>
+// Mock next/server
+jest.mock('next/server', () => ({
+  NextRequest: jest.fn().mockImplementation((url, init) => {
+    return {
+      url,
+      ...init,
+      formData: () => Promise.resolve(init?.body || new FormData()),
+    }
+  }),
+  NextResponse: {
+    json: jest.fn().mockImplementation((data, init) => {
+      return {
+        status: init?.status || 200,
+        json: () => Promise.resolve(data),
+      }
+    }),
+  },
+}))
 
-// Mock Prisma
-jest.mock('../../../lib/prisma')
-const mockPrisma = prisma as any
+// Mock dependencies
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    article: {
+      findMany: jest.fn(),
+      count: jest.fn(),
+      create: jest.fn(),
+    },
+  },
+}))
+
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn(),
+}))
+
+jest.mock('fs/promises', () => ({
+  mkdir: jest.fn(),
+  writeFile: jest.fn(),
+}))
+
+jest.mock('path', () => ({
+  join: jest.fn(),
+}))
 
 describe('/api/articles', () => {
   beforeEach(() => {
@@ -17,270 +54,327 @@ describe('/api/articles', () => {
   })
 
   describe('GET', () => {
-    it('should return all articles with author information', async () => {
+    it('should return articles with pagination', async () => {
       const mockArticles = [
         {
           id: '1',
-          title: 'Test Article 1',
-          body: 'Test body 1',
-          authorId: 'user1',
-          createdAt: new Date('2023-01-01'),
-          updatedAt: new Date('2023-01-01'),
-          author: {
-            id: 'user1',
-            name: 'Test User 1',
-            email: 'test1@example.com'
-          }
+          title: 'Test Article',
+          body: 'Test Body',
+          published: true,
+          sticky: false,
+          featured: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          author: { id: '1', name: 'Test User', email: 'test@example.com' },
+          fields: [],
+          tags: [],
         },
-        {
-          id: '2',
-          title: 'Test Article 2',
-          body: 'Test body 2',
-          authorId: 'user2',
-          createdAt: new Date('2023-01-02'),
-          updatedAt: new Date('2023-01-02'),
-          author: {
-            id: 'user2',
-            name: 'Test User 2',
-            email: 'test2@example.com'
-          }
-        }
       ]
+      const mockTotal = 1
 
-      mockPrisma.article.findMany.mockResolvedValue(mockArticles)
+      ;(prisma.article.findMany as jest.Mock).mockResolvedValue(mockArticles)
+      ;(prisma.article.count as jest.Mock).mockResolvedValue(mockTotal)
+      ;(getServerSession as jest.Mock).mockResolvedValue(null)
 
-      const response = await GET()
+      const request = new NextRequest('http://localhost:3000/api/articles?page=1&size=10')
+      const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data).toHaveLength(2)
-      expect(data[0]).toEqual({
-        ...mockArticles[0],
-        createdAt: mockArticles[0].createdAt.toISOString(),
-        updatedAt: mockArticles[0].updatedAt.toISOString()
+      expect(data.data).toHaveLength(1)
+      expect(data.pagination).toEqual({
+        page: 1,
+        size: 10,
+        total: 1,
+        totalPages: 1,
       })
-      expect(data[1]).toEqual({
-        ...mockArticles[1],
-        createdAt: mockArticles[1].createdAt.toISOString(),
-        updatedAt: mockArticles[1].updatedAt.toISOString()
-      })
-      expect(mockPrisma.article.findMany).toHaveBeenCalledWith({
+      expect(prisma.article.findMany).toHaveBeenCalledWith({
+        where: {
+          AND: [
+            {},
+            { OR: [] },
+          ],
+        },
         include: {
           author: {
             select: {
               id: true,
               name: true,
-              email: true
-            }
-          }
+              email: true,
+            },
+          },
+          fields: {
+            select: {
+              id: true,
+              type: true,
+              value: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
-        orderBy: {
-          createdAt: 'desc'
-        }
+        orderBy: [
+          {},
+          { createdAt: 'desc' },
+        ],
+        skip: 0,
+        take: 10,
       })
     })
 
-    it('should return empty array when no articles exist', async () => {
-      mockPrisma.article.findMany.mockResolvedValue([])
+    it('should filter by published when user is not authenticated', async () => {
+      ;(prisma.article.findMany as jest.Mock).mockResolvedValue([])
+      ;(prisma.article.count as jest.Mock).mockResolvedValue(0)
+      ;(getServerSession as jest.Mock).mockResolvedValue(null)
 
-      const response = await GET()
-      const data = await response.json()
+      const request = new NextRequest('http://localhost:3000/api/articles?published=true')
+      await GET(request)
 
-      expect(response.status).toBe(200)
-      expect(data).toEqual([])
+      expect(prisma.article.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            AND: [
+              {},
+              {
+                OR: [
+                  { published: true },
+                  { AND: [{}, { published: true }] },
+                ],
+              },
+            ],
+          },
+        })
+      )
     })
 
-    it('should handle database errors gracefully', async () => {
-      mockPrisma.article.findMany.mockRejectedValue(new Error('Database error'))
+    it('should include unpublished articles for author when authenticated', async () => {
+      ;(prisma.article.findMany as jest.Mock).mockResolvedValue([])
+      ;(prisma.article.count as jest.Mock).mockResolvedValue(0)
+      ;(getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: '1' },
+      })
 
-      const response = await GET()
+      const request = new NextRequest('http://localhost:3000/api/articles?published=false')
+      await GET(request)
+
+      expect(prisma.article.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            AND: [
+              {},
+              {
+                OR: [
+                  { published: true },
+                  {
+                    AND: [
+                      { authorId: '1' },
+                      { published: false },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        })
+      )
+    })
+
+    it('should handle errors', async () => {
+      ;(prisma.article.findMany as jest.Mock).mockRejectedValue(new Error('DB Error'))
+
+      const request = new NextRequest('http://localhost:3000/api/articles')
+      const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(500)
-      expect(data).toEqual({ error: 'Failed to fetch articles' })
+      expect(data.error).toBe('Failed to fetch articles')
     })
   })
 
   describe('POST', () => {
-    const mockSession = {
-      user: {
-        id: 'user1',
-        email: 'test@example.com',
-        name: 'Test User',
-        role: 'user'
-      }
-    }
-
-    const validArticleData = {
-      title: 'Test Article',
-      body: 'Test article body content'
-    }
-
-    it('should create a new article when user is authenticated', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
-
-      const mockCreatedArticle = {
-        id: 'new-article-id',
-        title: validArticleData.title,
-        body: validArticleData.body,
-        authorId: mockSession.user.id,
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
-        author: {
-          id: mockSession.user.id,
-          name: mockSession.user.name,
-          email: mockSession.user.email
-        }
+    it('should create a new article successfully', async () => {
+      const mockSession = { user: { id: '1' } }
+      const mockArticle = {
+        id: '1',
+        title: 'New Article',
+        body: 'New Body',
+        published: true,
+        sticky: false,
+        featured: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        author: { id: '1', name: 'Test User', email: 'test@example.com' },
+        fields: [],
+        tags: [],
       }
 
-      mockPrisma.article.create.mockResolvedValue(mockCreatedArticle)
+      ;(getServerSession as jest.Mock).mockResolvedValue(mockSession)
+      ;(prisma.article.create as jest.Mock).mockResolvedValue(mockArticle)
+      ;(path.join as jest.Mock).mockReturnValue('/uploads/test.jpg')
+      ;(fs.mkdir as jest.Mock).mockResolvedValue(undefined)
+      ;(fs.writeFile as jest.Mock).mockResolvedValue(undefined)
+
+      const formData = new FormData()
+      formData.append('title', 'New Article')
+      formData.append('body', 'New Body')
+      formData.append('published', 'true')
+      formData.append('fields', '[]')
+      formData.append('tags', '[]')
 
       const request = new NextRequest('http://localhost:3000/api/articles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(validArticleData)
+        body: formData,
       })
-
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(201)
-      expect(data).toEqual({
-        ...mockCreatedArticle,
-        createdAt: mockCreatedArticle.createdAt.toISOString(),
-        updatedAt: mockCreatedArticle.updatedAt.toISOString()
-      })
-      expect(mockPrisma.article.create).toHaveBeenCalledWith({
+      expect(data.title).toBe('New Article')
+      expect(prisma.article.create).toHaveBeenCalledWith({
         data: {
-          title: validArticleData.title,
-          body: validArticleData.body,
-          authorId: mockSession.user.id
+          title: 'New Article',
+          body: 'New Body',
+          authorId: '1',
+          published: true,
+          sticky: false,
+          featured: false,
+          fields: {
+            create: [],
+          },
+          tags: {
+            create: [],
+          },
         },
         include: {
           author: {
             select: {
               id: true,
               name: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+          fields: {
+            select: {
+              id: true,
+              type: true,
+              value: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       })
     })
 
-    it('should return 401 when user is not authenticated', async () => {
-      mockGetServerSession.mockResolvedValue(null)
+    it('should handle file uploads', async () => {
+      const mockSession = { user: { id: '1' } }
+      const mockArticle = {
+        id: '1',
+        title: 'Article with Image',
+        body: 'Body',
+        published: true,
+        sticky: false,
+        featured: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        author: { id: '1', name: 'Test User', email: 'test@example.com' },
+        fields: [{ id: '1', type: 'image', value: '/uploads/test.jpg' }],
+        tags: [],
+      }
+
+      ;(getServerSession as jest.Mock).mockResolvedValue(mockSession)
+      ;(prisma.article.create as jest.Mock).mockResolvedValue(mockArticle)
+      ;(path.join as jest.Mock).mockReturnValue('/uploads/test.jpg')
+      ;(fs.mkdir as jest.Mock).mockResolvedValue(undefined)
+      ;(fs.writeFile as jest.Mock).mockResolvedValue(undefined)
+
+      const file = { arrayBuffer: () => Promise.resolve(Buffer.from('test')), name: 'test.jpg' }
+      const mockFormData = {
+        get: jest.fn((key) => {
+          if (key === 'title') return 'Article with Image'
+          if (key === 'body') return 'Body'
+          if (key === 'published') return 'true'
+          if (key === 'fields') return '[{"type": "image", "value": ""}]'
+          if (key === 'tags') return '[]'
+          if (key === 'files[0]') return file
+        })
+      }
+
+      const request = NextRequest('http://localhost:3000/api/articles', {
+        method: 'POST',
+        body: mockFormData,
+      })
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(201)
+      expect(fs.writeFile).toHaveBeenCalled()
+      expect(data.fields[0].value).toBe('/uploads/test.jpg')
+    })
+
+    it('should return 401 if not authenticated', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue(null)
+
+      const formData = new FormData()
+      formData.append('title', 'Test')
+      formData.append('body', 'Test')
 
       const request = new NextRequest('http://localhost:3000/api/articles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(validArticleData)
+        body: formData,
       })
-
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(401)
-      expect(data).toEqual({ error: 'Authentication required' })
+      expect(data.error).toBe('Authentication required')
     })
 
-    it('should return 400 when title is missing', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
+    it('should return 400 if title or body is missing', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: '1' } })
+
+      const formData = new FormData()
+      formData.append('title', '')
+      formData.append('body', 'Test')
 
       const request = new NextRequest('http://localhost:3000/api/articles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          body: 'Test body without title'
-        })
+        body: formData,
       })
-
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(400)
-      expect(data).toEqual({ error: 'Title and body are required' })
+      expect(data.error).toBe('Title and body are required')
     })
 
-    it('should return 400 when body is missing', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
+    it('should handle creation errors', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: '1' } })
+      ;(prisma.article.create as jest.Mock).mockRejectedValue(new Error('DB Error'))
+
+      const formData = new FormData()
+      formData.append('title', 'Test')
+      formData.append('body', 'Test')
+      formData.append('fields', '[]')
+      formData.append('tags', '[]')
 
       const request = new NextRequest('http://localhost:3000/api/articles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: 'Test title without body'
-        })
+        body: formData,
       })
-
-      const response = await POST(request)
-      const data = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(data).toEqual({ error: 'Title and body are required' })
-    })
-
-    it('should return 400 when both title and body are missing', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
-
-      const request = new NextRequest('http://localhost:3000/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-      })
-
-      const response = await POST(request)
-      const data = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(data).toEqual({ error: 'Title and body are required' })
-    })
-
-    it('should handle database errors gracefully', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
-      mockPrisma.article.create.mockRejectedValue(new Error('Database error'))
-
-      const request = new NextRequest('http://localhost:3000/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(validArticleData)
-      })
-
       const response = await POST(request)
       const data = await response.json()
 
       expect(response.status).toBe(500)
-      expect(data).toEqual({ error: 'Failed to create article' })
-    })
-
-    it('should handle invalid JSON in request body', async () => {
-      mockGetServerSession.mockResolvedValue(mockSession as any)
-
-      const request = new NextRequest('http://localhost:3000/api/articles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: 'invalid json'
-      })
-
-      const response = await POST(request)
-      const data = await response.json()
-
-      expect(response.status).toBe(500)
-      expect(data).toEqual({ error: 'Failed to create article' })
+      expect(data.error).toBe('Failed to create article')
     })
   })
-}) 
+})

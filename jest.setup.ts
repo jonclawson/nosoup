@@ -26,8 +26,14 @@ jest.mock('bcryptjs', () => ({
 
 // Mock Next.js server components
 if (typeof global.Request === 'undefined') {
-  global.Request = class {
-    constructor(public url: string, public init?: RequestInit) {}
+  global.Request = class Request {
+    url: string
+    constructor(url: string, init?: RequestInit) {
+      this.url = url
+    }
+    formData() {
+      return Promise.resolve(new FormData())
+    }
   } as any
 }
 
