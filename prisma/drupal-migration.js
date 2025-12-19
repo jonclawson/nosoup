@@ -22,7 +22,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
 
     // Example: Migrate users from Drupal 6 to SQLite
     const [nodes] = await drupalConnection.execute(`
-      select n.nid, nr.title, nr.body, n.created, n.changed, n.status, n.promote, n.sticky from node as n
+      select n.nid, n.vid, nr.title, nr.body, n.created, n.changed, n.status, n.promote, n.sticky from node as n
       join node_revisions as nr on n.vid = nr.vid;
       `);
 
@@ -62,7 +62,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           from term_data as td
           join term_node as tn
           on td.tid = tn.tid
-          where tn.nid = '${node.nid}';
+          where tn.vid = '${node.vid}';
         `);
         for (const term of terms) {
           await prisma.tag.create({
@@ -81,7 +81,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           from files as f
           join content_field_img as img
           on img.field_img_fid = f.fid
-          where img.nid = '${node.nid}' order by img.vid;
+          where img.vid = '${node.vid}';
           `);
         console.log('Images for article:', images);
         for (const image of images) {
@@ -101,7 +101,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
         const [code] = await drupalConnection.execute(`
           select *
           from content_field_code as cd
-          where cd.nid = '${node.nid}' order by cd.vid;
+          where cd.vid = '${node.vid}';
           `);
         console.log('Code for article:', code);
         for (const cd of code) {
@@ -121,15 +121,15 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
         const [links] = await drupalConnection.execute(`
           select *
           from content_field_lnk as l
-          where l.nid = '${node.nid}' order by l.vid;
+          where l.vid = '${node.vid}';
           `);
         console.log('Links for article:', links);
         for (const link of links) {
-          if (!link.field_link_url) continue;
+          if (!link.field_lnk_url) continue;
           await prisma.field.create({
             data: {
               type: 'link',
-              value: link.field_link_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+              value: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
               article: {
                 connect: {
                   id: article.id
