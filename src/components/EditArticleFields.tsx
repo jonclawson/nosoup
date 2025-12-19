@@ -53,16 +53,18 @@ export default function EditArticleFields({ formData, setFormData }: { formData:
                   className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
                 />
               ) : field.type === 'image' ? (
-                <span>{field.value}
-                <input
-                  name="fields[]"
-                  id={field.id}
-                  type="file"
-                  // value={field.value}
-                  onChange={(e) => handleFieldChange(index, e.target.value, e.target.files?.[0] ?? null)}
-                  className="w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
-                  />
-                  </span>
+                <label htmlFor={field.id} className="block cursor-pointer">
+                  <img src={field.meta?.file ? URL.createObjectURL(field.meta.file) : field.value} alt="Field Image" className="max-w-full h-auto mb-2"/>
+                  <input
+                    name="fields[]"
+                    id={field.id}
+                    type="file"
+                    // value={field.value}
+                    onChange={(e) => handleFieldChange(index, e.target.value, e.target.files?.[0] ?? null)}
+                    className="opacity-0 w-full rounded-md border-gray-300 shadow-sm bg-white p-2"
+                    />
+                    {field.meta?.file?.name || field.value.split('/').pop()}
+                  </label>
               ) : field.type === 'link' ? (
                 <input
                   name="fields[]"
