@@ -11,9 +11,17 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10)
     const size = parseInt(searchParams.get('size') || '10', 10)
     const skip = (page - 1) * size
-
+    // get optional query parameters for published, featured, and sticky
+    const published = searchParams.get('published')
+    const featured = searchParams.get('featured')
+    const sticky = searchParams.get('sticky')
+    // query on those parameters if they are provided.
     const [articles, total] = await Promise.all([
       prisma.article.findMany({
+        where: {
+          ...(published !== null && { published: published === 'true' }),
+          ...(featured !== null && { featured: featured === 'true' }),
+        },
         include: {
           author: {
             select: {
@@ -36,9 +44,10 @@ export async function GET(request: NextRequest) {
             }
           },
         },
-        orderBy: {
-          createdAt: 'desc'
-        },
+        orderBy: [
+          { sticky: 'desc' },
+          { createdAt: 'desc' }
+        ],
         skip,
         take: size
       }),

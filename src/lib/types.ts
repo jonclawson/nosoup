@@ -27,4 +27,7 @@ export interface Article {
   author?: Author
   createdAt?: string
   updatedAt?: string
+  published?: boolean
+  featured?: boolean
+  sticky?: boolean
 }
