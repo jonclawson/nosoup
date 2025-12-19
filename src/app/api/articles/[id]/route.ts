@@ -76,9 +76,6 @@ export async function PUT(
       )
     }
 
-    // const requestBody = await request.json()
-    // const { title, body, fields } = requestBody
-
     console.log('Processing PUT request for article ID:', await params.id);
     const form = await request.formData()
     console.log('Received form data:', form);
@@ -86,6 +83,9 @@ export async function PUT(
     const body = form.get('body')?.toString() ?? ''
     const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
     const tags = JSON.parse(form.get('tags')?.toString() ?? '[]')
+    const published = form.get('published') === 'true'
+    const sticky = form.get('sticky') === 'true'
+    const featured = form.get('featured') === 'true'
 
     console.log('Received field data for update:', fields);
 
@@ -155,7 +155,10 @@ export async function PUT(
           create: (tags ?? []).map((t: any) => ({
             name: t.name
           }))
-        }
+        },
+        published,
+        sticky,
+        featured
       },
       include: {
         author: {

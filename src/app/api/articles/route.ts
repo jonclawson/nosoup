@@ -58,8 +58,8 @@ export async function GET(request: NextRequest) {
           },
         },
         orderBy: [
-          sticky ? { sticky: 'desc' } : {},
-          { createdAt: 'desc' }
+          sticky != null ? { sticky: 'desc' } : {},
+          { createdAt: 'desc' },
         ],
         skip,
         take: size
@@ -102,15 +102,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // const requestBody = await request.json()
-    // const { title, body, fields } = requestBody
-    // console.log('Received article data:', fields);
-
-    console.log('Processing PUT request for article ID:');
+    console.log('Processing POST request for new article:');
     const form = await request.formData()
     console.log('Received form data:', form);
     const title = form.get('title')?.toString() ?? ''
     const body = form.get('body')?.toString() ?? ''
+    const published = form.get('published') === 'true'
+    const sticky = form.get('sticky') === 'true'
+    const featured = form.get('featured') === 'true'
     const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
     const tags = JSON.parse(form.get('tags')?.toString() ?? '[]')
 
@@ -151,6 +150,9 @@ export async function POST(request: NextRequest) {
         title,
         body,
         authorId: session.user.id,
+        published,
+        sticky,
+        featured,
         fields: {
           create: (fields ?? []).map((f: { type: string; value: string }) => ({
             type: f.type,

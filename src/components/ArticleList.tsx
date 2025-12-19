@@ -17,7 +17,7 @@ export default function ArticleList() {
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
   const fetchArticles = async (page: number = 1) => {
     try {
-      const response = await fetch(`/api/articles?page=${page}&size=${pagination.size}&published=true&featured=true`);
+      const response = await fetch(`/api/articles?page=${page}&size=${pagination.size}&published=true&featured=true&sticky=true`);
       if (response.ok) {
         const { data, pagination } = await response.json();
         setLoading(false);
