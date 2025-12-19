@@ -22,7 +22,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
 
     // Example: Migrate users from Drupal 6 to SQLite
     const [nodes] = await drupalConnection.execute(`
-      select n.nid, nr.title, nr.body, n.created, n.changed from node as n
+      select n.nid, nr.title, nr.body, n.created, n.changed, n.status, n.promote, n.sticky from node as n
       join node_revisions as nr on n.nid = nr.nid;
       `);
 
@@ -41,7 +41,10 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
           authorId: process.env.AUTHOR_DEFAULT_ID,
           createdAt: new Date(node.created * 1000),
-          updatedAt: new Date(node.changed * 1000)
+          updatedAt: new Date(node.changed * 1000),
+          published: node.status === 1,
+          featured: node.promote === 1,
+          sticky: node.sticky === 1
         },
         include: {
           author: {
