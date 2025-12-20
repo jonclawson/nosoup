@@ -4,6 +4,16 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import fs from 'fs/promises'
 import path from 'path';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+const s3Client = new S3Client({
+  region: 'auto', // R2 uses 'auto'
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+})
 
 export async function GET(
   request: NextRequest,
@@ -90,7 +100,7 @@ export async function PUT(
     console.log('Received field data for update:', fields);
 
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    await fs.mkdir(uploadsDir, { recursive: true })
+    // await fs.mkdir(uploadsDir, { recursive: true })
 
     try {
       for (const [index, field] of fields.entries()) {
@@ -98,10 +108,35 @@ export async function PUT(
         if (field.type === 'image' && form.get(`files[${index}]`)) {
           const file = form.get(`files[${index}]`) as File
           const arrayBuffer = await file.arrayBuffer()
-          const buffer = Buffer.from(arrayBuffer)
-          const filePath = path.join(uploadsDir, file.name)
-          await fs.writeFile(filePath, buffer)
-          field.value = `/uploads/${file.name}`
+          if (process.env.R2_USE_R2 !== 'true') {
+            const buffer = Buffer.from(arrayBuffer)
+            const filePath = path.join(uploadsDir, file.name)
+            await fs.writeFile(filePath, buffer)
+            field.value = `/uploads/${file.name}`
+          }
+          if (process.env.R2_USE_R2 === 'true') {
+            const buffer = Buffer.from(arrayBuffer)
+            const bucketName = process.env.R2_BUCKET_NAME!;
+            const key = file.name;
+            const putObjectParams = {
+              Bucket: bucketName,
+              Key: key,
+              Body: buffer,
+              ContentType: file.type,
+            };
+
+            try {
+              await s3Client.send(new PutObjectCommand(putObjectParams));
+              console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
+              field.value = `https://${bucketName}.${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`;
+            } catch (err) {
+              console.error('Error uploading to R2:', err);
+              return NextResponse.json(
+                { error: 'Failed to upload file to R2' },
+                { status: 500 }
+              )
+            }
+          }
         }
       }
     } catch (fileError) {
