@@ -1,0 +1,5 @@
+.next/cache
+.next/static/__BUILD_MANIFEST
+**/*.pack
+**/*.map
+node_modules
