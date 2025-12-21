@@ -124,9 +124,9 @@ jobs:
 
       - name: Set Pages Secrets
         run: |
-          echo "${{ secrets.NEXTAUTH_SECRET }}" | wrangler pages secret put NEXTAUTH_SECRET --project-name=${{ needs.terraform.outputs.pages_project_name }}
-          echo "${{ secrets.R2_ACCESS_KEY_ID }}" | wrangler pages secret put R2_ACCESS_KEY_ID --project-name=${{ needs.terraform.outputs.pages_project_name }}
-          echo "${{ secrets.R2_SECRET_ACCESS_KEY }}" | wrangler pages secret put R2_SECRET_ACCESS_KEY --project-name=${{ needs.terraform.outputs.pages_project_name }}
+          echo "${{ secrets.NEXTAUTH_SECRET }}" | wrangler pages secret put NEXTAUTH_SECRET --project-name="${{ needs.terraform.outputs.pages_project_name }}"
+          echo "${{ secrets.R2_ACCESS_KEY_ID }}" | wrangler pages secret put R2_ACCESS_KEY_ID --project-name="${{ needs.terraform.outputs.pages_project_name }}"
+          echo "${{ secrets.R2_SECRET_ACCESS_KEY }}" | wrangler pages secret put R2_SECRET_ACCESS_KEY --project-name="${{ needs.terraform.outputs.pages_project_name }}"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
