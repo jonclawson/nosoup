@@ -156,6 +156,9 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
 
+      - name: Remove Next.js cache
+        run: rm -rf .next/cache
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
