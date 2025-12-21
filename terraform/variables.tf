@@ -24,7 +24,7 @@ variable "r2_bucket_name" {
 variable "r2_bucket_location" {
   description = "Location for R2 bucket"
   type        = string
-  default     = "auto"
+  default     = "WNAM"
 }
 
 variable "pages_project_name" {
