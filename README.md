@@ -374,7 +374,56 @@ To use a different database (PostgreSQL, MySQL, etc.):
 
 ## Deployment
 
-The application can be deployed to Vercel, Netlify, or any other platform that supports Next.js.
+The application can be deployed to Cloudflare Pages using the included Terraform configuration and GitHub Actions workflow.
+
+### Cloudflare Deployment Setup
+
+#### 1. Prerequisites
+
+- Cloudflare account (free tier works)
+- HashiCorp Cloud Platform (HCP) account for Terraform state (free tier)
+- GitHub account
+
+#### 2. Configure GitHub Secrets
+
+Go to your GitHub repository → Settings → Secrets and variables → Actions → New repository secret and add:
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token | [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) - Create token with D1, R2, Pages, and Workers permissions |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID | Found in the right sidebar at [dash.cloudflare.com](https://dash.cloudflare.com) |
+| `TF_CLOUD_ORGANIZATION` | Terraform Cloud org name | Create at [app.terraform.io](https://app.terraform.io) - use your organization name |
+| `TF_WORKSPACE` | Terraform workspace name | e.g., "nosoup" - create workspace in Terraform Cloud |
+| `TF_API_TOKEN` | Terraform Cloud API token | [app.terraform.io → User Settings → Tokens](https://app.terraform.io/app/settings/tokens) |
+| `NEXTAUTH_SECRET` | NextAuth secret key | Generate with: `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | Production URL | e.g., `https://nosoup.pages.dev` (update after first deploy) |
+| `R2_ACCESS_KEY_ID` | R2 access key | [dash.cloudflare.com → R2 → Manage R2 API Tokens](https://dash.cloudflare.com) |
+| `R2_SECRET_ACCESS_KEY` | R2 secret access key | Same as above - create token for your bucket |
+
+#### 3. Deploy
+
+Push to the `main` branch and GitHub Actions will automatically:
+1. Provision D1 database, R2 bucket, and Pages project using Terraform
+2. Generate and export your local database
+3. Import database to Cloudflare D1
+4. Build and deploy your Next.js app to Cloudflare Pages
+
+#### 4. Destroy Infrastructure (Optional)
+
+To tear down all infrastructure:
+1. Go to Actions → Deploy to Cloudflare → Run workflow
+2. Type `destroy` in the input field
+3. Click Run workflow
+
+### Local Environment Variables
+
+Create a `.env.local` file for local development:
+
+```bash
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_SECRET="your-local-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
 
 ### Environment Variables
 

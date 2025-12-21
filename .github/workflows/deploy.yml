@@ -1,0 +1,190 @@
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      destroy:
+        description: 'Destroy infrastructure (type "destroy" to confirm)'
+        required: false
+        default: ''
+
+jobs:
+  terraform:
+    name: Provision Infrastructure
+    runs-on: ubuntu-latest
+    outputs:
+      d1_database_id: ${{ steps.tf_output.outputs.d1_database_id }}
+      r2_bucket_name: ${{ steps.tf_output.outputs.r2_bucket_name }}
+      pages_project_name: ${{ steps.tf_output.outputs.pages_project_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_github_repo: ${{ github.event.repository.name }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_github_repo: ${{ github.event.repository.name }}
+
+      - name: Get Terraform Outputs
+        id: tf_output
+        run: |
+          echo "d1_database_id=$(terraform output -raw d1_database_id)" >> $GITHUB_OUTPUT
+          echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
+          echo "pages_project_name=$(terraform output -raw pages_project_name)" >> $GITHUB_OUTPUT
+        working-directory: terraform
+
+  deploy:
+    name: Deploy Application
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate wrangler.toml
+        run: |
+          cat > wrangler.toml <<EOF
+          name = "nosoup"
+          compatibility_date = "2025-01-01"
+
+          [[d1_databases]]
+          binding = "DB"
+          database_id = "${{ needs.terraform.outputs.d1_database_id }}"
+
+          [[r2_buckets]]
+          binding = "UPLOADS"
+          bucket_name = "${{ needs.terraform.outputs.r2_bucket_name }}"
+          EOF
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Create and Push Local Database
+        run: npx prisma db push --skip-generate
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Seed Database (Optional)
+        run: npx prisma db seed
+        continue-on-error: true
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Install sqlite3
+        run: sudo apt-get update && sudo apt-get install -y sqlite3
+
+      - name: Export Database to SQL
+        run: sqlite3 dev.db .dump > export.sql
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Set Pages Environment Variables
+        run: |
+          wrangler pages project env add ${{ needs.terraform.outputs.pages_project_name }} \
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} \
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
+            R2_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }} \
+            R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }} \
+            R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }} \
+            R2_BUCKET_NAME=${{ needs.terraform.outputs.r2_bucket_name }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        continue-on-error: true
+
+      - name: Import Database to D1
+        run: wrangler d1 execute DB --file=export.sql
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Build Next.js Application
+        run: npm run build
+        env:
+          DATABASE_URL: "file:./dev.db"
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ needs.terraform.outputs.pages_project_name }}
+          directory: .next
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  destroy:
+    name: Destroy Infrastructure
+    if: github.event.inputs.destroy == 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_github_repo: ${{ github.event.repository.name }}
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_github_repo: ${{ github.event.repository.name }}
