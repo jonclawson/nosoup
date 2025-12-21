@@ -390,15 +390,44 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions 
 
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token | [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens) - Create token with D1, R2, Pages, and Workers permissions |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token | See detailed instructions below |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID | Found in the right sidebar at [dash.cloudflare.com](https://dash.cloudflare.com) |
 | `TF_CLOUD_ORGANIZATION` | Terraform Cloud org name | Create at [app.terraform.io](https://app.terraform.io) - use your organization name |
 | `TF_WORKSPACE` | Terraform workspace name | e.g., "nosoup" - create workspace in Terraform Cloud |
 | `TF_API_TOKEN` | Terraform Cloud API token | [app.terraform.io → User Settings → Tokens](https://app.terraform.io/app/settings/tokens) |
 | `NEXTAUTH_SECRET` | NextAuth secret key | Generate with: `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Production URL | e.g., `https://nosoup.pages.dev` (update after first deploy) |
-| `R2_ACCESS_KEY_ID` | R2 access key | [dash.cloudflare.com → R2 → Manage R2 API Tokens](https://dash.cloudflare.com) |
-| `R2_SECRET_ACCESS_KEY` | R2 secret access key | Same as above - create token for your bucket |
+| `R2_ACCESS_KEY_ID` | R2 access key | See R2 instructions below |
+| `R2_SECRET_ACCESS_KEY` | R2 secret access key | Same as R2_ACCESS_KEY_ID |
+
+##### Getting CLOUDFLARE_API_TOKEN
+
+1. Go to [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+2. Click **Create Token**
+3. Click **Create Custom Token**
+4. Configure the token:
+   - **Token name**: e.g., "GitHub Actions Deploy"
+   - **Permissions**: Add these:
+     - Account → D1 → Edit
+     - Account → Cloudflare Pages → Edit
+     - Account → Workers R2 Storage → Edit
+     - Account → Workers Scripts → Edit
+   - **Account Resources**: Include → Your account
+   - **TTL**: Set expiration or leave as default
+5. Click **Continue to summary** → **Create Token**
+6. **Copy the token immediately** (you can't see it again)
+
+##### Getting R2 Access Keys
+
+1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **R2**
+2. Click **Manage R2 API Tokens**
+3. Click **Create API Token**
+4. Configure:
+   - **Token name**: e.g., "GitHub Actions R2"
+   - **Permissions**: Object Read & Write (or Admin Read & Write)
+   - **TTL**: Set expiration or leave as default
+5. Click **Create API Token**
+6. Copy both **Access Key ID** and **Secret Access Key**
 
 #### 3. Deploy
 
