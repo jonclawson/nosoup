@@ -5,11 +5,13 @@ import ArticleList from '@/components/ArticleList'
 
 // Mock next/link
 jest.mock('next/link', () => {
-  return ({ children, href, ...props }: any) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  )
+  return function MockNextLink({ children, href, ...props }: any) {
+    return (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    )
+  }
 })
 
 // Mock ArticleList component

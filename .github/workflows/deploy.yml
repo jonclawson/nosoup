@@ -90,6 +90,7 @@ jobs:
           cat > wrangler.toml <<EOF
           name = "nosoup"
           compatibility_date = "2025-01-01"
+          pages_build_output_dir = ".next"
 
           [[d1_databases]]
           binding = "DB"

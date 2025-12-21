@@ -55,4 +55,20 @@ if (typeof global.Response === 'undefined') {
 
 // Mock environment variables
 process.env.NEXTAUTH_SECRET = 'test-secret'
-process.env.NEXTAUTH_URL = 'http://localhost:3000' 
+process.env.NEXTAUTH_URL = 'http://localhost:3000'
+
+// Mock AWS SDK clients to avoid loading shared-ini-file-loader during tests
+jest.mock('@aws-sdk/client-s3', () => ({
+  S3Client: jest.fn().mockImplementation(() => ({})),
+  PutObjectCommand: jest.fn(),
+}))
+
+// Mock credential provider to prevent attempts to read credential files
+jest.mock('@aws-sdk/credential-provider-node', () => ({
+  fromIni: jest.fn(),
+  fromEnv: jest.fn(),
+  fromNodeProviderChain: jest.fn(),
+}))
+
+// Ensure HOME is defined in test env (some envs may not have it)
+if (!process.env.HOME) process.env.HOME = '/tmp'
