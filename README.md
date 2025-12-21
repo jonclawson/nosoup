@@ -433,9 +433,10 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions 
 
 Push to the `main` branch and GitHub Actions will automatically:
 1. Provision D1 database, R2 bucket, and Pages project using Terraform
-2. Generate and export your local database
-3. Import database to Cloudflare D1
-4. Build and deploy your Next.js app to Cloudflare Pages
+2. Set environment variables (non-sensitive via wrangler.toml, sensitive via wrangler secrets)
+3. Generate and export your local database
+4. Import database to Cloudflare D1
+5. Build and deploy your Next.js app to Cloudflare Pages
 
 #### 4. Destroy Infrastructure (Optional)
 

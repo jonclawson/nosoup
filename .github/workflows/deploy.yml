@@ -90,6 +90,11 @@ jobs:
           [[r2_buckets]]
           binding = "UPLOADS"
           bucket_name = "${{ needs.terraform.outputs.r2_bucket_name }}"
+
+          [vars]
+          NEXTAUTH_URL = "${{ secrets.NEXTAUTH_URL }}"
+          R2_ACCOUNT_ID = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          R2_BUCKET_NAME = "${{ needs.terraform.outputs.r2_bucket_name }}"
           EOF
 
       - name: Generate Prisma Client
@@ -117,18 +122,13 @@ jobs:
       - name: Install Wrangler
         run: npm install -g wrangler
 
-      - name: Set Pages Environment Variables
+      - name: Set Pages Secrets
         run: |
-          wrangler pages project env add ${{ needs.terraform.outputs.pages_project_name }} \
-            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} \
-            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
-            R2_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }} \
-            R2_ACCESS_KEY_ID=${{ secrets.R2_ACCESS_KEY_ID }} \
-            R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET_ACCESS_KEY }} \
-            R2_BUCKET_NAME=${{ needs.terraform.outputs.r2_bucket_name }}
+          echo "${{ secrets.NEXTAUTH_SECRET }}" | wrangler pages secret put NEXTAUTH_SECRET --project-name=${{ needs.terraform.outputs.pages_project_name }}
+          echo "${{ secrets.R2_ACCESS_KEY_ID }}" | wrangler pages secret put R2_ACCESS_KEY_ID --project-name=${{ needs.terraform.outputs.pages_project_name }}
+          echo "${{ secrets.R2_SECRET_ACCESS_KEY }}" | wrangler pages secret put R2_SECRET_ACCESS_KEY --project-name=${{ needs.terraform.outputs.pages_project_name }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        continue-on-error: true
 
       - name: Import Database to D1
         run: wrangler d1 execute DB --file=export.sql
