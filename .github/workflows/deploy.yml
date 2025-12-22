@@ -39,7 +39,9 @@ jobs:
       - name: Clean up old Cloudflare state (one-time migration)
         run: |
           echo "Removing old Cloudflare resources from state..."
-          terraform state list | grep -E '(cloudflare_pages_project|cloudflare_d1_database)' | xargs -r -n1 terraform state rm || true
+          terraform state rm cloudflare_pages_project.nosoup
+          terraform state rm cloudflare_d1_database.nosoup_db
+          terraform state rm cloudflare_r2_bucket.nosoup_uploads
         working-directory: terraform
         continue-on-error: true
         env:
@@ -47,107 +49,107 @@ jobs:
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: terraform
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
-          TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
-          TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
-          TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
-          TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+  #       working-directory: terraform
+  #       env:
+  #         TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+  #         TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+  #         TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+  #         TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
+  #         TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
+  #         TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
+  #         TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
+  #         TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
+  #         TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
+  #         TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
-      - name: Get Terraform Outputs
-        id: tf_output
-        run: |
-          echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
-          echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
-          echo "database_url=$(terraform output -raw database_url)" >> $GITHUB_OUTPUT
-        working-directory: terraform
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+  #     - name: Get Terraform Outputs
+  #       id: tf_output
+  #       run: |
+  #         echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
+  #         echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
+  #         echo "database_url=$(terraform output -raw database_url)" >> $GITHUB_OUTPUT
+  #       working-directory: terraform
+  #       env:
+  #         TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+  #         TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+  #         TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
-  deploy:
-    name: Deploy to Vercel
-    needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # deploy:
+  #   name: Deploy to Vercel
+  #   needs: terraform
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+  #     - name: Install Dependencies
+  #       run: npm ci
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+  #     - name: Install Vercel CLI
+  #       run: npm install -g vercel@latest
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Pull Vercel Environment Information
+  #       run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Run Prisma Migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
+  #     - name: Run Prisma Migrations
+  #       run: npx prisma migrate deploy
+  #       env:
+  #         DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
 
-      - name: Generate Prisma Client
-        run: npx prisma generate
+  #     - name: Generate Prisma Client
+  #       run: npx prisma generate
 
-      - name: Build Project
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Build Project
+  #       run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Deploy to Vercel
+  #       run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-  destroy:
-    name: Destroy Infrastructure
-    if: github.event.inputs.destroy == 'destroy'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # destroy:
+  #   name: Destroy Infrastructure
+  #   if: github.event.inputs.destroy == 'destroy'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.0
-          terraform_wrapper: false
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #       with:
+  #         terraform_version: 1.6.0
+  #         terraform_wrapper: false
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: terraform
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+  #     - name: Terraform Init
+  #       run: terraform init
+  #       working-directory: terraform
+  #       env:
+  #         TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+  #         TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+  #         TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: terraform
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
-          TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
-          TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
-          TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
-          TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+  #     - name: Terraform Destroy
+  #       run: terraform destroy -auto-approve
+  #       working-directory: terraform
+  #       env:
+  #         TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+  #         TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+  #         TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+  #         TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
+  #         TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
+  #         TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
+  #         TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
+  #         TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
+  #         TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
+  #         TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
