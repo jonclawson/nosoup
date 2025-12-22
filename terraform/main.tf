@@ -48,6 +48,9 @@ resource "neon_project" "nosoup_db" {
 
   lifecycle {
     prevent_destroy = false  # Set to true in production to prevent accidental deletion
+    ignore_changes = [
+      maintenance_window,
+    ]
   }
 }
 
