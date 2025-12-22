@@ -18,6 +18,7 @@ jobs:
       vercel_project_id: ${{ steps.tf_output.outputs.vercel_project_id }}
       r2_bucket_name: ${{ steps.tf_output.outputs.r2_bucket_name }}
       database_url: ${{ steps.tf_output.outputs.database_url }}
+      test_output: ${{ steps.tf_output.outputs.test_output }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
