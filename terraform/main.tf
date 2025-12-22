@@ -51,6 +51,12 @@ resource "neon_project" "nosoup_db" {
   }
 }
 
+# Import the auto-created main branch instead of creating it
+import {
+  to = neon_branch.main
+  id = "${neon_project.nosoup_db.id}/main"
+}
+
 resource "neon_branch" "main" {
   project_id = neon_project.nosoup_db.id
   name       = "main"
