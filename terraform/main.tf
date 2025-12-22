@@ -59,10 +59,16 @@ resource "cloudflare_r2_bucket_cors_configuration" "nosoup_uploads_cors" {
 
 # Enable R2.dev public access subdomain
 resource "terraform_data" "enable_r2_public_access" {
+  input = {
+    account_id  = var.cloudflare_account_id
+    bucket_name = cloudflare_r2_bucket.nosoup_uploads.name
+    api_token   = var.cloudflare_api_token
+  }
+
   provisioner "local-exec" {
     command = <<-EOT
-      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/r2/buckets/${cloudflare_r2_bucket.nosoup_uploads.name}/public" \
-        -H "Authorization: Bearer ${var.cloudflare_api_token}" \
+      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${self.input.account_id}/r2/buckets/${self.input.bucket_name}/public" \
+        -H "Authorization: Bearer ${self.input.api_token}" \
         -H "Content-Type: application/json" \
         -d '{"enabled": true}'
     EOT
@@ -71,15 +77,11 @@ resource "terraform_data" "enable_r2_public_access" {
   provisioner "local-exec" {
     when    = destroy
     command = <<-EOT
-      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/r2/buckets/${cloudflare_r2_bucket.nosoup_uploads.name}/public" \
-        -H "Authorization: Bearer ${var.cloudflare_api_token}" \
+      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${self.input.account_id}/r2/buckets/${self.input.bucket_name}/public" \
+        -H "Authorization: Bearer ${self.input.api_token}" \
         -H "Content-Type: application/json" \
         -d '{"enabled": false}'
     EOT
-  }
-
-  triggers_replace = {
-    bucket_name = cloudflare_r2_bucket.nosoup_uploads.name
   }
 }
 
