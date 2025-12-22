@@ -104,7 +104,7 @@ jobs:
       - name: Run Prisma Migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
+          DATABASE_URL: ${{ needs.outputs.database_url }}
 
       - name: Generate Prisma Client
         run: npx prisma generate
