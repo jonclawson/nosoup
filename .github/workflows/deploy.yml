@@ -75,6 +75,7 @@ jobs:
           DYNAMIC_URL=$(terraform output -raw database_url)
           echo "::add-mask::$DYNAMIC_URL"
           echo "db_url=$(echo -n "$DYNAMIC_URL" | base64 -w 0)" >> $GITHUB_OUTPUT
+          echo "DYNAMIC_URL: ${{ $DYNAMIC_URL}}"
           echo "test_output=Terraform apply completed successfully!" >> $GITHUB_OUTPUT
         working-directory: terraform
         env:
