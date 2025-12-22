@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare
+name: Deploy to Vercel
 
 on:
   push:
@@ -15,9 +15,9 @@ jobs:
     name: Provision Infrastructure
     runs-on: ubuntu-latest
     outputs:
-      d1_database_id: ${{ steps.tf_output.outputs.d1_database_id }}
+      vercel_project_id: ${{ steps.tf_output.outputs.vercel_project_id }}
       r2_bucket_name: ${{ steps.tf_output.outputs.r2_bucket_name }}
-      pages_project_name: ${{ steps.tf_output.outputs.pages_project_name }}
+      database_url: ${{ steps.tf_output.outputs.database_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,10 +35,6 @@ jobs:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_github_repo: ${{ github.event.repository.name }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -47,34 +43,30 @@ jobs:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_github_repo: ${{ github.event.repository.name }}
+          TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
+          TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
+          TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
       - name: Get Terraform Outputs
         id: tf_output
         run: |
-          echo "d1_database_id=$(terraform output -raw d1_database_id)" >> $GITHUB_OUTPUT
+          echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
           echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
-          echo "pages_project_name=$(terraform output -raw pages_project_name)" >> $GITHUB_OUTPUT
+          echo "database_url=$(terraform output -raw database_connection_string)" >> $GITHUB_OUTPUT
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_github_repo: ${{ github.event.repository.name }}
 
   deploy:
-    name: Deploy Application
+    name: Deploy to Vercel
     needs: terraform
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -88,85 +80,25 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Generate wrangler.toml
-        run: |
-          cat > wrangler.toml <<EOF
-          name = "nosoup"
-          compatibility_date = "2025-01-01"
-          pages_build_output_dir = ".next"
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
 
-          [[d1_databases]]
-          binding = "DB"
-          database_id = "${{ needs.terraform.outputs.d1_database_id }}"
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-          [[r2_buckets]]
-          binding = "UPLOADS"
-          bucket_name = "${{ needs.terraform.outputs.r2_bucket_name }}"
-
-          [vars]
-          NEXTAUTH_URL = "${{ secrets.NEXTAUTH_URL }}"
-          R2_ACCOUNT_ID = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
-          R2_BUCKET_NAME = "${{ needs.terraform.outputs.r2_bucket_name }}"
-          EOF
+      - name: Run Prisma Migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
 
       - name: Generate Prisma Client
         run: npx prisma generate
-        env:
-          DATABASE_URL: "file:./dev.db"
 
-      - name: Create and Push Local Database
-        run: npx prisma db push --skip-generate
-        env:
-          DATABASE_URL: "file:./dev.db"
+      - name: Build Project
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Seed Database (Optional)
-        run: npx prisma db seed
-        continue-on-error: true
-        env:
-          DATABASE_URL: "file:./dev.db"
-
-      - name: Install sqlite3
-        run: sudo apt-get update && sudo apt-get install -y sqlite3
-
-      - name: Export Database to SQL
-        run: sqlite3 dev.db .dump > export.sql
-
-      - name: Install Wrangler
-        run: npm install -g wrangler
-
-      - name: Set Pages Secrets
-        run: |
-          echo "${{ secrets.NEXTAUTH_SECRET }}" | wrangler pages secret put NEXTAUTH_SECRET --project-name="${{ needs.terraform.outputs.pages_project_name }}"
-          echo "${{ secrets.R2_ACCESS_KEY_ID }}" | wrangler pages secret put R2_ACCESS_KEY_ID --project-name="${{ needs.terraform.outputs.pages_project_name }}"
-          echo "${{ secrets.R2_SECRET_ACCESS_KEY }}" | wrangler pages secret put R2_SECRET_ACCESS_KEY --project-name="${{ needs.terraform.outputs.pages_project_name }}"
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Import Database to D1
-        run: wrangler d1 execute DB --file=export.sql
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Build Next.js Application
-        run: npm run build
-        env:
-          DATABASE_URL: "file:./dev.db"
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-
-      - name: Remove Next.js cache
-        run: rm -rf .next/cache
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ needs.terraform.outputs.pages_project_name }}
-          directory: .next
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
   destroy:
     name: Destroy Infrastructure
@@ -189,10 +121,6 @@ jobs:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_github_repo: ${{ github.event.repository.name }}
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
@@ -201,7 +129,10 @@ jobs:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_github_repo: ${{ github.event.repository.name }}
+          TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
+          TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
+          TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}

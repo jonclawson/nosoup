@@ -1,12 +1,20 @@
 # Copy this file to terraform.tfvars and fill in your values
 # DO NOT commit terraform.tfvars to version control
 
+# Vercel Configuration
+vercel_api_token       = "your-vercel-api-token"
+vercel_project_name    = "nosoup"
+vercel_region          = "us-east-1"
+database_name          = "nosoup-db"
+
+# NextAuth Configuration
+nextauth_url           = "https://your-app.vercel.app"
+nextauth_secret        = "your-nextauth-secret"
+
+# Cloudflare R2 Configuration (for file storage)
 cloudflare_api_token   = "your-cloudflare-api-token"
 cloudflare_account_id  = "your-cloudflare-account-id"
-d1_database_name       = "nosoup-db"
 r2_bucket_name         = "nosoup-uploads"
-r2_bucket_location     = "auto"
-pages_project_name     = "nosoup"
-production_branch      = "main"
-github_owner           = "your-github-username"
-github_repo            = "nosoup"
+r2_bucket_location     = "WNAM"
+r2_access_key_id       = "your-r2-access-key-id"
+r2_secret_access_key   = "your-r2-secret-access-key"

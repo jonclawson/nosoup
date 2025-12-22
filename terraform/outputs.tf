@@ -1,11 +1,17 @@
-output "d1_database_id" {
-  description = "ID of the D1 database"
-  value       = cloudflare_d1_database.nosoup_db.id
+output "vercel_project_id" {
+  description = "ID of the Vercel project"
+  value       = vercel_project.nosoup.id
 }
 
-output "d1_database_name" {
-  description = "Name of the D1 database"
-  value       = cloudflare_d1_database.nosoup_db.name
+output "vercel_project_name" {
+  description = "Name of the Vercel project"
+  value       = vercel_project.nosoup.name
+}
+
+output "database_connection_string" {
+  description = "Postgres database connection string"
+  value       = vercel_postgres_database.nosoup_db.connection_string
+  sensitive   = true
 }
 
 output "r2_bucket_name" {
@@ -13,12 +19,7 @@ output "r2_bucket_name" {
   value       = cloudflare_r2_bucket.nosoup_uploads.name
 }
 
-output "pages_project_name" {
-  description = "Name of the Cloudflare Pages project"
-  value       = cloudflare_pages_project.nosoup.name
-}
-
-output "pages_url" {
-  description = "URL of the Cloudflare Pages project"
-  value       = "https://${cloudflare_pages_project.nosoup.subdomain}.pages.dev"
+output "deployment_url" {
+  description = "URL of the Vercel deployment"
+  value       = "https://${vercel_project.nosoup.name}.vercel.app"
 }
