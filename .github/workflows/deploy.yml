@@ -72,9 +72,9 @@ jobs:
         run: |
           echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
           echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
-          DATABASE_URL=$(terraform output -raw database_url)
-          echo "::add-mask::$DATABASE_URL"
-          echo "db_url=$DATABASE_URL" >> $GITHUB_OUTPUT
+          DYNAMIC_URL=$(terraform output -raw database_url)
+          echo "::add-mask::$DYNAMIC_URL"
+          echo "db_url=$DYNAMIC_URL" >> $GITHUB_OUTPUT
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
@@ -106,7 +106,7 @@ jobs:
 
       - name: Run Prisma Migrations
         run: |
-          "echo" "Running migrations on database... ${{ needs.terraform.outputs.secure_db_url }}"
+          echo "Running migrations on database... ${{ needs.terraform.outputs.secure_db_url }}"
           npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ needs.terraform.outputs.secure_db_url }}
