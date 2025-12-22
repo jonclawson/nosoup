@@ -109,7 +109,7 @@ jobs:
 
       - name: Run Prisma Migrations
         run: |
-          DB_URL=$(echo "${{ needs.terraform.outputs.db_url }}" | base64 -d)
+          DB_URL=$(echo "${{ needs.terraform.outputs.db_url }}")
           echo "::add-mask::$DB_URL"
           echo "Running migrations on database... $DB_URL - ${{ needs.terraform.outputs.test_output }}"
           npx prisma migrate deploy
