@@ -14,11 +14,6 @@ jobs:
   terraform:
     name: Provision Infrastructure
     runs-on: ubuntu-latest
-    outputs:
-      vercel_project_id: ${{ steps.tf_output.outputs.vercel_project_id }}
-      r2_bucket_name: ${{ steps.tf_output.outputs.r2_bucket_name }}
-      db_url: ${{ steps.tf_output.outputs.db_url }}
-      test_output: ${{ steps.tf_output.outputs.test_output }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,24 +62,6 @@ jobs:
           TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
-      - name: Get Terraform Outputs
-        id: tf_output
-        run: |
-          echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
-          echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
-          DYNAMIC_URL=$(terraform output -raw database_url)
-          DYNAMIC_URL="test_url"
-          echo "::add-mask::$DYNAMIC_URL"
-          echo "testdb_url=$(echo -n "$DYNAMIC_URL" | base64 -w 0)" >> $GITHUB_OUTPUT
-          echo "db_url=$(echo -n "$DYNAMIC_URL" | base64 -w 0)" >> $GITHUB_OUTPUT
-          echo "DYNAMIC_URL: $DYNAMIC_URL"
-          echo "test_output=Terraform apply completed successfully!" >> $GITHUB_OUTPUT
-        working-directory: terraform
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-
   deploy:
     name: Deploy to Vercel
     needs: terraform
@@ -92,6 +69,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Get Database URL
+        id: get_db_url
+        run: |
+          DB_URL=$(terraform output -raw database_url)
+          echo "::add-mask::$DB_URL"
+          echo "database_url=$DB_URL" >> $GITHUB_OUTPUT
+        working-directory: terraform
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -110,12 +113,10 @@ jobs:
 
       - name: Run Prisma Migrations
         run: |
-          DB_URL=$(echo "${{ needs.terraform.outputs.db_url }}" | base64 -d)
-          echo "::add-mask::$DB_URL"
-          echo "Running migrations on database... $DB_URL - ${{ needs.terraform.outputs.test_output }}"
+          echo "Running migrations on database..."
           npx prisma migrate deploy
         env:
-          DATABASE_URL: $DB_URL
+          DATABASE_URL: ${{ steps.get_db_url.outputs.database_url }}
 
       - name: Generate Prisma Client
         run: npx prisma generate
