@@ -111,15 +111,21 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Run Prisma Migrations
+      - name: Run Prisma Migrations & Generate Prisma Client
         run: |
           echo "Running migrations on database..."
-          npx prisma migrate deploy
+          mkdir -p prisma/postgres/
+          cp prisma/schema.prisma prisma/postgres/schema.prisma
+          sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/postgres/schema.prisma
+          npx prisma migrate dev --name init --schema=prisma/postgres/schema.prisma
+          npx prisma migrate deploy --schema=prisma/postgres/schema.prisma
+          npx prisma generate --schema=prisma/postgres/schema.prisma
+          rm prisma/postgres/schema.prisma
+          git add prisma/postgres
+          git commit -m "Update migrations" || echo "No changes to commit"
+          git push
         env:
           DATABASE_URL: ${{ steps.get_db_url.outputs.database_url }}
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
 
       - name: Build Project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
