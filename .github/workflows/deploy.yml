@@ -17,7 +17,7 @@ jobs:
     outputs:
       vercel_project_id: ${{ steps.tf_output.outputs.vercel_project_id }}
       r2_bucket_name: ${{ steps.tf_output.outputs.r2_bucket_name }}
-      database_url: ${{ steps.tf_output.outputs.database_url }}
+      secure_db_url: ${{ steps.tf_output.outputs.db_url }}
       test_output: ${{ steps.tf_output.outputs.test_output }}
     steps:
       - name: Checkout
@@ -74,7 +74,7 @@ jobs:
           echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
           DATABASE_URL=$(terraform output -raw database_url)
           echo "::add-mask::$DATABASE_URL"
-          echo "database_url=$DATABASE_URL" >> $GITHUB_OUTPUT
+          echo "db_url=$DATABASE_URL" >> $GITHUB_OUTPUT
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
@@ -108,7 +108,7 @@ jobs:
         run: |
           npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
+          DATABASE_URL: ${{ needs.terraform.outputs.secure_db_url }}
 
       - name: Generate Prisma Client
         run: npx prisma generate
