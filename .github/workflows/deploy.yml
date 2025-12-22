@@ -71,8 +71,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: true
-        permissions:
-          contents: write
+          permissions:
+            contents: write
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
