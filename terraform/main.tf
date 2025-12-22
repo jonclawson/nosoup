@@ -43,6 +43,46 @@ resource "cloudflare_r2_bucket" "nosoup_uploads" {
   location   = var.r2_bucket_location
 }
 
+# Enable public access for R2 bucket
+resource "cloudflare_r2_bucket_cors_configuration" "nosoup_uploads_cors" {
+  account_id = var.cloudflare_account_id
+  bucket     = cloudflare_r2_bucket.nosoup_uploads.name
+
+  cors_rule {
+    allowed_origins = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_headers = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3600
+  }
+}
+
+# Enable R2.dev public access subdomain
+resource "terraform_data" "enable_r2_public_access" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/r2/buckets/${cloudflare_r2_bucket.nosoup_uploads.name}/public" \
+        -H "Authorization: Bearer ${var.cloudflare_api_token}" \
+        -H "Content-Type: application/json" \
+        -d '{"enabled": true}'
+    EOT
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<-EOT
+      curl -X POST "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/r2/buckets/${cloudflare_r2_bucket.nosoup_uploads.name}/public" \
+        -H "Authorization: Bearer ${var.cloudflare_api_token}" \
+        -H "Content-Type: application/json" \
+        -d '{"enabled": false}'
+    EOT
+  }
+
+  triggers_replace = {
+    bucket_name = cloudflare_r2_bucket.nosoup_uploads.name
+  }
+}
+
 # Environment Variables for Vercel Project
 resource "vercel_project_environment_variable" "database_url" {
   project_id = vercel_project.nosoup.id
