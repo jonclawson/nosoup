@@ -102,7 +102,9 @@ jobs:
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Run Prisma Migrations
-        run: npx prisma migrate deploy
+        run: |
+          echo "database_url=$(needs.terraform.outputs.database_url)" 
+          npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ needs.terraform.outputs.database_url }}
 
