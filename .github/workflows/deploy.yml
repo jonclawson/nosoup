@@ -36,6 +36,17 @@ jobs:
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Clean up old state (one-time)
+        run: |
+          terraform state rm cloudflare_pages_project.nosoup || true
+          terraform state rm cloudflare_d1_database.nosoup_db || true
+        working-directory: terraform
+        continue-on-error: true
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: terraform
