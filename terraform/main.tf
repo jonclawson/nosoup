@@ -62,14 +62,13 @@ resource "neon_database" "nosoup" {
   owner_name = neon_project.nosoup_db.database_user
 }
 
-resource "neon_endpoint" "nosoup" {
-  project_id = neon_project.nosoup_db.id
-  branch_id  = neon_project.nosoup_db.default_branch_id
-  type       = "read_write"
+# Import the auto-created read_write endpoint
+data "neon_project" "nosoup_db_data" {
+  id = neon_project.nosoup_db.id
 }
 
 locals {
-  database_url = "postgresql://${neon_project.nosoup_db.database_user}:${neon_project.nosoup_db.database_password}@${neon_endpoint.nosoup.host}/nosoup?sslmode=require"
+  database_url = "postgresql://${neon_project.nosoup_db.database_user}:${neon_project.nosoup_db.database_password}@${data.neon_project.nosoup_db_data.connection_uri}/${var.database_name}?sslmode=require"
 }
 
 # Cloudflare R2 Bucket for file storage
