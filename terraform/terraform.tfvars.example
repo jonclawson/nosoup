@@ -7,7 +7,9 @@ vercel_project_name    = "nosoup"
 
 # Neon Database Configuration
 # Get your API key from: https://console.neon.tech/app/settings/api-keys
+# Get your org ID from: https://console.neon.tech/app/settings/general
 neon_api_key           = "your-neon-api-key"
+neon_org_id            = "your-neon-org-id"
 neon_project_name      = "nosoup-db"
 neon_region            = "aws-us-east-2"
 database_name          = "nosoup"

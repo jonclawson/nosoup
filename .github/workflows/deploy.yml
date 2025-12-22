@@ -36,19 +36,8 @@ jobs:
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Clean up old state (one-time)
-        run: |
-          terraform state rm cloudflare_pages_project.nosoup || true
-          terraform state rm cloudflare_d1_database.nosoup_db || true
-        working-directory: terraform
-        continue-on-error: true
-        env:
-          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-
       - name: Terraform Apply
-        run: terraform apply -auto-approve -refresh=false
+        run: terraform apply -auto-approve -replace=cloudflare_r2_bucket.nosoup_uploads
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
@@ -56,6 +45,7 @@ jobs:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
           TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
+          TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}
@@ -143,6 +133,7 @@ jobs:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_vercel_api_token: ${{ secrets.VERCEL_TOKEN }}
           TF_VAR_neon_api_key: ${{ secrets.NEON_API_KEY }}
+          TF_VAR_neon_org_id: ${{ secrets.NEON_ORG_ID }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_nextauth_url: ${{ secrets.NEXTAUTH_URL }}

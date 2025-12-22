@@ -16,6 +16,11 @@ variable "neon_api_key" {
   sensitive   = true
 }
 
+variable "neon_org_id" {
+  description = "Neon organization ID (find in Neon console settings)"
+  type        = string
+}
+
 variable "neon_project_name" {
   description = "Name of the Neon project"
   type        = string

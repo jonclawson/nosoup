@@ -39,6 +39,7 @@ resource "vercel_project" "nosoup" {
 
 # Neon Postgres Database
 resource "neon_project" "nosoup_db" {
+  org_id             = var.neon_org_id
   name               = var.neon_project_name
   region_id          = var.neon_region
   pg_version         = 16
@@ -115,7 +116,7 @@ resource "vercel_project_environment_variable" "database_url" {
   project_id = vercel_project.nosoup.id
   key        = "DATABASE_URL"
   value      = local.database_url
-  target     = ["production", "preview", "development"]
+  target     = ["production", "preview"]
   sensitive  = true
 }
 
@@ -130,7 +131,7 @@ resource "vercel_project_environment_variable" "nextauth_secret" {
   project_id = vercel_project.nosoup.id
   key        = "NEXTAUTH_SECRET"
   value      = var.nextauth_secret
-  target     = ["production", "preview", "development"]
+  target     = ["production", "preview"]
   sensitive  = true
 }
 
@@ -145,7 +146,7 @@ resource "vercel_project_environment_variable" "r2_access_key_id" {
   project_id = vercel_project.nosoup.id
   key        = "R2_ACCESS_KEY_ID"
   value      = var.r2_access_key_id
-  target     = ["production", "preview", "development"]
+  target     = ["production", "preview"]
   sensitive  = true
 }
 
@@ -153,7 +154,7 @@ resource "vercel_project_environment_variable" "r2_secret_access_key" {
   project_id = vercel_project.nosoup.id
   key        = "R2_SECRET_ACCESS_KEY"
   value      = var.r2_secret_access_key
-  target     = ["production", "preview", "development"]
+  target     = ["production", "preview"]
   sensitive  = true
 }
 
