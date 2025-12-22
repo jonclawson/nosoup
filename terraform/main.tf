@@ -61,7 +61,7 @@ resource "neon_database" "nosoup" {
 
 resource "neon_endpoint" "nosoup" {
   project_id = neon_project.nosoup_db.id
-  branch_id  = nneon_project.nosoup_db.default_branch_id
+  branch_id  = neon_project.nosoup_db.default_branch_id
   type       = "read_write"
 }
 
