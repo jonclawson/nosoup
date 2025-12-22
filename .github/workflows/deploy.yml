@@ -36,8 +36,19 @@ jobs:
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Clean up old Cloudflare state (one-time migration)
+        run: |
+          echo "Removing old Cloudflare resources from state..."
+          terraform state list | grep -E '(cloudflare_pages_project|cloudflare_d1_database)' | xargs -r -n1 terraform state rm || true
+        working-directory: terraform
+        continue-on-error: true
+        env:
+          TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+          TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+
       - name: Terraform Apply
-        run: terraform apply -auto-approve -replace=cloudflare_r2_bucket.nosoup_uploads
+        run: terraform apply -auto-approve
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
