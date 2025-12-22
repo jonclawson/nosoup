@@ -8,6 +8,17 @@ output "vercel_project_name" {
   value       = vercel_project.nosoup.name
 }
 
+output "neon_project_id" {
+  description = "ID of the Neon project"
+  value       = neon_project.nosoup_db.id
+}
+
+output "database_url" {
+  description = "Neon database connection string"
+  value       = local.database_url
+  sensitive   = true
+}
+
 output "r2_bucket_name" {
   description = "Name of the R2 bucket"
   value       = cloudflare_r2_bucket.nosoup_uploads.name

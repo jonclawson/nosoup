@@ -10,10 +10,28 @@ variable "vercel_project_name" {
   default     = "nosoup"
 }
 
-variable "database_url" {
-  description = "Postgres database connection string (create database in Vercel dashboard first)"
+variable "neon_api_key" {
+  description = "Neon API key"
   type        = string
   sensitive   = true
+}
+
+variable "neon_project_name" {
+  description = "Name of the Neon project"
+  type        = string
+  default     = "nosoup-db"
+}
+
+variable "neon_region" {
+  description = "Neon region (aws-us-east-2, aws-us-west-2, aws-eu-central-1, etc.)"
+  type        = string
+  default     = "aws-us-east-2"
+}
+
+variable "database_name" {
+  description = "Name of the database"
+  type        = string
+  default     = "nosoup"
 }
 
 variable "nextauth_url" {

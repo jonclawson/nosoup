@@ -12,6 +12,10 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+    neon = {
+      source  = "kislerdm/neon"
+      version = "~> 0.6"
+    }
   }
 }
 
@@ -23,15 +27,49 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
+provider "neon" {
+  api_key = var.neon_api_key
+}
+
 # Vercel Project
 resource "vercel_project" "nosoup" {
   name      = var.vercel_project_name
   framework = "nextjs"
 }
 
-# Note: Vercel Postgres Database must be created manually via Vercel dashboard or CLI
-# See: https://vercel.com/docs/storage/vercel-postgres
-# After creation, set the DATABASE_URL in variables
+# Neon Postgres Database
+resource "neon_project" "nosoup_db" {
+  name               = var.neon_project_name
+  region_id          = var.neon_region
+  pg_version         = 16
+  compute_provisioner = "k8s-pod"
+
+  lifecycle {
+    prevent_destroy = false  # Set to true in production to prevent accidental deletion
+  }
+}
+
+resource "neon_branch" "main" {
+  project_id = neon_project.nosoup_db.id
+  name       = "main"
+}
+
+resource "neon_database" "nosoup" {
+  project_id = neon_project.nosoup_db.id
+  branch_id  = neon_branch.main.id
+  name       = var.database_name
+  owner_name = neon_project.nosoup_db.database_user
+}
+
+resource "neon_endpoint" "nosoup" {
+  project_id = neon_project.nosoup_db.id
+  branch_id  = neon_branch.main.id
+  type       = "read_write"
+}
+
+locals {
+  database_url = "postgresql://${neon_project.nosoup_db.database_user}:${neon_project.nosoup_db.database_password}@${neon_endpoint.nosoup.host}/nosoup?sslmode=require"
+}
 
 # Cloudflare R2 Bucket for file storage
 resource "cloudflare_r2_bucket" "nosoup_uploads" {
@@ -76,7 +114,7 @@ resource "terraform_data" "enable_r2_public_access" {
 resource "vercel_project_environment_variable" "database_url" {
   project_id = vercel_project.nosoup.id
   key        = "DATABASE_URL"
-  value      = var.database_url
+  value      = local.database_url
   target     = ["production", "preview", "development"]
   sensitive  = true
 }
