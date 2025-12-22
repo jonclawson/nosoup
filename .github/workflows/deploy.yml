@@ -69,6 +69,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+        permissions:
+          contents: write
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -121,6 +125,9 @@ jobs:
           npx prisma migrate deploy --schema=prisma/postgres/schema.prisma
           npx prisma generate --schema=prisma/postgres/schema.prisma
           rm prisma/postgres/schema.prisma
+          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]" 
           git add prisma/postgres
           git commit -m "Update migrations" || echo "No changes to commit"
           git push
