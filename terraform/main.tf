@@ -51,27 +51,17 @@ resource "neon_project" "nosoup_db" {
   }
 }
 
-# Import the auto-created main branch instead of creating it
-import {
-  to = neon_branch.main
-  id = "${neon_project.nosoup_db.id}/main"
-}
-
-resource "neon_branch" "main" {
-  project_id = neon_project.nosoup_db.id
-  name       = "main"
-}
 
 resource "neon_database" "nosoup" {
   project_id = neon_project.nosoup_db.id
-  branch_id  = neon_branch.main.id
+  branch_id  = neon_project.nosoup_db.default_branch_id
   name       = var.database_name
   owner_name = neon_project.nosoup_db.database_user
 }
 
 resource "neon_endpoint" "nosoup" {
   project_id = neon_project.nosoup_db.id
-  branch_id  = neon_branch.main.id
+  branch_id  = nneon_project.nosoup_db.default_branch_id
   type       = "read_write"
 }
 
