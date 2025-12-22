@@ -44,7 +44,7 @@ resource "neon_project" "nosoup_db" {
   region_id          = var.neon_region
   pg_version         = 16
   compute_provisioner = "k8s-pod"
-  history_retention = 21600  # max 6 hours for free tier
+  history_retention_seconds = 21600  # max 6 hours for free tier
 
   lifecycle {
     prevent_destroy = false  # Set to true in production to prevent accidental deletion
