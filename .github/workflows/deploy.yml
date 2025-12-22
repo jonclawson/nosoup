@@ -73,7 +73,6 @@ jobs:
           echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
           echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
           DYNAMIC_URL=$(terraform output -raw database_url)
-          echo "::add-mask::$DYNAMIC_URL"
           echo "db_url=$(echo -n "$DYNAMIC_URL" | base64 -w 0)" >> $GITHUB_OUTPUT
           echo "DYNAMIC_URL: $DYNAMIC_URL"
           echo "test_output=Terraform apply completed successfully!" >> $GITHUB_OUTPUT
@@ -110,7 +109,7 @@ jobs:
         run: |
           DB_URL=$(echo "${{ needs.terraform.outputs.db_url }}" | base64 -d)
           echo "::add-mask::$DB_URL"
-          echo "Running migrations on database... ${{ needs.terraform.outputs.test_output }}"
+          echo "Running migrations on database... $DB_URL ${{ needs.terraform.outputs.test_output }}"
           npx prisma migrate deploy
         env:
           DATABASE_URL: $DB_URL
