@@ -8,12 +8,6 @@ output "vercel_project_name" {
   value       = vercel_project.nosoup.name
 }
 
-output "database_connection_string" {
-  description = "Postgres database connection string"
-  value       = vercel_postgres_database.nosoup_db.connection_string
-  sensitive   = true
-}
-
 output "r2_bucket_name" {
   description = "Name of the R2 bucket"
   value       = cloudflare_r2_bucket.nosoup_uploads.name

@@ -10,16 +10,10 @@ variable "vercel_project_name" {
   default     = "nosoup"
 }
 
-variable "vercel_region" {
-  description = "Vercel region for Postgres database"
+variable "database_url" {
+  description = "Postgres database connection string (create database in Vercel dashboard first)"
   type        = string
-  default     = "us-east-1"
-}
-
-variable "database_name" {
-  description = "Name of the Postgres database"
-  type        = string
-  default     = "nosoup-db"
+  sensitive   = true
 }
 
 variable "nextauth_url" {

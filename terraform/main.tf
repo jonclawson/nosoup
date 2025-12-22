@@ -29,12 +29,9 @@ resource "vercel_project" "nosoup" {
   framework = "nextjs"
 }
 
-# Vercel Postgres Database
-resource "vercel_postgres_database" "nosoup_db" {
-  name       = var.database_name
-  project_id = vercel_project.nosoup.id
-  region     = var.vercel_region
-}
+# Note: Vercel Postgres Database must be created manually via Vercel dashboard or CLI
+# See: https://vercel.com/docs/storage/vercel-postgres
+# After creation, set the DATABASE_URL in variables
 
 # Cloudflare R2 Bucket for file storage
 resource "cloudflare_r2_bucket" "nosoup_uploads" {
@@ -43,19 +40,9 @@ resource "cloudflare_r2_bucket" "nosoup_uploads" {
   location   = var.r2_bucket_location
 }
 
-# Enable public access for R2 bucket
-resource "cloudflare_r2_bucket_cors_configuration" "nosoup_uploads_cors" {
-  account_id = var.cloudflare_account_id
-  bucket     = cloudflare_r2_bucket.nosoup_uploads.name
-
-  cors_rule {
-    allowed_origins = ["*"]
-    allowed_methods = ["GET", "HEAD"]
-    allowed_headers = ["*"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3600
-  }
-}
+# Note: CORS configuration for R2 must be set via Cloudflare dashboard or API
+# Navigate to R2 > Your Bucket > Settings > CORS Policy
+# Add policy: Allow origins: *, Methods: GET, HEAD
 
 # Enable R2.dev public access subdomain
 resource "terraform_data" "enable_r2_public_access" {
@@ -89,8 +76,9 @@ resource "terraform_data" "enable_r2_public_access" {
 resource "vercel_project_environment_variable" "database_url" {
   project_id = vercel_project.nosoup.id
   key        = "DATABASE_URL"
-  value      = vercel_postgres_database.nosoup_db.connection_string
+  value      = var.database_url
   target     = ["production", "preview", "development"]
+  sensitive  = true
 }
 
 resource "vercel_project_environment_variable" "nextauth_url" {
