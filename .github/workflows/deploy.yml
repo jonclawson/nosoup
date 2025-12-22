@@ -142,6 +142,8 @@ jobs:
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           DATABASE_URL: ${{ steps.get_db_url.outputs.database_url }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
   destroy:
     name: Destroy Infrastructure
