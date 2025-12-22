@@ -72,7 +72,6 @@ jobs:
           echo "vercel_project_id=$(terraform output -raw vercel_project_id)" >> $GITHUB_OUTPUT
           echo "r2_bucket_name=$(terraform output -raw r2_bucket_name)" >> $GITHUB_OUTPUT
           echo "database_url=$(terraform output -raw database_url)" >> $GITHUB_OUTPUT
-          echo "Outputs: $(terraform output -raw database_url)"
         working-directory: terraform
         env:
           TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
