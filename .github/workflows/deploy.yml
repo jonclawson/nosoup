@@ -106,6 +106,7 @@ jobs:
 
       - name: Run Prisma Migrations
         run: |
+          "echo" "Running migrations on database... ${{ needs.terraform.outputs.secure_db_url }}"
           npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ needs.terraform.outputs.secure_db_url }}
