@@ -65,7 +65,8 @@ resource "neon_database" "nosoup" {
 locals {
   # Neon provides a connection URI in the format: postgresql://user:pass@host/dbname
   # We construct it from the project's connection details
-  database_url = "postgresql://${neon_project.nosoup_db.database_user}:${neon_project.nosoup_db.database_password}@${neon_project.nosoup_db.database_host}/${var.database_name}?sslmode=require"
+  # database_url = "postgresql://${neon_project.nosoup_db.database_user}:${neon_project.nosoup_db.database_password}@${neon_project.nosoup_db.database_host}/${var.database_name}?sslmode=require"
+  database_url = "postgresql://..."
 }
 
 # Cloudflare R2 Bucket for file storage
