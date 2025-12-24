@@ -9,8 +9,11 @@ out/
 
 # Exclude large media or local data
 public/videos/
+public/files/
+public/uploads
 *.mp4
 data/large-dataset.json
+*.db
 
 # Exclude version control and local environment files
 .git/
