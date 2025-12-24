@@ -191,6 +191,6 @@ resource "cloudflare_r2_managed_domain" "dev_url" {
 resource "vercel_project_environment_variable" "r2_dev_url" {
   project_id = vercel_project.nosoup.id
   key        = "UPLOADS_URL"
-  value      = cloudflare_r2_managed_domain.dev_url.domain
+  value      = "https://${cloudflare_r2_managed_domain.dev_url.domain}"
   target     = ["production", "preview", "development"]
 }
