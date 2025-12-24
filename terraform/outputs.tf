@@ -33,3 +33,8 @@ output "deployment_url" {
   description = "URL of the Vercel deployment"
   value       = "https://${vercel_project.nosoup.name}.vercel.app"
 }
+
+output "bucket_dev_url" {
+  description = "The public r2.dev development URL for the bucket"
+  value       = "https://${cloudflare_r2_managed_domain.dev_url.domain}"
+}

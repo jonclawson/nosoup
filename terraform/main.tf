@@ -166,3 +166,31 @@ resource "vercel_project_environment_variable" "r2_use_r2" {
   value      = "true"
   target     = ["production", "preview", "development"]
 }
+
+resource "cloudflare_r2_bucket_cors" "nosoup_cors" {
+  account_id  = var.cloudflare_account_id
+  bucket_name = cloudflare_r2_bucket.nosoup_uploads.name
+
+  rules = [{
+    id              = "AllowVercelApp"
+    allowed = {
+      origins = ["https://${vercel_project.nosoup.name}.vercel.app"]
+      methods = ["GET", "HEAD"]
+      headers = ["*"]
+    }
+    max_age_seconds = 3600
+  }]
+}
+
+resource "cloudflare_r2_managed_domain" "dev_url" {
+  account_id  = var.cloudflare_account_id
+  bucket_name = cloudflare_r2_bucket.nosoup_uploads.name
+  enabled     = true
+}
+
+resource "vercel_project_environment_variable" "r2_dev_url" {
+  project_id = vercel_project.nosoup.id
+  key        = "R2_DEV_URL"
+  value      = cloudflare_r2_managed_domain.dev_url.domain
+  target     = ["production", "preview", "development"]
+}

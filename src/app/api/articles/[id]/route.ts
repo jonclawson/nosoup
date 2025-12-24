@@ -126,10 +126,9 @@ export async function PUT(
             };
 
             try {
-              console.log(`Uploading ${key} to R2 bucket ${bucketName}... ${process.env.R2_ACCOUNT_ID} -- ${process.env.R2_ACCESS_KEY_ID} -- ${process.env.R2_SECRET_ACCESS_KEY}`);
               await s3Client.send(new PutObjectCommand(putObjectParams));
               console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
-              field.value = `https://${bucketName}.${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`;
+              field.value = `${process.env.UPLOADS_URL}/${key}`;
             } catch (err) {
               console.error('Error uploading to R2:', err);
               return NextResponse.json(
