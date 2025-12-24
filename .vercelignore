@@ -1,0 +1,17 @@
+# Exclude local dependencies (Vercel installs these itself)
+node_modules/
+
+# Exclude large build artifacts and caches
+.next/
+dist/
+out/
+.cache/
+
+# Exclude large media or local data
+public/videos/
+*.mp4
+data/large-dataset.json
+
+# Exclude version control and local environment files
+.git/
+.env
