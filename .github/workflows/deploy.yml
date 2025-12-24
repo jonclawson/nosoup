@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   terraform:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
     name: Provision Infrastructure
     runs-on: ubuntu-latest
     steps:
@@ -66,6 +67,7 @@ jobs:
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
   deploy:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
     name: Deploy to Vercel
     needs: terraform
     runs-on: ubuntu-latest
