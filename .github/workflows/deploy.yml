@@ -37,6 +37,7 @@ jobs:
   terraform:
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
     name: Provision Infrastructure
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
