@@ -54,9 +54,9 @@ export default function EditArticleFields({ formData, setFormData }: { formData:
                 />
               ) : field.type === 'image' ? (
                 <label htmlFor={field.id} className="block cursor-pointer">
-                  {field.meta?.file || field.value && (
+                  {field.meta?.file || !!field.value ? (
                     <img src={field.meta?.file ? URL.createObjectURL(field.meta.file) : field.value} alt="Field Image" className="max-w-full h-auto mb-2"/>
-                  )}
+                  ) : 'Click to upload image'}
                   <input
                     name="fields[]"
                     id={field.id}
