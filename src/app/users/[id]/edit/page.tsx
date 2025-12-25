@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface User {
   id: string
@@ -20,6 +21,7 @@ interface EditUserPageProps {
 
 export default function EditUserPage({ params }: EditUserPageProps) {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const resolvedParams = use(params)
   const [user, setUser] = useState<User | null>(null)
   const [formData, setFormData] = useState({
@@ -157,6 +159,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
                 />
               </div>
 
+              {session && session.user && session.user.role === 'admin' && (
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                   Role
@@ -173,6 +176,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
                   <option value="moderator">Moderator</option>
                 </select>
               </div>
+              )}
             </div>
 
             <div className="mt-6 flex items-center justify-end space-x-3">
