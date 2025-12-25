@@ -10,14 +10,26 @@ import { useEffect, useState } from 'react'
 import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
 
-export default function ArticleList() {
+export default function ArticleList({published = true, featured = null, sticky = true}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null }) {
   const router = useRouter()
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
   const fetchArticles = async (page: number = 1) => {
     try {
-      const response = await fetch(`/api/articles?page=${page}&size=${pagination.size}&published=true&featured=true&sticky=true`);
+      const urlParams = new URLSearchParams();
+      urlParams.append('page', page.toString());
+      urlParams.append('size', pagination.size.toString());
+      if (published !== null) {
+        urlParams.append('published', published.toString());
+      }
+      if (featured !== null) {
+        urlParams.append('featured', featured.toString());
+      }
+      if (sticky !== null) {
+        urlParams.append('sticky', sticky.toString());
+      }
+      const response = await fetch(`/api/articles?${urlParams.toString()}`);
       if (response.ok) {
         const { data, pagination } = await response.json();
         setLoading(false);

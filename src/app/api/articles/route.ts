@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
       prisma.article.findMany({
         where: {
           AND: [
-            featured != null ? {featured: true} : {},
+            featured != null ? {featured: featured === 'true'} : {},
             {
               OR: published != null ? [
-                 {published: true},
+                 {published: published === 'true'},
                 { 
                   AND: [
                     session?.user?.id ? { authorId: session.user.id } : {},
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
           },
         },
         orderBy: [
-          sticky != null ? { sticky: 'desc' } : {},
+          sticky === 'true' ? { sticky: 'desc' } : {},
           { createdAt: 'desc' },
         ],
         skip,
