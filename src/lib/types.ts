@@ -2,6 +2,7 @@ export interface Author {
   id: string
   name: string
   email: string
+  role: 'admin' | 'editor' | 'viewer'
 }
 
 export type FieldType = 'image' | 'code' | 'link'
