@@ -31,9 +31,9 @@ export async function GET(request: NextRequest) {
       prisma.article.findMany({
         where: {
           AND: [
-            featured === 'true' ? {featured: true} : {},
+            featured != null ? {featured: true} : {},
             {
-              OR: published === 'true' ? [
+              OR: published != null ? [
                  {published: true},
                 { 
                   AND: [
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
           },
         },
         orderBy: [
-          sticky === 'true' ? { sticky: 'desc' } : {},
+          sticky != null ? { sticky: 'desc' } : {},
           { createdAt: 'desc' },
         ],
         skip,
