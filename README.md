@@ -374,13 +374,15 @@ To use a different database (PostgreSQL, MySQL, etc.):
 
 ## Deployment
 
-The application can be deployed to Cloudflare Pages using the included Terraform configuration and GitHub Actions workflow.
+The application can be deployed to Vercel using the included Terraform configuration and GitHub Actions workflow.
 
-### Cloudflare Deployment Setup
+### Deployment Setup
 
 #### 1. Prerequisites
 
-- Cloudflare account (free tier works)
+- Vercel account (free tier works)
+- Neon account (free tier PostgreSQL)
+- Cloudflare account (for R2 storage)
 - HashiCorp Cloud Platform (HCP) account for Terraform state (free tier)
 - GitHub account
 
@@ -390,13 +392,16 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions 
 
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
+| `VERCEL_TOKEN` | Vercel API token | [vercel.com/account/tokens](https://vercel.com/account/tokens) |
+| `NEON_API_KEY` | Neon API key | [console.neon.tech/app/settings/api-keys](https://console.neon.tech/app/settings/api-keys) |
+| `NEON_ORG_ID` | Neon organization ID | Found in Neon console → Settings → General |
 | `CLOUDFLARE_API_TOKEN` | Cloudflare API token | See detailed instructions below |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID | Found in the right sidebar at [dash.cloudflare.com](https://dash.cloudflare.com) |
 | `TF_CLOUD_ORGANIZATION` | Terraform Cloud org name | Create at [app.terraform.io](https://app.terraform.io) - use your organization name |
 | `TF_WORKSPACE` | Terraform workspace name | e.g., "nosoup" - create workspace in Terraform Cloud |
 | `TF_API_TOKEN` | Terraform Cloud API token | [app.terraform.io → User Settings → Tokens](https://app.terraform.io/app/settings/tokens) |
 | `NEXTAUTH_SECRET` | NextAuth secret key | Generate with: `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Production URL | e.g., `https://nosoup.pages.dev` (update after first deploy) |
+| `NEXTAUTH_URL` | Production URL | e.g., `https://nosoup.vercel.app` (update after first deploy) |
 | `R2_ACCESS_KEY_ID` | R2 access key | See R2 instructions below |
 | `R2_SECRET_ACCESS_KEY` | R2 secret access key | Same as R2_ACCESS_KEY_ID |
 
@@ -408,10 +413,7 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions 
 4. Configure the token:
    - **Token name**: e.g., "GitHub Actions Deploy"
    - **Permissions**: Add these:
-     - Account → D1 → Edit
-     - Account → Cloudflare Pages → Edit
      - Account → Workers R2 Storage → Edit
-     - Account → Workers Scripts → Edit
    - **Account Resources**: Include → Your account
    - **TTL**: Set expiration or leave as default
 5. Click **Continue to summary** → **Create Token**
@@ -432,16 +434,15 @@ Go to your GitHub repository → Settings → Secrets and variables → Actions 
 #### 3. Deploy
 
 Push to the `main` branch and GitHub Actions will automatically:
-1. Provision D1 database, R2 bucket, and Pages project using Terraform
-2. Set environment variables (non-sensitive via wrangler.toml, sensitive via wrangler secrets)
-3. Generate and export your local database
-4. Import database to Cloudflare D1
-5. Build and deploy your Next.js app to Cloudflare Pages
+1. Provision Neon PostgreSQL database, R2 bucket, and Vercel project using Terraform
+2. Set environment variables in Vercel
+3. Run database migrations
+4. Build and deploy your Next.js app to Vercel
 
 #### 4. Destroy Infrastructure (Optional)
 
 To tear down all infrastructure:
-1. Go to Actions → Deploy to Cloudflare → Run workflow
+1. Go to Actions → Deploy to Vercel → Run workflow
 2. Type `destroy` in the input field
 3. Click Run workflow
 
@@ -453,13 +454,17 @@ Create a `.env.local` file for local development:
 DATABASE_URL="file:./dev.db"
 NEXTAUTH_SECRET="your-local-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
+R2_ACCESS_KEY_ID="your-r2-access-key"
+R2_SECRET_ACCESS_KEY="your-r2-secret-key"
 ```
 
 ### Environment Variables
 
-- `DATABASE_URL` - Database connection string
+- `DATABASE_URL` - PostgreSQL connection string (provided by Neon)
 - `NEXTAUTH_SECRET` - Secret key for NextAuth.js (change in production)
-- `NEXTAUTH_URL` - Base URL for NextAuth.js (e.g., `https://yourdomain.com`)
+- `NEXTAUTH_URL` - Base URL for NextAuth.js (e.g., `https://yourdomain.vercel.app`)
+- `R2_ACCESS_KEY_ID` - Cloudflare R2 access key
+- `R2_SECRET_ACCESS_KEY` - Cloudflare R2 secret access key
 
 ## Contributing
 
