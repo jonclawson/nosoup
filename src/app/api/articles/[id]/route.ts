@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import fs from 'fs/promises'
 import path from 'path';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { randomUUID } from 'crypto' 
 
 const s3Client = new S3Client({
   region: 'auto', // R2 uses 'auto'
@@ -111,14 +112,15 @@ export async function PUT(
           const arrayBuffer = await file.arrayBuffer()
           if (process.env.R2_USE_R2 !== 'true') {
             const buffer = Buffer.from(arrayBuffer)
-            const filePath = path.join(uploadsDir, file.name)
+            const fileName = `${Date.now()}-${randomUUID()}${file.name}`
+            const filePath = path.join(uploadsDir, fileName)
             await fs.writeFile(filePath, buffer)
-            field.value = `/uploads/${file.name}`
+            field.value = `/uploads/${fileName}`
           }
           if (process.env.R2_USE_R2 === 'true') {
             const buffer = Buffer.from(arrayBuffer)
             const bucketName = process.env.R2_BUCKET_NAME!;
-            const key = file.name;
+            const key = `${Date.now()}-${randomUUID()}${file.name}`;
             const putObjectParams = {
               Bucket: bucketName,
               Key: key,
