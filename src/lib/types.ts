@@ -20,6 +20,7 @@ export interface Tag {
 } 
 export interface Article {
   id?: string
+  slug?: string
   title: string
   body: string
   fields: Field[]

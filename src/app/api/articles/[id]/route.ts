@@ -6,6 +6,7 @@ import fs from 'fs/promises'
 import path from 'path';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { randomUUID } from 'crypto' 
+import slugify from 'slugify'
 
 const s3Client = new S3Client({
   region: 'auto', // R2 uses 'auto'
@@ -180,6 +181,7 @@ export async function PUT(
       where: { id: (await params).id },
       data: {
         title,
+        slug: slugify(title, { lower: true }),
         body,
         fields: {
           deleteMany: {},

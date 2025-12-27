@@ -1,8 +1,10 @@
-
+'use client'
 import Link from 'next/link'
 import ArticleList from '@/components/ArticleList'
+import { useSession } from "next-auth/react"
 
-export default async function ArticlesPage() {
+export default function ArticlesPage() {
+  const { data: session, status } = useSession()
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -13,6 +15,7 @@ export default async function ArticlesPage() {
             A collection of articles from our community.
           </p>
         </div>
+        {session && session?.user?.role !== 'user' && (
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Link
             href="/articles/new"
@@ -21,6 +24,7 @@ export default async function ArticlesPage() {
             Write Article
           </Link>
         </div>
+        )}
       </div>
       <ArticleList  />
     </div>

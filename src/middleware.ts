@@ -13,7 +13,12 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token
+      authorized: ({ req, token }) => {
+        if (req.method === "GET" && req.nextUrl.pathname.startsWith("/api/articles")) {
+          return true
+        }
+        return !!token
+      },
     },
   }
 )
@@ -22,9 +27,7 @@ export const config = {
   matcher: [
     "/users",
     "/users/:path*",
-    "/api/users/:path*",
-    "/articles",
-    "/articles/:path*",
-    "/api/articles/:path*",
+    "/articles/:path*/edit/:path*",
+    "/api/:path*",
   ]
 } 

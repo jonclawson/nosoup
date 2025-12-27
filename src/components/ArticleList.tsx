@@ -9,9 +9,11 @@ import ArticleFields from './ArticleFields'
 import { useEffect, useState } from 'react'
 import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
+import { useSession } from "next-auth/react"
 
 export default function ArticleList({published = true, featured = null, sticky = true}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null }) {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
@@ -82,6 +84,7 @@ export default function ArticleList({published = true, featured = null, sticky =
                   >
                     Read more →
                   </Link>
+                  {session && session?.user?.role !== 'user' && (
                   <div className="flex space-x-2">
                     <Link
                       href={`/articles/${article.id}/edit`}
@@ -98,6 +101,7 @@ export default function ArticleList({published = true, featured = null, sticky =
                       Delete
                     </DeleteButton>
                   </div>
+                  )}
                 </div>
               </div>
             </article>

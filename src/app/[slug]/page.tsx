@@ -13,13 +13,14 @@ import "@blocknote/mantine/style.css"
 import "@blocknote/core/fonts/inter.css";
 import ArticleTags from '@/components/ArticleTags'
 import { useSession } from 'next-auth/react'
+
 interface ArticlePageProps {
   params: Promise<{
-    id: string
+    slug: string
   }>
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
+export default function SlugPage({ params }: ArticlePageProps) {
   const router = useRouter()
   const resolvedParams = use(params)
   const [article, setArticle] = useState<Article | null>(null)
@@ -30,7 +31,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await fetch(`/api/articles/${resolvedParams.id}`)
+        const response = await fetch(`/api/articles/slug/${resolvedParams.slug}`)
         if (!response.ok) {
           if (response.status === 404) {
             setError('Article not found')
@@ -40,9 +41,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           return
         }
         const articleData = await response.json()
-        if (articleData && articleData.slug) {
-          router.push(`/${articleData.slug}`)
-        }
         setArticle(articleData)
       } catch (err) {
         setError('Failed to fetch article')
@@ -52,7 +50,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     }
 
     fetchArticle()
-  }, [resolvedParams.id])
+  }, [resolvedParams.slug])
 
   if (loading) {
     return (
@@ -127,8 +125,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <Link
             href={`/articles/${article.id}/edit`}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Edit Article
+        >
+          Edit Article
         </Link>
         <DeleteButton 
           userId={article.id || ''} 
