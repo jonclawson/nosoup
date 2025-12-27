@@ -1,8 +1,26 @@
 
-import { useCreateBlockNote } from "@blocknote/react"
 import "@blocknote/mantine/style.css"
+import { useEffect, useState, useMemo } from "react";
+import {
+  BlockNoteSchema,
+  combineByGroup,
+} from "@blocknote/core";
+import { filterSuggestionItems } from "@blocknote/core/extensions";
+import * as locales from "@blocknote/core/locales";
+import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
-import { useEffect, useState } from "react";
+import "@blocknote/mantine/style.css";
+import {
+  SuggestionMenuController,
+  getDefaultReactSlashMenuItems,
+  useCreateBlockNote,
+} from "@blocknote/react";
+import {
+  getMultiColumnSlashMenuItems,
+  multiColumnDropCursor,
+  locales as multiColumnLocales,
+  withMultiColumn,
+} from "@blocknote/xl-multi-column";
 
 export default function BlockNoteEditor({ value, onChange }: { value: string; onChange: (value: string) => void }) {
     const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual')
@@ -19,7 +37,24 @@ export default function BlockNoteEditor({ value, onChange }: { value: string; on
     };
     const editor = useCreateBlockNote({
       uploadFile,
+      schema: withMultiColumn(BlockNoteSchema.create()),
+      dropCursor: multiColumnDropCursor,
+      dictionary: {
+        ...locales.en,
+        multi_column: multiColumnLocales.en,
+      },
     })
+    const getSlashMenuItems = useMemo(() => {
+    return async (query: string) =>
+      filterSuggestionItems(
+        combineByGroup(
+          getDefaultReactSlashMenuItems(editor),
+          getMultiColumnSlashMenuItems(editor),
+        ),
+        query,
+      );
+  }, [editor]);
+
     useEffect(() => {
       const loadValue = async () => {
         try {
@@ -77,7 +112,14 @@ export default function BlockNoteEditor({ value, onChange }: { value: string; on
           </div>
           {editorMode === 'visual' ? (
             <div className="mt-1">
-              <BlockNoteView editor={editor} theme="light" onChange={async (editor) => onChange(await editor.blocksToFullHTML(editor.document))}/>
+              <BlockNoteView editor={editor} theme="light" onChange={async (editor) => onChange(await editor.blocksToFullHTML(editor.document))} slashMenu={false}>
+                {/* Replaces the default slash menu with one that has both the default
+                items and the multi-column ones. */}
+                <SuggestionMenuController
+                  triggerCharacter={"/"}
+                  getItems={getSlashMenuItems}
+                />
+              </BlockNoteView>
             </div>
           ) : (
             <textarea
