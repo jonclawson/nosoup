@@ -20,8 +20,9 @@ export default function AuthStatus() {
         <Link
           href={`/users/${session.user.id}`}
           className="text-sm text-gray-700 hover:text-gray-900"
+          title={session.user.name}
         >
-          Welcome, {session.user.name}
+          Profile 
         </Link>
         <Link
           href="#"

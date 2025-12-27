@@ -1,8 +1,30 @@
-import { redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+'use client'
+import Link from 'next/link'
+import ArticleList from '@/components/ArticleList'
+import { useSession } from "next-auth/react"
 
-export default async function HomePage() {
-  const session = await getServerSession(authOptions)
-    redirect('/articles')
-}
+export default function HomePage() {
+  const { data: session, status } = useSession()
+
+  return (
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-2xl font-semibold text-gray-900">Featured Articles</h1>
+          <p className="mt-2 text-sm text-gray-700">
+            A collection of <i>featured</i> articles from our community.
+          </p>
+        </div>
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <Link
+            href="/articles/"
+            className="inline-flex items-center justify-center  px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+          >
+            All Articles
+          </Link>
+        </div>
+      </div>
+      <ArticleList  featured={true}/>
+    </div>
+  )
+} 

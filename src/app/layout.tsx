@@ -4,11 +4,12 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import AuthStatus from "@/components/AuthStatus";
 import Navigation from "@/components/Navigation";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Article Management App",
+  title: "NoSoup Article Management App",
   description: "A NextJS 15 app for managing users",
 };
 
@@ -27,7 +28,9 @@ export default function RootLayout({
                 <div className="flex justify-between h-16">
                   <div className="flex items-center">
                     <h1 className="text-xl font-semibold text-gray-900">
-                      Article Management
+                      <Link href="/">
+                      NoSoup
+                      </Link>
                     </h1>
                   </div>
                   <div className="flex items-center space-x-4">
