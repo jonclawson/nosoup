@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
+import { handleDownload } from '@/lib/handle-downloads'
 
 export default function ArticleList({published = true, featured = null, sticky = true}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null }) {
   const router = useRouter()
@@ -48,7 +49,6 @@ export default function ArticleList({published = true, featured = null, sticky =
     fetchArticles();
   }, []);
   
-  
   return (
     <div className="mt-8">
       <div className="space-y-6">
@@ -72,7 +72,9 @@ export default function ArticleList({published = true, featured = null, sticky =
                 <div className="mb-4">
                   <div className="text-gray-700 line-clamp-6 leading-relaxed">
                     <ArticleFields article={article} />
-                    <Dompurify html={article.body} />
+                    <div onClick={handleDownload}>
+                      <Dompurify html={article.body} />
+                    </div>
                     <ArticleTags article={article} />
                   </div>
                 </div>

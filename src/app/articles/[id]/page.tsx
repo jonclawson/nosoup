@@ -13,6 +13,7 @@ import "@blocknote/mantine/style.css"
 import "@blocknote/core/fonts/inter.css";
 import ArticleTags from '@/components/ArticleTags'
 import { useSession } from 'next-auth/react'
+import { handleDownload } from '@/lib/handle-downloads'
 interface ArticlePageProps {
   params: Promise<{
     id: string
@@ -114,7 +115,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
                 <ArticleFields article={article} />
               </div>
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6">
+              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6" onClick={handleDownload}>
                 <Dompurify html={article.body} />
               </div>
               <ArticleTags article={article} />
