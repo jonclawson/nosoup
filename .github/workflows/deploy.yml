@@ -143,7 +143,7 @@ jobs:
           mkdir -p prisma/postgres/
           cp prisma/schema.prisma prisma/postgres/schema.prisma
           sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/postgres/schema.prisma
-          npx prisma migrate dev --name deploy --schema=prisma/postgres/schema.prisma --create-only
+          npx prisma migrate dev --name deploy --schema=prisma/postgres/schema.prisma
           npx prisma migrate deploy --schema=prisma/postgres/schema.prisma
           npx prisma generate --schema=prisma/postgres/schema.prisma
           git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
