@@ -21,9 +21,14 @@ jest.mock('@/components/ArticleList', () => {
   }
 })
 
+// Mock next-auth/react
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(() => ({ data: { user: { role: 'admin' } }, status: 'authenticated' })),
+}))
+
 describe('ArticlesPage', () => {
-  it('should render the articles page correctly', async () => {
-    render(await ArticlesPage())
+  it('should render the articles page correctly', () => {
+    render(<ArticlesPage />)
 
     // Check the heading
     expect(screen.getByRole('heading', { name: /articles/i })).toBeInTheDocument()
