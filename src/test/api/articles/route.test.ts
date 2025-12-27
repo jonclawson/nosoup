@@ -187,6 +187,7 @@ describe('/api/articles', () => {
           body: 'New Body',
           authorId: '1',
           published: true,
+          slug: "new-article",
           sticky: false,
           featured: false,
           fields: {
