@@ -6,9 +6,10 @@ import EditArticleFields from "./EditArticleFields";
 import TagsComponent from "./TagsComponent";
 import PublishingOptions from "./PublishingOptions";
 import Link from "next/link";
-import { useCreateBlockNote } from "@blocknote/react"
-import "@blocknote/mantine/style.css"
-import { BlockNoteView } from "@blocknote/mantine";
+import BlockNoteEditor from './BlockNoteEditor';
+// import { useCreateBlockNote } from "@blocknote/react"
+// import "@blocknote/mantine/style.css"
+// import { BlockNoteView } from "@blocknote/mantine";
 
 export default function ArticleForm({ articleData }: { articleData: Article }) {
   const router = useRouter()
@@ -24,19 +25,19 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
     const [isLoadingArticle, setIsLoadingArticle] = useState(true)
-    const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual')
+    // const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual')
   
-    const uploadFile = async (file: File): Promise<string | Record<string, any>> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string | Record<string, any> | PromiseLike<string | Record<string, any>>); // This is the base64 string
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file); // Converts the file to a Data URL
-      });
-    };
-    const editor = useCreateBlockNote({
-      uploadFile,
-    })
+    // const uploadFile = async (file: File): Promise<string | Record<string, any>> => {
+    //   return new Promise((resolve, reject) => {
+    //     const reader = new FileReader();
+    //     reader.onload = () => resolve(reader.result as string | Record<string, any> | PromiseLike<string | Record<string, any>>); // This is the base64 string
+    //     reader.onerror = (error) => reject(error);
+    //     reader.readAsDataURL(file); // Converts the file to a Data URL
+    //   });
+    // };
+    // const editor = useCreateBlockNote({
+    //   uploadFile,
+    // })
   
     useEffect(() => {
       const loadArticle = async () => {
@@ -52,10 +53,10 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
           })
           
           // Load HTML content into BlockNote editor
-          if (articleData.body && editor) {
-            const blocks = await editor.tryParseHTMLToBlocks(articleData.body)
-            editor.replaceBlocks(editor.document, blocks)
-          }
+          // if (articleData.body && editor) {
+          //   const blocks = await editor.tryParseHTMLToBlocks(articleData.body)
+          //   editor.replaceBlocks(editor.document, blocks)
+          // }
         } catch (err: any) {
           setError(err.message)
         } finally {
@@ -66,19 +67,19 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
       loadArticle()
     }, [articleData])
   
-    const toggleEditorMode = async () => {
-      if (editorMode === 'visual') {
-        // Switch to HTML mode: convert editor content to HTML
-        const htmlContent = await editor.blocksToFullHTML(editor.document)
-        setFormData({ ...formData, body: htmlContent })
-        setEditorMode('html')
-      } else {
-        // Switch to visual mode: parse HTML back to blocks
-        const blocks = await editor.tryParseHTMLToBlocks(formData.body)
-        editor.replaceBlocks(editor.document, blocks)
-        setEditorMode('visual')
-      }
-    }
+    // const toggleEditorMode = async () => {
+    //   if (editorMode === 'visual') {
+    //     // Switch to HTML mode: convert editor content to HTML
+    //     const htmlContent = await editor.blocksToFullHTML(editor.document)
+    //     setFormData({ ...formData, body: htmlContent })
+    //     setEditorMode('html')
+    //   } else {
+    //     // Switch to visual mode: parse HTML back to blocks
+    //     const blocks = await editor.tryParseHTMLToBlocks(formData.body)
+    //     editor.replaceBlocks(editor.document, blocks)
+    //     setEditorMode('visual')
+    //   }
+    // }
   
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault()
@@ -86,10 +87,11 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
       setError('')
       const fd = new FormData();
       fd.append('title', formData.title);
-      
+      fd.append('body', formData.body);
       // Convert BlockNote content to HTML
-      const htmlContent = await editor.blocksToFullHTML(editor.document)
-      fd.append('body', htmlContent);
+      // const htmlContent = await editor.blocksToFullHTML(editor.document)
+      // fd.append('body', htmlContent);
+      
       formData.fields.forEach((field, index) => {
         if (field.meta && field.meta.file) {
           fd.append(`files[${index}]`, field.meta.file);
@@ -153,7 +155,7 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
           />
         </div>
 
-        <div>
+        {/* <div>
           <div className="flex items-center justify-between mb-2">
             <label htmlFor="body" className="block text-sm font-medium text-gray-700">
               Content
@@ -180,7 +182,8 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-mono text-xs"
             />
           )}
-        </div>
+        </div> */}
+        <BlockNoteEditor value={formData.body} onChange={(value) => setFormData({ ...formData, body: value })} />
 
         <EditArticleFields formData={formData} setFormData={setFormData} />
         <TagsComponent formData={formData} setFormData={setFormData} />
