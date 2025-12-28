@@ -17,6 +17,17 @@ export default withAuth(
         if (req.method === "GET" && req.nextUrl.pathname.startsWith("/api/articles")) {
           return true
         }
+        if (!!token && token.role !== "admin" && (
+             req.nextUrl.pathname.startsWith("/api/users")
+          || req.nextUrl.pathname.startsWith("/users")
+        ) && ( 
+              !req.nextUrl.pathname.startsWith(`/users/${token.id}`)
+          && !req.nextUrl.pathname.startsWith(`/api/users/${token.id}`) )) {
+            console.log("Unauthorized access", token)
+            console.log("Path:", req.nextUrl.pathname)
+          // get, post or put on own user only
+          return false
+        }
         return !!token
       },
     },
@@ -28,6 +39,7 @@ export const config = {
     "/users",
     "/users/:path*",
     "/articles/:path*/edit/:path*",
+    "/articles/new",
     "/api/:path*",
   ]
 } 

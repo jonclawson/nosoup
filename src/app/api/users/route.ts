@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function GET() {
   try {
@@ -20,6 +22,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+      const session = await getServerSession(authOptions)
     const body = await request.json()
     const { name, email, role = 'user' } = body
 
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         email,
-        role
+        role: session?.user?.role === 'admin' ? role : (session?.user?.role || 'user')
       }
     })
 
