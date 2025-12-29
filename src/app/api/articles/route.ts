@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     console.log('Received field data for update:', fields);
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+    const uploadsDir = path.join(process.cwd(), 'public', 'files')
 
     try {
       for (const [index, field] of fields.entries()) {
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
             const fileName = `${Date.now()}-${randomUUID()}${file.name}`
             const filePath = path.join(uploadsDir, fileName)
             await fs.writeFile(filePath, buffer)
-            field.value = `/uploads/${fileName}`
+            field.value = `/files/${fileName}`
           }
           if (process.env.R2_USE_R2 === 'true') {
             const buffer = Buffer.from(arrayBuffer)

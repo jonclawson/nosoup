@@ -51,6 +51,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       } catch (err) {
         setError('Failed to fetch article')
         setLoading(false)
+      } finally {
+        setLoading(false)
       }
     }
 

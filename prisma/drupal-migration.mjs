@@ -2,6 +2,8 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import { PrismaClient } from '@prisma/client'
+import fs from 'fs';
+import path from 'path';
 
 const globalForPrisma = globalThis 
 const prisma = globalForPrisma.prisma ?? new PrismaClient()
@@ -38,7 +40,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
       const article = await prisma.article.create({
         data: {
           title: node.title,
-          body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+          body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
           authorId: process.env.AUTHOR_DEFAULT_ID,
           createdAt: new Date(node.created * 1000),
           updatedAt: new Date(node.changed * 1000),
@@ -89,7 +91,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           await prisma.field.create({
             data: {
               type: 'image',
-              value: image.filepath.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+              value: `/files/${image.filepath.split('/').pop()}`,
               article: {
                 connect: {
                   id: article.id
@@ -97,6 +99,15 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
               }
             }
           });
+          // copy image file from Drupal files directory to local files directory
+          const sourcePath = path.join(process.env.DRUPAL_FILES_DIR, image.filepath);
+          const destPath = path.join(process.env.LOCAL_FILES_DIR, image.filepath.split('/').pop());
+          try {
+            await fs.promises.copyFile(sourcePath, destPath);
+          }
+          catch (err) {
+            console.error(`Error copying file from ${sourcePath} to ${destPath}:`, err);
+          }
         }
         const [code] = await drupalConnection.execute(`
           select *
@@ -109,7 +120,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           await prisma.field.create({
             data: {
               type: 'code',
-              value: cd.field_code_value.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+              value: cd.field_code_value.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
               article: {
                 connect: {
                   id: article.id
@@ -129,7 +140,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           await prisma.field.create({
             data: {
               type: 'link',
-              value: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, 'files/'),
+              value: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
               article: {
                 connect: {
                   id: article.id

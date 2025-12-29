@@ -102,8 +102,7 @@ export async function PUT(
 
     console.log('Received field data for update:', fields);
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    // await fs.mkdir(uploadsDir, { recursive: true })
+    const uploadsDir = path.join(process.cwd(), 'public', 'files')
 
     try {
       for (const [index, field] of fields.entries()) {
@@ -116,7 +115,7 @@ export async function PUT(
             const fileName = `${Date.now()}-${randomUUID()}${file.name}`
             const filePath = path.join(uploadsDir, fileName)
             await fs.writeFile(filePath, buffer)
-            field.value = `/uploads/${fileName}`
+            field.value = `files/${fileName}`
           }
           if (process.env.R2_USE_R2 === 'true') {
             const buffer = Buffer.from(arrayBuffer)
