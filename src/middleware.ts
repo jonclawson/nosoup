@@ -28,7 +28,9 @@ export default withAuth(
       authorized: ({ req, token }) => {
         if (req.method === "GET" && (
           req.nextUrl.pathname.startsWith("/api/articles") ||
-          req.nextUrl.pathname.startsWith("/api/menu")
+          req.nextUrl.pathname.startsWith("/api/menu") ||
+          req.nextUrl.pathname.startsWith("/api/files") ||
+          req.nextUrl.pathname.startsWith("/files")
         )) {
           return true
         }
