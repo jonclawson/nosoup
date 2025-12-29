@@ -196,6 +196,7 @@ describe('/api/articles', () => {
           tags: {
             create: [],
           },
+          tab: undefined
         },
         include: {
           author: {
@@ -217,6 +218,14 @@ describe('/api/articles', () => {
               id: true,
               name: true,
             },
+          },
+          tab:  {
+           select:  {
+             id: true,
+             link: true,
+             name: true,
+             order: true,
+            }
           },
         },
       })
