@@ -56,6 +56,7 @@ model MenuTab {
   id    String   @id @default(cuid())
   name  String
   link  String
+  order Int      @default(0)
   articleId String  @unique
   article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 }

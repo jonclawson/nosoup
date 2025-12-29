@@ -211,7 +211,8 @@ export async function POST(request: NextRequest) {
         tab: tab ? {
           create: {
             name: tab.name,
-            link: slugify(title, { lower: true })
+            link: slugify(title, { lower: true }),
+            order: +tab.order
           }
         } : undefined
       },
@@ -240,7 +241,8 @@ export async function POST(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            link: true
+            link: true,
+            order: true
           }
         } 
       }

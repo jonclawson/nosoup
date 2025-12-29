@@ -52,7 +52,8 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            link: true
+            link: true,
+            order: true
           }
         }
       }
@@ -210,11 +211,13 @@ export async function PUT(
           upsert: {
             update: {
               name: tab.name,
-              link: slugify(title, { lower: true })
+              link: slugify(title, { lower: true }),
+              order: +tab.order
             },
             create: {
               name: tab.name,
-              link: slugify(title, { lower: true })
+              link: slugify(title, { lower: true }),
+              order: +tab.order
             }
           }
         } : { delete: true }
@@ -244,7 +247,8 @@ export async function PUT(
           select: {
             id: true,
             name: true,
-            link: true
+            link: true,
+            order: true
           }
         }
       }

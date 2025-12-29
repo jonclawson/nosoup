@@ -9,6 +9,7 @@ export interface MenuTab {
   id?: string
   name: string
   link: string
+  order: number
 }
 
 export type FieldType = 'image' | 'code' | 'link'

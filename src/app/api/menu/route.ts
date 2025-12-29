@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 export async function GET(request: NextRequest) {
   // fetch all menu tabs from the database
   try {
-    const menuTabs = await prisma.menuTab.findMany({})
+    const menuTabs = await prisma.menuTab.findMany({orderBy: { order: 'asc' }})
 
     return NextResponse.json(menuTabs)
   } catch (error) {
