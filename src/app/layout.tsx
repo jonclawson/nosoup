@@ -5,6 +5,7 @@ import Providers from "@/components/Providers";
 import AuthStatus from "@/components/AuthStatus";
 import Navigation from "@/components/Navigation";
 import Link from "next/link";
+import MenuTabs from "@/components/MenuTabs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
                     </h1>
                   </div>
                   <div className="flex items-center space-x-4">
+                    <MenuTabs />
                     <Navigation />
                     <AuthStatus />
                   </div>

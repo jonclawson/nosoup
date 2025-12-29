@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     const published = searchParams.get('published')
     const featured = searchParams.get('featured')
     const sticky = searchParams.get('sticky')
+    const tab = searchParams.get('tab')
 
 
     const session = await getServerSession(authOptions) 
@@ -44,7 +45,9 @@ export async function GET(request: NextRequest) {
                   ]
                 }
               ] : []
-            }
+            },
+            tab === 'false' ? { tab: null } : {},
+            tab === 'true' ? { tab: { isNot: null } } : {},
           ]
         },
         include: {
@@ -125,8 +128,9 @@ export async function POST(request: NextRequest) {
     const featured = form.get('featured') === 'true'
     const fields = JSON.parse(form.get('fields')?.toString() ?? '[]')
     const tags = JSON.parse(form.get('tags')?.toString() ?? '[]')
+    const tab = form.get('tab') ? JSON.parse(form.get('tab')?.toString() ?? '{}') : undefined;
 
-    console.log('Received field data for update:', fields);
+    console.log('Received tab data for update:', tab);
 
     const uploadsDir = path.join(process.cwd(), 'public', 'files')
 
@@ -203,7 +207,13 @@ export async function POST(request: NextRequest) {
           create: (tags ?? []).map((t: { name: string }) => ({
             name: t.name
           }))
-        }
+        },
+        tab: tab ? {
+          create: {
+            name: tab.name,
+            link: slugify(title, { lower: true })
+          }
+        } : undefined
       },
       include: {
         author: {
@@ -224,6 +234,13 @@ export async function POST(request: NextRequest) {
           select: {
             id: true,
             name: true
+          }
+        },
+        tab: {
+          select: {
+            id: true,
+            name: true,
+            link: true
           }
         } 
       }

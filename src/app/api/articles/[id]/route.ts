@@ -47,6 +47,13 @@ export async function GET(
             id: true,
             name: true
           }
+        },
+        tab: {
+          select: {
+            id: true,
+            name: true,
+            link: true
+          }
         }
       }
     })
@@ -99,8 +106,9 @@ export async function PUT(
     const published = form.get('published') === 'true'
     const sticky = form.get('sticky') === 'true'
     const featured = form.get('featured') === 'true'
+    const tab = form.get('tab') ? JSON.parse(form.get('tab')?.toString() ?? '{}') : undefined;
+    console.log('Received tab data for update:', tab);
 
-    console.log('Received field data for update:', fields);
 
     const uploadsDir = path.join(process.cwd(), 'public', 'files')
 
@@ -197,7 +205,19 @@ export async function PUT(
         },
         published,
         sticky,
-        featured
+        featured,
+        tab: tab ? {
+          upsert: {
+            update: {
+              name: tab.name,
+              link: slugify(title, { lower: true })
+            },
+            create: {
+              name: tab.name,
+              link: slugify(title, { lower: true })
+            }
+          }
+        } : { delete: true }
       },
       include: {
         author: {
@@ -219,6 +239,13 @@ export async function PUT(
             id: true,
             name: true
           } 
+        },
+        tab: {
+          select: {
+            id: true,
+            name: true,
+            link: true
+          }
         }
       }
     })
@@ -232,6 +259,7 @@ export async function PUT(
 
     return NextResponse.json(serializedArticle)
   } catch (error: any) {
+    console.error('Error updating article:', error);
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Article not found' },

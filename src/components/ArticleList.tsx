@@ -32,6 +32,7 @@ export default function ArticleList({published = true, featured = null, sticky =
       if (sticky !== null) {
         urlParams.append('sticky', sticky.toString());
       }
+      urlParams.append('tab', 'false');
       const response = await fetch(`/api/articles?${urlParams.toString()}`);
       if (response.ok) {
         const { data, pagination } = await response.json();

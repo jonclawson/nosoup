@@ -51,8 +51,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       } catch (err) {
         setError('Failed to fetch article')
         setLoading(false)
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -75,7 +73,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     )
   }
 
-  if (error || !article) {
+  if (error) {
     return (
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center py-12">

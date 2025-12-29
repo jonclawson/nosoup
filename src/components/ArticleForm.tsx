@@ -7,6 +7,7 @@ import TagsComponent from "./TagsComponent";
 import PublishingOptions from "./PublishingOptions";
 import Link from "next/link";
 import BlockNoteEditor from './BlockNoteEditor';
+import MenuTabFields from './MenuTabFields';
 
 export default function ArticleForm({ articleData }: { articleData: Article }) {
   const router = useRouter()
@@ -17,7 +18,8 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
       tags: [] as Tag[],
       published: false,
       sticky: false,
-      featured: false
+      featured: false,
+      tab: undefined
     })
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
@@ -34,6 +36,7 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
             published: articleData.published,
             sticky: articleData.sticky,
             featured: articleData.featured,
+            tab: articleData.tab
           })
           
         } catch (err: any) {
@@ -64,6 +67,9 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
       fd.append('published', String(formData.published || false));
       fd.append('sticky', String(formData.sticky || false));
       fd.append('featured', String(formData.featured || false));
+      if (formData.tab) {
+        fd.append('tab', JSON.stringify(formData.tab));
+      }
       try {
         const response = await fetch(`/api/articles/${articleData.id || ''}`, {
           method: articleData.id ? 'PUT' : 'POST',
@@ -121,6 +127,7 @@ export default function ArticleForm({ articleData }: { articleData: Article }) {
         <EditArticleFields formData={formData} setFormData={setFormData} />
         <TagsComponent formData={formData} setFormData={setFormData} />
         <PublishingOptions formData={formData} setFormData={setFormData} />
+        <MenuTabFields formData={formData} setFormData={setFormData} />
       </div>
 
       <div className="mt-6 flex items-center justify-end space-x-3">

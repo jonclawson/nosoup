@@ -5,6 +5,12 @@ export interface Author {
   role: 'admin' | 'editor' | 'viewer'
 }
 
+export interface MenuTab {
+  id?: string
+  name: string
+  link: string
+}
+
 export type FieldType = 'image' | 'code' | 'link'
 
 export interface Field {
@@ -32,4 +38,5 @@ export interface Article {
   published?: boolean
   featured?: boolean
   sticky?: boolean
+  tab?: MenuTab
 }

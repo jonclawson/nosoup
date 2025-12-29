@@ -2,15 +2,14 @@
 
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import SkeletonLine from './SkeletonLine'
 
 export default function Navigation() {
   const { data: session, status, update } = useSession()
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center space-x-4">
-        <div className="text-gray-500">Loading...</div>
-      </div>
+      <SkeletonLine />
     )
   }
 

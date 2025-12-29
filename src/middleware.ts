@@ -26,7 +26,10 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ req, token }) => {
-        if (req.method === "GET" && req.nextUrl.pathname.startsWith("/api/articles")) {
+        if (req.method === "GET" && (
+          req.nextUrl.pathname.startsWith("/api/articles") ||
+          req.nextUrl.pathname.startsWith("/api/menu")
+        )) {
           return true
         }
         if (!!token && token.role !== "admin" && (
