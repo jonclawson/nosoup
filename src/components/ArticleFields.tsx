@@ -2,9 +2,9 @@
 import type { Article, Field, Author } from '@/lib/types'
 import Dompurify from './Dompurify';
 
-export default function ArticleFields({ article }: { article: Article }) {
+export default function ArticleFields({ article }: { article: Article | null }) {
   return  <>
-            {article.fields && article.fields.length > 0 && article.fields.map((field) => (
+            {article?.fields && article.fields.length > 0 && article.fields.map((field) => (
               <div key={field.id}>
                 {
                     (() => {

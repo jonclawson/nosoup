@@ -1,14 +1,14 @@
 'use client';
 import { Article } from "@/lib/types";
 
-export default function ArticleTags({ article }: { article: Article }) {
-  if (!article.tags || article.tags.length === 0) {
+export default function ArticleTags({ article }: { article: Article | null }) {
+  if (!article?.tags || article.tags.length === 0) {
     return null;
   }
 
   return (
     <div className="mt-4">
-      {article.tags && article.tags.length > 0 && (
+      {article?.tags && article.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {article.tags.map((tag) => (
             <span
