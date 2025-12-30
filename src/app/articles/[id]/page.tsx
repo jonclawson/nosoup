@@ -97,7 +97,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         </Link>
       </div>
 
-      <article className={`${article.published ? 'bg-white' : 'bg-pink-100'} shadow overflow-hidden sm:rounded-lg`}>
+      <article className={`${article?.published ? 'bg-white' : 'bg-pink-100'} shadow overflow-hidden sm:rounded-lg`}>
         <div className="px-4 py-5 sm:px-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             {article?.title}

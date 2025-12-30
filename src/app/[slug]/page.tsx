@@ -93,10 +93,10 @@ export default function SlugPage({ params }: ArticlePageProps) {
         </Link>
       </div>
 
-      <article className={`${article.published ? 'bg-white' : 'bg-pink-100'} shadow overflow-hidden sm:rounded-lg`}>
+      <article className={`${article?.published ? 'bg-white' : 'bg-pink-100'} shadow overflow-hidden sm:rounded-lg`}>
         <div className="px-4 py-5 sm:px-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {article.title}
+            {article?.title}
           </h1>
           <div className="flex items-center text-sm text-gray-500 mb-6">
             <span>By {article?.author?.name}</span>
@@ -112,7 +112,7 @@ export default function SlugPage({ params }: ArticlePageProps) {
                 <ArticleFields article={article} />
               </div>
               <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6" onClick={handleDownload}>
-                <Dompurify  html={article.body} />
+                <Dompurify  html={article?.body || ''} />
               </div>
               <ArticleTags article={article} />
             </div>
@@ -124,13 +124,13 @@ export default function SlugPage({ params }: ArticlePageProps) {
         {session && session?.user?.role !== 'user' && (
         <>
           <Link
-            href={`/articles/${article.id}/edit`}
+            href={`/articles/${article?.id}/edit`}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Edit Article
         </Link>
         <DeleteButton 
-          userId={article.id || ''} 
+          userId={article?.id || ''} 
           onDelete={() => router.push('/articles')}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           resourceType="article"
