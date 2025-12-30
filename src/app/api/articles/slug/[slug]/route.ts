@@ -8,10 +8,16 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions)
+    console.log('testLOg', {...(!session?.user ? {published: true} : {})})
+
     const slug = (await params).slug;
     console.log('Fetching article with slug:', slug)
     const article = await prisma.article.findUnique({
-      where: { slug: slug },
+      where: { 
+        slug: slug ,
+        ...(!session?.user ? {published: true} : {})
+      },
       include: {
         author: {
           select: {

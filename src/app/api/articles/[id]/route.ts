@@ -21,11 +21,16 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await getServerSession(authOptions)
+  console.log('testLOg', {...(!session?.user ? {published: true} : {})})
   try {
     const id = (await params).id;
     console.log('Fetching article with ID:', id)
     const article = await prisma.article.findUnique({
-      where: { id: id },
+      where: { 
+        id: id,
+         ...(!session?.user ? {published: true} : {})
+      },
       include: {
         author: {
           select: {
