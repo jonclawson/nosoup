@@ -18,7 +18,6 @@ export default function MenuTabs() {
         const data = await response.json();
         setMenuTabs(data);
       } catch (error) {
-        console.error('Error fetching menu tabs:', error);
         setError('Failed to load menu tabs');
       } finally {
         setLoading(false);
