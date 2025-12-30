@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
               console.log(`Uploading ${key} to R2 bucket ${bucketName}... ${process.env.R2_ACCOUNT_ID} -- ${process.env.R2_ACCESS_KEY_ID} -- ${process.env.R2_SECRET_ACCESS_KEY}`);
               await s3Client.send(new PutObjectCommand(putObjectParams));
               console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
-              field.value = `${process.env.UPLOADS_URL}/${key}`;
+              field.value = `/files/${key}`;
             } catch (err) {
               console.error('Error uploading to R2:', err);
               return NextResponse.json(
@@ -258,8 +258,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(serializedArticle, { status: 201 })
   } catch (error: any) {
     console.error('Article creation error:', error)
+    if (error.toString()?.includes('Unique constraint failed')) {
+      return NextResponse.json(
+        { error: 'An article with this title already exists' },
+        { status: 400 }
+      )
+    }
+    const reason = error?.message ? `: ${error.message}` : ''
     return NextResponse.json(
-      { error: 'Failed to create article' },
+      { error: 'Failed to create article' + reason },
       { status: 500 }
     )
   }

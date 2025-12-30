@@ -124,7 +124,7 @@ export async function PUT(
             const fileName = `${Date.now()}-${randomUUID()}${file.name}`
             const filePath = path.join(uploadsDir, fileName)
             await fs.writeFile(filePath, buffer)
-            field.value = `files/${fileName}`
+            field.value = `/files/${fileName}`
           }
           if (process.env.R2_USE_R2 === 'true') {
             const buffer = Buffer.from(arrayBuffer)
@@ -140,7 +140,7 @@ export async function PUT(
             try {
               await s3Client.send(new PutObjectCommand(putObjectParams));
               console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
-              field.value = `${process.env.UPLOADS_URL}/${key}`;
+              field.value = `/files/${key}`;
             } catch (err) {
               console.error('Error uploading to R2:', err);
               return NextResponse.json(
