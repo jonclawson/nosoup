@@ -16,7 +16,6 @@ export default function MenuTabs() {
       try {
         const response = await fetch('/api/menu');
         const data = await response.json();
-        console.log('Menu Tabs:', data);
         setMenuTabs(data);
       } catch (error) {
         console.error('Error fetching menu tabs:', error);
