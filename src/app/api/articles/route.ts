@@ -264,9 +264,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    const reason = error?.message ? `: ${error.message}` : ''
     return NextResponse.json(
-      { error: 'Failed to create article' + reason },
+      { error: 'Failed to create article' },
       { status: 500 }
     )
   }
