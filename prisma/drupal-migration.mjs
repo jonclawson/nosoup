@@ -5,22 +5,36 @@ import { PrismaClient } from '@prisma/client'
 import fs from 'fs';
 import path from 'path';
 
-const globalForPrisma = globalThis 
-const prisma = globalForPrisma.prisma ?? new PrismaClient()
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma 
+// const globalForPrisma = globalThis 
+// const prisma = globalForPrisma.prisma ?? new PrismaClient()
+// if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma 
 
-dotenv.config({ path: '../.env' });
+const prisma = new PrismaClient()
+console.log('ENVIRONMENT:', process.env.NODE_ENV);
+
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: './.env.production' });
+} else {
+  dotenv.config({ path: './.env.local' });
+}
 
 async function migrateDrupal6ToSqlite(drupalConfig) {
     // Connect to Drupal 6 MySQL database
-    // console.log('Connecting to Drupal database...', drupalConfig);
-    const drupalConnection = await mysql.createConnection({
+    console.log('Connecting to Drupal database...', drupalConfig);
+    let drupalConnection;
+    try {
+    drupalConnection = await mysql.createConnection({
         host: drupalConfig.host,
         port: drupalConfig.port,
         user: drupalConfig.user,
         password: drupalConfig.password,
         database: drupalConfig.database
     });
+  } catch (err) {
+    console.error('Error connecting to Drupal database:', err);
+    throw err;
+  }
+    console.log('Connected to Drupal database.');
 
     // Example: Migrate users from Drupal 6 to SQLite
     const [nodes] = await drupalConnection.execute(`
