@@ -216,12 +216,12 @@ export async function PUT(
           upsert: {
             update: {
               name: tab.name,
-              link: slugify(title, { lower: true }),
+              link: '/' + slugify(title, { lower: true }),
               order: +tab.order
             },
             create: {
               name: tab.name,
-              link: slugify(title, { lower: true }),
+              link: '/' + slugify(title, { lower: true }),
               order: +tab.order
             }
           }
