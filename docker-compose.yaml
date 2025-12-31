@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  nosoup:
+    image: node:20-alpine
+    ports: 
+      - "8080:3000"
+    working_dir: /app
+    volumes:
+      - ./:/app:delegated
+      - /app/node_modules  
+      - /app/.next  
+    depends_on:
+      - postgres
+    command:
+      - sh 
+      - -c 
+      - |
+        echo "$${DATABASE_URL}"
+        SHA=$(cat .git/refs/heads/main); 
+        SHORT_SHA="$${SHA:0:7}";
+        echo "Current short SHORT_SHA: $${SHORT_SHA}";
+        cp prisma/schema.prisma prisma/postgres/schema.prisma && \
+        sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/postgres/schema.prisma && \
+        npx prisma migrate dev --name deploy_${SHORT_SHA} --schema=prisma/postgres/schema.prisma && \
+        # npx prisma migrate deploy --schema=prisma/postgres/schema.prisma && \
+        npm install --production=false && \
+        npm run build && \
+        npm start;
+    env_file:
+      - .env.production # copy example.env to .env.production and set real values
+    environment:
+      NODE_ENV: production
+      # DATABASE_URL: postgres://nosoup:rootpassword@postgres:5432/nosoup?sslmode=disable
+      # NEXTAUTH_SECRET: your-secret-key-here-change-in-production
+      # NEXTAUTH_URL: http://localhost:8080
+      # DRUPAL_DB_HOST: docker.for.mac.localhost
+      # DRUPAL_DB_PORT: 3307
+      # DRUPAL_DB_USER: 
+      # DRUPAL_DB_PASSWORD: 
+      # DRUPAL_DB_NAME: 
+      # DRUPAL_SITE: 
+      # DRUPAL_FILES_DIR: 
+      # LOCAL_FILES_DIR: ./public/files
+      # AUTHOR_DEFAULT_ID: 
+      # R2_USE_R2: true
+      # R2_ACCOUNT_ID: 
+      # R2_ACCESS_KEY_ID: 
+      # R2_SECRET_ACCESS_KEY: 
+      # R2_BUCKET_NAME: 
+      # UPLOADS_URL:
+    # restart: always
+
+  postgres:
+    image: postgres:16.11
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: nosoup
+      POSTGRES_USER: nosoup
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # command:
+    #   - bash
+    #   - -c
+    #   - |
+    #     # Start postgres in the background
+    #     docker-entrypoint.sh postgres &
+    #     PG_PID=$$!
+        
+    #     # Wait for postgres to be ready
+    #     until pg_isready -U postgres; do
+    #       echo "Waiting for postgres..."
+    #       sleep 1
+    #     done
+        
+    #     # Add pg_hba rule if not already present
+    #     grep -q "host all all 0.0.0.0/0 md5" /var/lib/postgresql/data/pg_hba.conf || \
+    #       echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/data/pg_hba.conf
+        
+    #     # Reload postgres config
+    #     psql -U postgres -c "SELECT pg_reload_conf();"
+        
+    #     # Wait for postgres process
+    #     wait $$PG_PID
+    # restart: always
+
+volumes:
+  postgres_data:

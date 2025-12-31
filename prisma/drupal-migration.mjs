@@ -99,14 +99,17 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
               }
             }
           });
-          // copy image file from Drupal files directory to local files directory
-          const sourcePath = path.join(process.env.DRUPAL_FILES_DIR, image.filepath);
-          const destPath = path.join(process.env.LOCAL_FILES_DIR, image.filepath.split('/').pop());
-          try {
-            await fs.promises.copyFile(sourcePath, destPath);
-          }
-          catch (err) {
-            console.error(`Error copying file from ${sourcePath} to ${destPath}:`, err);
+
+          if (process.env.DRUPAL_FILES_DIR && process.env.LOCAL_FILES_DIR) {
+            console.log('Copying image files from Drupal files directory to local files directory')
+            const sourcePath = path.join(process.env.DRUPAL_FILES_DIR, image.filepath);
+            const destPath = path.join(process.env.LOCAL_FILES_DIR, image.filepath.split('/').pop());
+            try {
+              await fs.promises.copyFile(sourcePath, destPath);
+            }
+            catch (err) {
+              console.error(`Error copying file from ${sourcePath} to ${destPath}:`, err);
+            }
           }
         }
         const [code] = await drupalConnection.execute(`

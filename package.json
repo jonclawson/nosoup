@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "docker": "docker-compose up",
     "build": "prisma generate --schema=prisma/postgres/schema.prisma && next build",
     "build_local": "prisma generate && next build",
     "start": "next start",
