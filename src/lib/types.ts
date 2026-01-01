@@ -41,3 +41,15 @@ export interface Article {
   sticky?: boolean
   tab?: MenuTab
 }
+
+export interface Setting {
+  key: string
+  value: string
+}
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'admin' | 'editor' | 'viewer'
+}

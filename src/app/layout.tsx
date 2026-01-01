@@ -6,6 +6,7 @@ import AuthStatus from "@/components/AuthStatus";
 import Navigation from "@/components/Navigation";
 import Link from "next/link";
 import MenuTabs from "@/components/MenuTabs";
+import SiteName from "@/components/SiteName";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,9 +30,7 @@ export default function RootLayout({
                 <div className="flex justify-between h-16 px-4 sm:px-6 lg:px-8">
                   <div className="flex items-center">
                     <h1 className="text-xl font-semibold text-gray-900">
-                      <Link href="/">
-                      NoSoup
-                      </Link>
+                      <SiteName />
                     </h1>
                   </div>
                   <div className="flex items-center space-x-4">
