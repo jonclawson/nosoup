@@ -43,7 +43,7 @@ export default function Setting({ type, setting, children }: { type?: string, se
     }
 
     if (isLoading) {
-      return <SkeletonLine />
+      return //<SkeletonLine />
     }
 
     if (error) {      
