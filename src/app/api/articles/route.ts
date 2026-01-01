@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     const published = searchParams.get('published')
     const featured = searchParams.get('featured')
     const sticky = searchParams.get('sticky')
+    const tag = searchParams.get('tag')
     const tab = searchParams.get('tab')
 
 
@@ -35,6 +36,7 @@ export async function GET(request: NextRequest) {
         where: {
           AND: [
             featured != null ? {featured: featured === 'true'} : {},
+            tag != null ? { tags: { some: { name: tag } } } : {},
             {
               OR: published != null ? [
                  {published: published === 'true'},

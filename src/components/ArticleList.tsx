@@ -12,7 +12,7 @@ import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 
-export default function ArticleList({published = true, featured = null, sticky = true}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null }) {
+export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true);
@@ -31,6 +31,9 @@ export default function ArticleList({published = true, featured = null, sticky =
       }
       if (sticky !== null) {
         urlParams.append('sticky', sticky.toString());
+      }
+      if (tag) {
+        urlParams.append('tag', tag);
       }
       urlParams.append('tab', 'false');
       const response = await fetch(`/api/articles?${urlParams.toString()}`);
