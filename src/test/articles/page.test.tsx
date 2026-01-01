@@ -21,6 +21,13 @@ jest.mock('@/components/ArticleList', () => {
   }
 })
 
+// Mock Setting component
+jest.mock('@/components/Setting', () => {
+  return function MockSetting({children}: any) {
+    return <div data-testid="setting">{children}</div>
+  }
+})
+
 // Mock next-auth/react
 jest.mock('next-auth/react', () => ({
   useSession: jest.fn(() => ({ data: { user: { role: 'admin' } }, status: 'authenticated' })),
@@ -37,7 +44,7 @@ describe('ArticlesPage', () => {
     expect(screen.getByText(/a collection of articles from our community/i)).toBeInTheDocument()
 
     // Check the link
-    const link = screen.getByRole('link', { name: /write article/i })
+    const link = screen.getByRole('link', { name: /\+/i })
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', '/articles/new')
 
