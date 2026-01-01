@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import SkeletonLine from "./SkeletonLine"
+import { useDebounce } from "@/lib/debounce"
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'NoSoup'
 
 export default function SiteName() {
@@ -53,7 +54,7 @@ export default function SiteName() {
     fetchSiteLogo()
   }, [])
 
-  const submitSiteName = async (newSiteName: string) => {
+  const submitSiteName = useDebounce(async (newSiteName: string) => {
     const formData = new FormData()
     formData.set('key', 'site_name')
     formData.set('value', newSiteName)
@@ -69,14 +70,13 @@ export default function SiteName() {
           setSiteNameSetting(data)
           document.title = newSiteName
         }
-        setEditSiteName(false)
       } else {
         console.error('Failed to update site name')
       }
     } catch (error) {
       console.error('Error updating site name:', error)
     }
-  }
+  }, 300);
 
   const submitSiteLogo = async (newSiteLogo: string) => {
     const formData = new FormData()
@@ -109,7 +109,6 @@ export default function SiteName() {
   return <>
       { editSiteName && status === "authenticated" && session?.user?.name ? (
         <>
-        {editSiteName && (
           <input
             type="text"
             name="siteName"
@@ -118,10 +117,7 @@ export default function SiteName() {
             autoFocus
             onChange={(e) => submitSiteName(e.target.value)}
             onBlur={(e) => setEditSiteName(false)}
-          />
-
-        )}
-        
+          />        
         </>
       ) : (   
 
