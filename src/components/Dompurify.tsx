@@ -24,5 +24,5 @@ export default function Dompurify({ html }: { html: string }) {
     return () => { mounted = false }
   }, [html])
 
-  return <div dangerouslySetInnerHTML={{ __html: sanitized }} />
+  return <span dangerouslySetInnerHTML={{ __html: sanitized }} />
 }
