@@ -127,7 +127,7 @@ export default function SiteName() {
         ) : <span>{siteName}</span>}
       </Link>
       )}
-      {status === "authenticated" && session?.user?.name && (
+      {status === "authenticated" && session?.user?.role === 'admin' && (
         <>
         <button onClick={() => setEditSiteName(!editSiteName)} className="mr-2" title="Edit Site Name">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block text-blue-600 hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
