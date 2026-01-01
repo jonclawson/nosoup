@@ -13,10 +13,15 @@ export default function Navigation() {
     )
   }
 
-  if (session) {
     return (
       <div className="flex items-center space-x-4">
-        {session.user?.role === 'admin' && (
+        <Link
+          href="/articles"
+          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Articles
+        </Link>
+        {session && session.user?.role === 'admin' && (
           <Link
             href="/users"
             className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
@@ -24,15 +29,7 @@ export default function Navigation() {
             Users
           </Link>
         )}
-        <Link
-          href="/articles"
-          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-        >
-          Articles
-        </Link>
       </div>
     )
-  }
 
-  return null
 } 
