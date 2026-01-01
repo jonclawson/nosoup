@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // create new setting in database
     const newSetting = await prisma.setting.create({
-      data: { key, value },
+      data: { key: key as string, value: value as string },
     });
 
     return NextResponse.json({ key: newSetting.key, value: newSetting.value }, { status: 201 });

@@ -46,7 +46,7 @@ export async function PUT(
     // update setting in database
     const updatedSetting = await prisma.setting.update({
       where: { key },
-      data: { value },
+      data: { value: value as string },
     });
 
     return NextResponse.json({ key: updatedSetting.key, value: updatedSetting.value }, { status: 200 });
