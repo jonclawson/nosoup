@@ -86,7 +86,7 @@ After applying, Terraform will output:
 
 ## Local Development
 
-For local development, create a `.env.local` file in the project root:
+For local development, create a `.env` file in the project root:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/nosoup"

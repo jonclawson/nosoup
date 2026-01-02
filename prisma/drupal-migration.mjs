@@ -15,7 +15,7 @@ console.log('ENVIRONMENT:', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: './.env.production' });
 } else {
-  dotenv.config({ path: './.env.local' });
+  dotenv.config({ path: './.env' });
 }
 
 async function migrateDrupal6ToSqlite(drupalConfig) {

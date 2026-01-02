@@ -448,7 +448,7 @@ To tear down all infrastructure:
 
 ### Local Environment Variables
 
-Create a `.env.local` file for local development:
+Create a `.env` file for local development:
 
 ```bash
 DATABASE_URL="file:./dev.db"
