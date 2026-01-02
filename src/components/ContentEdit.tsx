@@ -8,8 +8,6 @@ export default function ContentEdit({type, onChange, children}: {type?: string, 
   const [editing, setEditing] = React.useState(false);
   const {data: session, status} = useSession();
 
-  console.log(typeof value);
-
   if (editing) {
     return (
       <div>
