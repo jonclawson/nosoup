@@ -189,7 +189,12 @@ export async function PUT(
         { status: 403 }
       )
     }
-
+    const tabExists = await prisma.menuTab.findFirst({
+      where: {
+        articleId: (await params).id
+      }
+    });
+    console.log('Tab exists:', tabExists);
     const article = await prisma.article.update({
       where: { id: (await params).id },
       data: {
@@ -225,7 +230,7 @@ export async function PUT(
               order: +tab.order
             }
           }
-        } : { delete: true }
+        } : !tabExists ? undefined : { delete: true } 
       },
       include: {
         author: {
