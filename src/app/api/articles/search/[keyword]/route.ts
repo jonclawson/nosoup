@@ -21,10 +21,10 @@ export async function GET(
             {
               OR: [
                 { title: { contains: keyword, 
-                  // mode: 'insensitive' 
+                  mode: 'insensitive' // not compatible with sqlite
                 } },
                 { body: { contains: keyword, 
-                  // mode: 'insensitive' 
+                  mode: 'insensitive' // not compatible with sqlite
                 } }
               ]
             },
@@ -52,10 +52,10 @@ export async function GET(
             {
               OR: [
                 { title: { contains: keyword, 
-                  // mode: 'insensitive' 
+                  mode: 'insensitive' // not compatible with sqlite
                 } },
                 { body: { contains: keyword, 
-                  // mode: 'insensitive' 
+                  mode: 'insensitive' // not compatible with sqlite
                 } }
               ]
             },
