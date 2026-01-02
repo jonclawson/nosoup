@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
+const isSqlite = process.env.DATABASE_URL?.startsWith('file:') || false;
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ keyword: string }> }
@@ -21,10 +23,10 @@ export async function GET(
             {
               OR: [
                 { title: { contains: keyword, 
-                  mode: 'insensitive' // not compatible with sqlite
+                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
                 } },
                 { body: { contains: keyword, 
-                  mode: 'insensitive' // not compatible with sqlite
+                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
                 } }
               ]
             },
@@ -52,10 +54,10 @@ export async function GET(
             {
               OR: [
                 { title: { contains: keyword, 
-                  mode: 'insensitive' // not compatible with sqlite
+                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
                 } },
                 { body: { contains: keyword, 
-                  mode: 'insensitive' // not compatible with sqlite
+                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
                 } }
               ]
             },
