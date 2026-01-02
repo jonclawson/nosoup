@@ -7,6 +7,7 @@ import Navigation from "@/components/Navigation";
 import Link from "next/link";
 import MenuTabs from "@/components/MenuTabs";
 import SiteName from "@/components/SiteName";
+import Search from "@/components/Search";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({
                     <MenuTabs />
                     <Navigation />
                     <AuthStatus />
+                    <Search />
                   </div>
                 </div>
               </div>
