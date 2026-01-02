@@ -314,7 +314,7 @@ export async function DELETE(
       )
     }
 
-    if (existingArticle.authorId !== session.user.id) {
+    if (existingArticle.authorId !== session.user.id && session.user.role === 'user') {
       return NextResponse.json(
         { error: 'You can only delete your own articles' },
         { status: 403 }
