@@ -1,18 +1,30 @@
+'use client'
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import BlockNoteEditor from './BlockNoteEditor';
 import Dompurify from './Dompurify';
+import { useDebounce } from '@/lib/debounce';
 
 export default function ContentEdit({type, onChange, children}: {type?: string, onChange?: (value: any) => void, children?: React.ReactNode}) {
   const [value, setValue] = React.useState<any>(children);
   const [editing, setEditing] = React.useState(false);
   const {data: session, status} = useSession();
 
+  const handleChange = useDebounce((val: any) => {
+    setValue(val);
+    if (onChange) {
+      onChange(val);
+    }
+  }, 300);
+
   if (editing) {
     return (
       <div>
         {type && type === 'text' ? (
-          <input value={value} onChange={(e) => setValue(e.target.value)} />
+          <input 
+          defaultValue={value} 
+          onChange={(e) => handleChange(e.target.value)}
+          />
         ) : ( 
           <BlockNoteEditor 
           value={value.toString()} 
@@ -29,6 +41,7 @@ export default function ContentEdit({type, onChange, children}: {type?: string, 
       </div>
     );
   }
+
   if ( session && session?.user?.role === 'admin') {
     return (
       <>
