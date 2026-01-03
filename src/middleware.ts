@@ -5,12 +5,7 @@ export default withAuth(
   function middleware(req) {
     const pathname = req.nextUrl.pathname
     if (process.env.R2_USE_R2 === 'true' && pathname.startsWith('/files/')) {
-      // const url = new URL(`${process.env.UPLOADS_URL}${pathname.replace(/^\/files/, '')}`)
-      // url.search = req.nextUrl.search
-
       const url = req.nextUrl.clone()
-      // url.pathname = process.env.UPLOADS_URL as string + pathname.replace(/^\/files/, '')
-
       url.pathname = pathname.replace(/^\/files/, '/api/files')
       return NextResponse.redirect(url, 307)
     }
