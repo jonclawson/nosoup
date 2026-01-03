@@ -6,12 +6,36 @@ jest.mock('next/font/google', () => ({
   Inter: () => ({ className: 'inter-class' }),
 }));
 
-jest.mock('@/components/Providers', () => ({ children }) => <div data-testid="providers">{children}</div>);
-jest.mock('@/components/AuthStatus', () => () => <div data-testid="authstatus">AuthStatus</div>);
-jest.mock('@/components/Navigation', () => () => <div data-testid="navigation">Navigation</div>);
-jest.mock('@/components/MenuTabs', () => () => <div data-testid="menutabs">MenuTabs</div>);
-jest.mock('@/components/SiteName', () => () => <span data-testid="sitename">SiteName</span>);
-jest.mock('@/components/Search', () => () => <div data-testid="search">Search</div>);
+jest.mock('@/components/Providers', () => {
+  const MockProviders = ({ children }) => <div data-testid="providers">{children}</div>;
+  MockProviders.displayName = 'MockProviders';
+  return MockProviders;
+});
+jest.mock('@/components/AuthStatus', () => {
+  const MockAuthStatus = () => <div data-testid="authstatus">AuthStatus</div>;
+  MockAuthStatus.displayName = 'MockAuthStatus';
+  return MockAuthStatus;
+});
+jest.mock('@/components/Navigation', () => {
+  const MockNavigation = () => <div data-testid="navigation">Navigation</div>;
+  MockNavigation.displayName = 'MockNavigation';
+  return MockNavigation;
+});
+jest.mock('@/components/MenuTabs', () => {
+  const MockMenuTabs = () => <div data-testid="menutabs">MenuTabs</div>;
+  MockMenuTabs.displayName = 'MockMenuTabs';
+  return MockMenuTabs;
+});
+jest.mock('@/components/SiteName', () => {
+  const MockSiteName = () => <span data-testid="sitename">SiteName</span>;
+  MockSiteName.displayName = 'MockSiteName';
+  return MockSiteName;
+});
+jest.mock('@/components/Search', () => {
+  const MockSearch = () => <div data-testid="search">Search</div>;
+  MockSearch.displayName = 'MockSearch';
+  return MockSearch;
+});
 
 import RootLayout from '@/app/layout';
 

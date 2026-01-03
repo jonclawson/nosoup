@@ -3,11 +3,13 @@ import NewArticle from '@/app/articles/new/NewArticle'
 
 // Mock Next.js Link component
 jest.mock('next/link', () => {
-  return ({ children, href }: { children: React.ReactNode; href: string }) => (
+  const MockLink = ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href} data-testid="link">
       {children}
     </a>
   )
+  MockLink.displayName = 'MockLink'
+  return MockLink
 })
 
 // Mock ArticleForm component

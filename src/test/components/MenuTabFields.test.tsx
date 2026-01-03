@@ -433,7 +433,7 @@ describe('MenuTabFields', () => {
       const { rerender } = render(<MenuTabFields formData={formData} setFormData={mockSetFormData} />);
 
       // Check the checkbox
-      let checkbox = screen.getByRole('checkbox');
+      const checkbox = screen.getByRole('checkbox');
       fireEvent.click(checkbox);
 
       // Update name

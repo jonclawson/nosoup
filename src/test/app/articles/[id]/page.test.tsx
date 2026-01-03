@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import ArticlePage from '@/app/articles/[id]/page'
 import { Article } from '@/lib/types'
+import { useSession } from 'next-auth/react'
 
 // Mock next/link
 jest.mock('next/link', () => {
@@ -18,6 +19,11 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
+}))
+
+// Mock next-auth/react
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(),
 }))
 
 // Mock next-auth/react
@@ -268,7 +274,6 @@ describe('ArticlePage', () => {
         json: async () => articleData,
       })
 
-      const { useSession } = require('next-auth/react')
       ;(useSession as jest.Mock).mockReturnValue({
         data: { user: { role: 'admin' } },
         status: 'authenticated',
@@ -289,7 +294,6 @@ describe('ArticlePage', () => {
         json: async () => articleData,
       })
 
-      const { useSession } = require('next-auth/react')
       ;(useSession as jest.Mock).mockReturnValue({
         data: { user: { role: 'user' } },
         status: 'authenticated',

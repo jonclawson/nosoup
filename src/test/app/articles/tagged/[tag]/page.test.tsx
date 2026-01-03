@@ -1,12 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import ArticlesPage from '@/app/articles/tagged/[tag]/page'
+import { useSession } from 'next-auth/react'
+import { use } from 'react'
 
 // Mock next-auth/react
 jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
 }))
 
-// Mock components
+// Mock react
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  use: jest.fn(),
+}))
 jest.mock('@/components/ArticleList', () => {
   return function MockArticleList({ tag }: { tag: string }) {
     return <div data-testid="article-list">ArticleList for {tag}</div>
@@ -34,14 +40,12 @@ describe('ArticlesPage', () => {
   })
 
   it('renders the page with the correct tag', async () => {
-    const { useSession } = require('next-auth/react')
-    const { use } = require('react')
-    useSession.mockReturnValue({
+    ;(useSession as jest.Mock).mockReturnValue({
       data: { user: { id: 1, name: 'Test User' } },
       status: 'authenticated',
     })
 
-    use.mockReturnValue({ tag: 'test-tag' })
+    ;(use as jest.Mock).mockReturnValue({ tag: 'test-tag' })
 
     const params = Promise.resolve({ tag: 'test-tag' })
 
@@ -54,14 +58,12 @@ describe('ArticlesPage', () => {
   })
 
   it('renders with a different tag', async () => {
-    const { useSession } = require('next-auth/react')
-    const { use } = require('react')
-    useSession.mockReturnValue({
+    ;(useSession as jest.Mock).mockReturnValue({
       data: { user: { id: 1, name: 'Test User' } },
       status: 'authenticated',
     })
 
-    use.mockReturnValue({ tag: 'another-tag' })
+    ;(use as jest.Mock).mockReturnValue({ tag: 'another-tag' })
 
     const params = Promise.resolve({ tag: 'another-tag' })
 
