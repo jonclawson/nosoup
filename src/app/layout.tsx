@@ -12,8 +12,8 @@ import Search from "@/components/Search";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "NoSoup Article Management App",
-  description: "A NextJS 15 app for managing users",
+  title: "NoSoup Content Management App",
+  description: "A NextJS app for managing content",
 };
 
 export default function RootLayout({
