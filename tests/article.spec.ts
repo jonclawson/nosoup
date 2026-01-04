@@ -29,9 +29,10 @@ test('test', async ({ page }) => {
   await page.getByText('The body of your document').click();
   await page.getByRole('button', { name: 'Publish Article' }).click();
   await page.getByRole('heading', { name: 'Test Article Edit' }).first().click();
-  await page.once('dialog', async dialog => {
+  page.once('dialog', async dialog => {
     console.log(`Dialog message: ${dialog.message()}`);
     await dialog.accept(); // clicks "OK"
   });
   await page.getByRole('button', { name: 'Delete Article' }).click();
+  await expect(page.getByRole('heading', { name: 'Test Article Edit' })).toHaveCount(0);
 });
