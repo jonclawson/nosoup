@@ -29,11 +29,15 @@ jest.mock('@/lib/debounce', () => ({
 // Mock fetch
 global.fetch = jest.fn();
 
-// Mock document.title
-Object.defineProperty(document, 'title', {
-  writable: true,
-  value: 'Test',
-});
+// Mock useStateContext
+const mockState = {
+  siteName: 'NoSoup',
+  setSiteName: jest.fn((name: string) => { mockState.siteName = name; }),
+};
+
+jest.mock('@/contexts/StateContext', () => ({
+  useStateContext: jest.fn(() => mockState),
+}));
 
 describe('SiteName', () => {
   beforeEach(() => {
@@ -43,7 +47,6 @@ describe('SiteName', () => {
       data: null,
       status: 'unauthenticated',
     });
-    document.title = 'Test';
   });
 
   describe('Rendering and Loading', () => {
@@ -334,7 +337,7 @@ describe('SiteName', () => {
         fireEvent.click(button);
       });
 
-      const input = await screen.findByDisplayValue('NoSoup');
+      const input = await screen.findByTitle('siteName');
       fireEvent.change(input, { target: { value: 'New Site' } });
 
       await waitFor(() => {
@@ -342,20 +345,6 @@ describe('SiteName', () => {
           (call: any[]) => call[1]?.method === 'POST'
         );
         expect(postCall).toBeDefined();
-      });
-    });
-
-    it('should update document title when site name is fetched', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        json: async () => ({ value: 'New Title' }),
-      }).mockResolvedValueOnce({
-        json: async () => ({}),
-      });
-
-      render(<SiteName />);
-
-      await waitFor(() => {
-        expect(document.title).toBe('New Title');
       });
     });
   });

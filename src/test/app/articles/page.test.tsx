@@ -33,6 +33,21 @@ jest.mock('next-auth/react', () => ({
   useSession: jest.fn(() => ({ data: { user: { role: 'admin' } }, status: 'authenticated' })),
 }))
 
+// Mock useDocument hook
+jest.mock('@/hooks/useDocument', () => ({
+  useDocument: jest.fn(() => ({
+    setTitle: jest.fn(),
+  })),
+}))
+
+// Mock useStateContext
+jest.mock('@/contexts/StateContext', () => ({
+  useStateContext: jest.fn(() => ({
+    getSetting: jest.fn(() => 'Articles'),
+    setSetting: jest.fn(),
+  })),
+}))
+
 describe('ArticlesPage', () => {
   it('should render the articles page correctly', () => {
     render(<ArticlesPage />)

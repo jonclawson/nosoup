@@ -14,6 +14,7 @@ import "@blocknote/core/fonts/inter.css";
 import ArticleTags from '@/components/ArticleTags'
 import { useSession } from 'next-auth/react'
 import { handleDownload } from '@/lib/handle-downloads'
+import { useDocument } from '@/hooks/useDocument'
 interface ArticlePageProps {
   params: Promise<{
     id: string
@@ -27,6 +28,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { data: session, status } = useSession()
+  const { setTitle } = useDocument()
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -45,6 +47,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           router.push(`/${articleData.slug}`)
         }
         else {
+          setTitle(articleData.title)
           setArticle(articleData)
           setLoading(false)
         }

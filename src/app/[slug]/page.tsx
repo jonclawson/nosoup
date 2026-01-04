@@ -14,6 +14,7 @@ import "@blocknote/core/fonts/inter.css";
 import ArticleTags from '@/components/ArticleTags'
 import { useSession } from 'next-auth/react'
 import { handleDownload } from '@/lib/handle-downloads'
+import { useDocument } from '@/hooks/useDocument'
 
 interface ArticlePageProps {
   params: Promise<{
@@ -28,6 +29,7 @@ export default function SlugPage({ params }: ArticlePageProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { data: session, status } = useSession()
+  const { setTitle } = useDocument()
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -42,6 +44,7 @@ export default function SlugPage({ params }: ArticlePageProps) {
           return
         }
         const articleData = await response.json()
+        setTitle(articleData.title)
         setArticle(articleData)
       } catch (err) {
         setError('Failed to fetch article')

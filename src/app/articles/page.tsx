@@ -3,9 +3,14 @@ import Link from 'next/link'
 import ArticleList from '@/components/ArticleList'
 import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
+import { useDocument } from '@/hooks/useDocument'
+import { useStateContext } from '@/contexts/StateContext'
 
 export default function ArticlesPage() {
   const { data: session, status } = useSession()
+  const { getSetting } = useStateContext()
+  const pageTitle = getSetting('navigation_articles_link') || 'Articles'
+  useDocument({ title: pageTitle })
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

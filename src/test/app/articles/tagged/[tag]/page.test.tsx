@@ -34,6 +34,11 @@ jest.mock('react', () => {
   }
 })
 
+// Mock useDocument
+jest.mock('@/hooks/useDocument', () => ({
+  useDocument: jest.fn(),
+}))
+
 describe('ArticlesPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()

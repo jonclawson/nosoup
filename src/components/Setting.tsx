@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import ContentEdit from './ContentEdit';
 import SkeletonLine from './SkeletonLine';
+import { useStateContext } from '@/contexts/StateContext';
+
 export default function Setting({ type, setting, children }: { type?: string, setting: string, children: React.ReactNode }) {
   const [value, setValue] = React.useState<any>(null);
   const [error, setError] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
+  const { getSetting, setSetting } = useStateContext();
 
     useEffect(() => {
       async function fetchSetting() {
@@ -13,6 +16,7 @@ export default function Setting({ type, setting, children }: { type?: string, se
           const data = await response.json()
           if (data?.value) {
             setValue(data.value)
+            setSetting(setting, data.value)
           }
         } catch (error) {
           console.error('Error fetching setting:', error)
@@ -34,6 +38,7 @@ export default function Setting({ type, setting, children }: { type?: string, se
           method: value ? 'PUT' : 'POST',
           body: formData,
         })
+        setSetting(setting, newValue)
         if (!response.ok) {
           console.error('Failed to update setting')
         }

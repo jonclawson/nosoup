@@ -3,10 +3,12 @@ import Link from 'next/link'
 import ArticleList from '@/components/ArticleList'
 import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
+import { useDocument } from '@/hooks/useDocument'
 
 export default function HomePage() {
   const { data: session, status } = useSession()
-
+  useDocument({ title: '' })
+  
   return (
     <div className="px-4 sm:px-6 lg:px-8">
         <Setting setting="featured_articles_header">

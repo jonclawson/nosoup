@@ -30,6 +30,14 @@ jest.mock('@/components/SkeletonLine', () => {
 // Mock fetch
 global.fetch = jest.fn();
 
+// Mock StateContext
+jest.mock('@/contexts/StateContext', () => ({
+  useStateContext: () => ({
+    getSetting: jest.fn(),
+    setSetting: jest.fn(),
+  }),
+}));
+
 describe('Setting', () => {
   beforeEach(() => {
     jest.clearAllMocks();

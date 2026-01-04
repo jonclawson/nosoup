@@ -4,6 +4,7 @@ import ArticleList from '@/components/ArticleList'
 import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
 import { use } from 'react'
+import { useDocument } from '@/hooks/useDocument'
 
 export default function ArticlesPage({ params }: {
   params: Promise<{
@@ -12,6 +13,7 @@ export default function ArticlesPage({ params }: {
 }) {
   const { data: session, status } = useSession()
   const { tag } = use(params)
+  useDocument({ title: `Articles tagged with ${tag}` })
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

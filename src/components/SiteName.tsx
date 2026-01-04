@@ -5,12 +5,12 @@ import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import SkeletonLine from "./SkeletonLine"
 import { useDebounce } from "@/lib/debounce"
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'NoSoup'
+import { useStateContext } from "@/contexts/StateContext"
 
 export default function SiteName() {
   const { data: session, status } = useSession()
   const [siteNameSetting, setSiteNameSetting] = useState<{key: string, value: string} | null>(null)
-  const [siteName, setSiteName] = useState(SITE_NAME)
+  const { siteName, setSiteName } = useStateContext()
   const [editSiteName, setEditSiteName] = useState(false)
   const [siteLogoSetting, setSiteLogoSetting] = useState<{key: string, value: string} | null>(null)
   const [siteLogo, setSiteLogo] = useState<string | null>(null)
@@ -26,7 +26,6 @@ export default function SiteName() {
         if (data?.value) {
           setSiteName(data.value)
           setSiteNameSetting(data)
-          document.title = data.value
         }
       } catch (error) {
         console.error('Error fetching site name:', error)
@@ -112,6 +111,7 @@ export default function SiteName() {
           <input
             type="text"
             name="siteName"
+            title="siteName"
             defaultValue={siteName}
             className="border border-gray-300 rounded-md px-2 py-1"
             autoFocus
