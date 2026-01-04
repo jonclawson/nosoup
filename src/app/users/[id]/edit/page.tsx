@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { use } from 'react'
 import { useSession } from 'next-auth/react'
+import { useDocument } from '@/hooks/useDocument'
 
 interface User {
   id: string
@@ -32,6 +33,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [isLoadingUser, setIsLoadingUser] = useState(true)
+  useDocument({ title: 'Edit User' })
 
   useEffect(() => {
     const fetchUser = async () => {

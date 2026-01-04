@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useDocument } from '@/hooks/useDocument'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -14,6 +15,7 @@ export default function RegisterPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  useDocument({ title: 'Register' })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

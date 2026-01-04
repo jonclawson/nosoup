@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { useDocument } from '@/hooks/useDocument'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -15,6 +16,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  useDocument({ title: 'Login' })
 
   useEffect(() => {
     const message = searchParams.get('message')

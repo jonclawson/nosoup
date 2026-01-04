@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { use } from 'react'
 import type { Article, Field, Author, FieldType, Tag } from '@/lib/types'
 import ArticleForm from '@/components/ArticleForm'
+import { useDocument } from '@/hooks/useDocument'
 
 
 interface EditArticlePageProps {
@@ -21,6 +22,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
 
   const [error, setError] = useState('')
   const [isLoadingArticle, setIsLoadingArticle] = useState(true)
+  useDocument({ title: `Edit Article - ${resolvedParams.id}` })
 
 
   useEffect(() => {

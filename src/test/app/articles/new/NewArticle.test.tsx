@@ -19,6 +19,11 @@ jest.mock('@/components/ArticleForm', () => {
   }
 })
 
+// Mock userDocument
+jest.mock('@/hooks/useDocument', () => ({
+  useDocument: jest.fn(),
+}))
+
 describe('NewArticle', () => {
   it('renders the component correctly', () => {
     render(<NewArticle />)

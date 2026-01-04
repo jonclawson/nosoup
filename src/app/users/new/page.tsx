@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useDocument } from '@/hooks/useDocument'
 
 export default function NewUserPage() {
   const router = useRouter()
@@ -13,6 +14,7 @@ export default function NewUserPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  useDocument({ title: 'Create New User' })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

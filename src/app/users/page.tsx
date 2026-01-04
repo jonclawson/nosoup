@@ -3,6 +3,11 @@ import Link from 'next/link'
 import UserList from '@/components/UserList'
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+  title: 'Users',
+  description: 'Manage the users of your application.',
+}
+
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
     orderBy: {

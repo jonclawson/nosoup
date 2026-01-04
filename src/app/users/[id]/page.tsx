@@ -5,6 +5,7 @@ import Link from 'next/link'
 import DeleteButton from '@/components/DeleteButton'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
+import { useDocument } from '@/hooks/useDocument'
 
 interface User {
   id: string
@@ -27,6 +28,7 @@ export default function UserPage({ params }: UserPageProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  useDocument({ title: 'Profile - User Details' })
 
   useEffect(() => {
     const fetchUser = async () => {

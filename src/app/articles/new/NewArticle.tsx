@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import ArticleForm from '@/components/ArticleForm'
+import { useDocument } from '@/hooks/useDocument'
 export const dynamic = 'force-dynamic'
 
 export default function NewArticle() {
-
+  useDocument({ title: 'Write New Article' })
 
 
   return (

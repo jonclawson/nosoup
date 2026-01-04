@@ -43,6 +43,11 @@ jest.mock('react', () => {
   }
 })
 
+// Mock useDocument
+jest.mock('@/hooks/useDocument', () => ({
+  useDocument: jest.fn(),
+}))
+
 const mockArticle: Article = {
   id: '1',
   title: 'Test Article',
