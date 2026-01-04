@@ -1,4 +1,6 @@
 import { withAuth as originalWithAuth } from 'next-auth/middleware'
+import middleware from '@/middleware'
+import { NextResponse } from 'next/server'
 
 // Mock withAuth to return the inner function and expose the options
 jest.mock('next-auth/middleware', () => {
@@ -14,13 +16,12 @@ jest.mock('next-auth/middleware', () => {
 // Mock NextResponse
 jest.mock('next/server', () => ({
   NextResponse: {
-    redirect: jest.fn(),
+    rewrite: jest.fn(),
     next: jest.fn(() => ({ headers: { set: jest.fn() } })),
   },
 }))
 
-import middleware from '@/middleware'
-import { NextResponse } from 'next/server'
+
 
 describe('middleware', () => {
   afterEach(() => {
@@ -34,19 +35,18 @@ describe('middleware', () => {
     const req: any = {
       nextUrl: {
         pathname: '/files/some.png',
-        clone() {
-          return { pathname: '/files/some.png' }
-        },
+        origin: 'http://localhost',         // add origin
+        clone() { return { pathname: '/files/some.png', origin: 'http://localhost' } }
       },
+      url: 'http://localhost/files/some.png', // add full request URL
       method: 'GET',
     }
 
     // Call middleware
     middleware(req)
 
-    expect(NextResponse.redirect as jest.Mock).toHaveBeenCalled()
-    const [url, status] = (NextResponse.redirect as jest.Mock).mock.calls[0]
-    expect(status).toBe(307)
+    expect(NextResponse.rewrite as jest.Mock).toHaveBeenCalled()
+    const [url] = (NextResponse.rewrite as jest.Mock).mock.calls[0]
     expect(url.pathname).toBe('/api/files/some.png')
   })
 

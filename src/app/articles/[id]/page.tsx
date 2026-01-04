@@ -46,11 +46,9 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         if (articleData && articleData.slug) {
           router.push(`/${articleData.slug}`)
         }
-        else {
-          setTitle(articleData.title)
-          setArticle(articleData)
-          setLoading(false)
-        }
+        setTitle(articleData.title)
+        setArticle(articleData)
+        setLoading(false)
       } catch (err) {
         setError('Failed to fetch article')
         setLoading(false)

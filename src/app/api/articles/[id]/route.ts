@@ -63,7 +63,7 @@ export async function GET(
         }
       }
     })
-    console.log('Fetched article:', article)
+    console.log('Fetched article by id:', article)
 
     if (!article) {
       return NextResponse.json(

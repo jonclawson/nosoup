@@ -42,7 +42,7 @@ export async function GET(
         }
       }
     })
-    console.log('Fetched article:', article)
+    console.log('Fetched article by slug:', article)
 
     if (!article) {
       return NextResponse.json(
