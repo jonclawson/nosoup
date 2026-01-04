@@ -11,11 +11,6 @@ import Search from "@/components/Search";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "NoSoup Content Management App",
-  description: "A NextJS app for managing content",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
