@@ -234,7 +234,7 @@ describe('/api/articles/[id]/route', () => {
       const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
 
       expect(response.status).toBe(200)
-      const fs = require('fs/promises')
+      const fs = await import('fs/promises')
       expect(fs.writeFile).toHaveBeenCalled()
     })
 
@@ -254,7 +254,7 @@ describe('/api/articles/[id]/route', () => {
       ;(prisma.menuTab.findFirst as jest.Mock).mockResolvedValue(null)
       ;(prisma.article.update as jest.Mock).mockResolvedValue(mockArticle)
 
-      const client = require('@aws-sdk/client-s3')
+      const client = await import('@aws-sdk/client-s3')
       // set send on prototype so existing s3Client instance (created at module init) has send
       client.S3Client.prototype.send = jest.fn().mockResolvedValue({})
 
@@ -274,7 +274,7 @@ describe('/api/articles/[id]/route', () => {
       const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
 
       expect(response.status).toBe(200)
-      const clientModule = require('@aws-sdk/client-s3')
+      const clientModule = await import('@aws-sdk/client-s3')
       expect(clientModule.S3Client.prototype.send).toHaveBeenCalled()
     })
 
@@ -292,7 +292,7 @@ describe('/api/articles/[id]/route', () => {
       ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
       ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
 
-      const client = require('@aws-sdk/client-s3')
+      const client = await import('@aws-sdk/client-s3')
       // set send on prototype to simulate rejection
       client.S3Client.prototype.send = jest.fn().mockRejectedValue(new Error('upload fail'))
 
