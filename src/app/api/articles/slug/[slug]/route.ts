@@ -18,29 +18,7 @@ export async function GET(
         slug: slug ,
         ...(!session?.user ? {published: true} : {})
       },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true
-          }
-        },
-        fields: {
-          select: {
-            id: true,
-            type: true,
-            value: true
-          }
-        },
-        tags: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
-      }
+      select: { id: true }
     })
     console.log('Fetched article by slug:', article)
 
@@ -51,14 +29,7 @@ export async function GET(
       )
     }
 
-    // Serialize dates
-    const serializedArticle = {
-      ...article,
-      createdAt: article.createdAt.toISOString(),
-      updatedAt: article.updatedAt.toISOString()
-    }
-
-    return NextResponse.json(serializedArticle)
+    return NextResponse.json(article)
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch article' },

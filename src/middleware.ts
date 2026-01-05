@@ -1,5 +1,6 @@
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
+import slugify from 'slugify'
 
 export default withAuth(
   async function middleware(req) {
@@ -23,6 +24,15 @@ export default withAuth(
     && !pathname.startsWith('/_next')
     && !pathname.includes('.')) {
     const slug = pathname.slice(1)
+    const articlesAlias = await fetch(`${req.nextUrl.origin}/api/settings/navigation_articles_link`);
+    if (articlesAlias.ok) {
+      let { value: alias } = await articlesAlias.json();
+      alias = slugify(alias, { lower: true });
+      if (alias && slug === alias) {
+        console.log('Rewriting to articles list:',`/articles`);
+        return NextResponse.rewrite(new URL(`/articles`, req.url));
+      }
+    }
     const res = await fetch(`${req.nextUrl.origin}/api/articles/slug/${encodeURIComponent(slug)}`);
     console.log('Middleware fetch for slug:', slug, 'Response status:', res.status);
     if (res.ok) {

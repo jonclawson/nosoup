@@ -5,10 +5,20 @@ import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
 import { useDocument } from '@/hooks/useDocument'
 import { useStateContext } from '@/contexts/StateContext'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function ArticlesPage() {
   const { data: session, status } = useSession()
+  const router = useRouter()
   const { getSetting } = useStateContext()
+  useEffect (() => {
+    const articlesAlias = getSetting('navigation_articles_link')
+    if (articlesAlias && articlesAlias !== 'articles') {
+      router.push(`/${articlesAlias}`)
+    }
+  })
+
   const pageTitle = getSetting('navigation_articles_link') || 'Articles'
   useDocument({ title: pageTitle })
 

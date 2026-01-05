@@ -48,6 +48,13 @@ jest.mock('@/contexts/StateContext', () => ({
   })),
 }))
 
+// Mock useRouter
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+  })),
+}))
+
 describe('ArticlesPage', () => {
   it('should render the articles page correctly', () => {
     render(<ArticlesPage />)

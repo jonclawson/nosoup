@@ -57,15 +57,11 @@ describe('GET /api/articles/slug/[slug]', () => {
 
     expect(prisma.article.findUnique).toHaveBeenCalledWith(expect.objectContaining({
       where: { slug: 'test-slug', published: true },
-      include: expect.any(Object),
     }))
 
     expect((NextResponse.json as jest.Mock).mock.calls.length).toBeGreaterThan(0)
     const sent = (NextResponse.json as jest.Mock).mock.calls[0][0]
     expect(sent.id).toBe('1')
-    expect(typeof sent.createdAt).toBe('string')
-    expect(sent.createdAt).toBe(mockArticle.createdAt.toISOString())
-    expect(sent.updatedAt).toBe(mockArticle.updatedAt.toISOString())
   })
 
   it('does not add published filter when user is authenticated', async () => {
