@@ -79,6 +79,12 @@ describe('middleware', () => {
       expect(result).toBe(true)
     })
 
+    it('allows /auth callback path without a token', () => {
+      const req: any = { method: 'GET', nextUrl: { pathname: '/auth/callback' } }
+      const result = authorized({ req, token: null })
+      expect(result).toBe(true)
+    })
+
     it('denies non-admin access to other users when not own', () => {
       const req: any = { method: 'POST', nextUrl: { pathname: '/api/users' } }
       const token = { id: '2', role: 'user' }
@@ -98,6 +104,47 @@ describe('middleware', () => {
       const token = { id: '1', role: 'user' }
       const result = authorized({ req, token })
       expect(result).toBe(true)
+    })
+  })
+
+  describe('rewrites', () => {
+    afterEach(() => {
+      global.fetch = undefined as any
+    })
+
+    it('rewrites alias path to /articles when navigation_articles_link matches', async () => {
+      global.fetch = jest.fn()
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ value: 'News' }) })
+
+      const req: any = {
+        nextUrl: { pathname: '/news', origin: 'http://localhost' },
+        url: 'http://localhost/news',
+        method: 'GET',
+      }
+
+      await middleware(req)
+
+      expect(NextResponse.rewrite as jest.Mock).toHaveBeenCalled()
+      const [url] = (NextResponse.rewrite as jest.Mock).mock.calls[0]
+      expect(url.pathname).toBe('/articles')
+    })
+
+    it('rewrites slug path to /articles/:id when API returns id', async () => {
+      global.fetch = jest.fn()
+        .mockResolvedValueOnce({ ok: false }) // navigation alias fetch
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ id: '123' }) })
+
+      const req: any = {
+        nextUrl: { pathname: '/test-slug', origin: 'http://localhost' },
+        url: 'http://localhost/test-slug',
+        method: 'GET',
+      }
+
+      await middleware(req)
+
+      expect(NextResponse.rewrite as jest.Mock).toHaveBeenCalled()
+      const [url] = (NextResponse.rewrite as jest.Mock).mock.calls[0]
+      expect(url.pathname).toBe('/articles/123')
     })
   })
 })

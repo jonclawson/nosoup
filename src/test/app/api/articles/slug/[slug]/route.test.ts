@@ -30,24 +30,9 @@ describe('GET /api/articles/slug/[slug]', () => {
     jest.clearAllMocks()
   })
 
-  it('returns an article and serializes dates when found (unauthenticated)', async () => {
-    const mockArticle = {
-      id: '1',
-      title: 'Test',
-      slug: 'test-slug',
-      body: 'Body',
-      published: true,
-      sticky: false,
-      featured: false,
-      createdAt: new Date('2026-01-01T00:00:00.000Z'),
-      updatedAt: new Date('2026-01-02T00:00:00.000Z'),
-      authorId: 'author1',
-      author: { id: 'author1', name: 'Author', email: 'a@b.com', role: 'user' },
-      fields: [{ id: 'f1', type: 'text', value: 'v' }],
-      tags: [{ id: 't1', name: 'tag' }],
-    }
-
-    ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+  it('returns only id when found (unauthenticated)', async () => {
+    // when using select: { id: true } the database will return only id
+    ;(prisma.article.findUnique as jest.Mock).mockResolvedValue({ id: '1' })
     ;(getServerSession as jest.Mock).mockResolvedValue(null)
 
     const request = new NextRequest('http://localhost/api/articles/slug/test-slug')
@@ -57,11 +42,13 @@ describe('GET /api/articles/slug/[slug]', () => {
 
     expect(prisma.article.findUnique).toHaveBeenCalledWith(expect.objectContaining({
       where: { slug: 'test-slug', published: true },
+      select: { id: true },
     }))
 
     expect((NextResponse.json as jest.Mock).mock.calls.length).toBeGreaterThan(0)
     const sent = (NextResponse.json as jest.Mock).mock.calls[0][0]
-    expect(sent.id).toBe('1')
+    // response should contain only the id field
+    expect(sent).toEqual({ id: '1' })
   })
 
   it('does not add published filter when user is authenticated', async () => {
@@ -76,6 +63,7 @@ describe('GET /api/articles/slug/[slug]', () => {
 
     expect(prisma.article.findUnique).toHaveBeenCalledWith(expect.objectContaining({
       where: { slug: 'private' },
+      select: { id: true },
     }))
   })
 
