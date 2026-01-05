@@ -57,28 +57,34 @@ export default withAuth(
     callbacks: {
       // Auth
       authorized: ({ req, token }) => {
-        if (req.method === "GET" && (
-          req.nextUrl.pathname.startsWith('/articles') || // because of /:path* matcher
-          req.nextUrl.pathname.startsWith('/auth') || // because of /:path* matcher
-          req.nextUrl.pathname.startsWith("/api/settings") ||
-          req.nextUrl.pathname.startsWith("/api/articles") ||
-          req.nextUrl.pathname.startsWith("/api/menu") ||
-          req.nextUrl.pathname.startsWith("/api/files") ||
-          req.nextUrl.pathname.startsWith("/files")
-        )) {
-          return true
-        }
-        if (!!token && token.role !== "admin" && (
-             req.nextUrl.pathname.startsWith("/api/users")
-          || req.nextUrl.pathname.startsWith("/users")
-        ) && ( 
+
+        // authenticated access for non-admins
+        if (!!token 
+          && token.role !== "admin" 
+          && (
+              req.nextUrl.pathname.startsWith("/api/users")
+              || req.nextUrl.pathname.startsWith("/users")
+            ) 
+          && ( 
               !req.nextUrl.pathname.startsWith(`/users/${token.id}`)
-          && !req.nextUrl.pathname.startsWith(`/api/users/${token.id}`) )) {
+              && !req.nextUrl.pathname.startsWith(`/api/users/${token.id}`) 
+            )
+          ) {
             console.log("Unauthorized access", token)
-            console.log("Path:", req.nextUrl.pathname)
-          // get, post or put on own user only
+            console.log("Unauthorized access", token.id, "Path:", req.nextUrl.pathname)
+          // get, delete, post or put on own user only
           return false
         }
+
+        // unauthenticated access
+        if (!token 
+          && req.method === "GET" 
+          && !req.nextUrl.pathname.startsWith("/api/users")
+          && !req.nextUrl.pathname.startsWith("/users")
+      ) {
+          return true
+        }
+
         return !!token
       },
     },
