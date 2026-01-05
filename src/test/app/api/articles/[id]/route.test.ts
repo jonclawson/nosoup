@@ -203,6 +203,168 @@ describe('/api/articles/[id]/route', () => {
 
       expect(response.status).toBe(400)
     })
+
+    it('should write image files to disk when R2 is not enabled', async () => {
+      delete process.env.R2_USE_R2
+      const file = {
+        arrayBuffer: async () => new Uint8Array([1,2,3]).buffer,
+        name: '.png',
+        type: 'image/png'
+      }
+      const fields = [{ type: 'image' }]
+
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+      ;(prisma.menuTab.findFirst as jest.Mock).mockResolvedValue(null)
+      ;(prisma.article.update as jest.Mock).mockResolvedValue(mockArticle)
+
+      const form = {
+        get: (k: string) => {
+          if (k === 'title') return 'Updated Title'
+          if (k === 'body') return 'Updated body'
+          if (k === 'fields') return JSON.stringify(fields)
+          if (k === 'tags') return '[]'
+          if (k === 'published') return 'true'
+          if (k === 'files[0]') return file
+          return null
+        }
+      }
+
+      const request = { formData: jest.fn().mockResolvedValue(form) } as any
+      const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(200)
+      const fs = require('fs/promises')
+      expect(fs.writeFile).toHaveBeenCalled()
+    })
+
+    it('should upload files to R2 when R2_USE_R2 is true and succeed', async () => {
+      process.env.R2_USE_R2 = 'true'
+      process.env.R2_BUCKET_NAME = 'test-bucket'
+
+      const file = {
+        arrayBuffer: async () => new Uint8Array([4,5,6]).buffer,
+        name: '.png',
+        type: 'image/png'
+      }
+      const fields = [{ type: 'image' }]
+
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+      ;(prisma.menuTab.findFirst as jest.Mock).mockResolvedValue(null)
+      ;(prisma.article.update as jest.Mock).mockResolvedValue(mockArticle)
+
+      const client = require('@aws-sdk/client-s3')
+      // set send on prototype so existing s3Client instance (created at module init) has send
+      client.S3Client.prototype.send = jest.fn().mockResolvedValue({})
+
+      const form = {
+        get: (k: string) => {
+          if (k === 'title') return 'Updated Title'
+          if (k === 'body') return 'Updated body'
+          if (k === 'fields') return JSON.stringify(fields)
+          if (k === 'tags') return '[]'
+          if (k === 'published') return 'true'
+          if (k === 'files[0]') return file
+          return null
+        }
+      }
+
+      const request = { formData: jest.fn().mockResolvedValue(form) } as any
+      const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(200)
+      const clientModule = require('@aws-sdk/client-s3')
+      expect(clientModule.S3Client.prototype.send).toHaveBeenCalled()
+    })
+
+    it('returns 500 if R2 upload fails', async () => {
+      process.env.R2_USE_R2 = 'true'
+      process.env.R2_BUCKET_NAME = 'test-bucket'
+
+      const file = {
+        arrayBuffer: async () => new Uint8Array([4,5,6]).buffer,
+        name: '.png',
+        type: 'image/png'
+      }
+      const fields = [{ type: 'image' }]
+
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+
+      const client = require('@aws-sdk/client-s3')
+      // set send on prototype to simulate rejection
+      client.S3Client.prototype.send = jest.fn().mockRejectedValue(new Error('upload fail'))
+
+      const form = {
+        get: (k: string) => {
+          if (k === 'title') return 'Updated Title'
+          if (k === 'body') return 'Updated body'
+          if (k === 'fields') return JSON.stringify(fields)
+          if (k === 'tags') return '[]'
+          if (k === 'published') return 'true'
+          if (k === 'files[0]') return file
+          return null
+        }
+      }
+
+      const request = { formData: jest.fn().mockResolvedValue(form) } as any
+      const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(500)
+    })
+
+    it('returns 500 if file processing throws', async () => {
+      delete process.env.R2_USE_R2
+      const badFile = {
+        arrayBuffer: async () => { throw new Error('boom') },
+        name: '.png',
+        type: 'image/png'
+      }
+      const fields = [{ type: 'image' }]
+
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+
+      const form = {
+        get: (k: string) => {
+          if (k === 'title') return 'Updated Title'
+          if (k === 'body') return 'Updated body'
+          if (k === 'fields') return JSON.stringify(fields)
+          if (k === 'tags') return '[]'
+          if (k === 'published') return 'true'
+          if (k === 'files[0]') return badFile
+          return null
+        }
+      }
+
+      const request = { formData: jest.fn().mockResolvedValue(form) } as any
+      const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(500)
+    })
+
+    it('returns 404 when update throws P2025', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+      ;(prisma.article.update as jest.Mock).mockRejectedValue({ code: 'P2025' })
+
+      const form = {
+        get: (k: string) => {
+          if (k === 'title') return 'Updated Title'
+          if (k === 'body') return 'Updated body'
+          if (k === 'fields') return '[]'
+          if (k === 'tags') return '[]'
+          if (k === 'published') return 'true'
+          return null
+        }
+      }
+
+      const request = { formData: jest.fn().mockResolvedValue(form) } as any
+      const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(404)
+    })
   })
 
   describe('DELETE', () => {
@@ -244,6 +406,28 @@ describe('/api/articles/[id]/route', () => {
       const response = await DELETE(request, { params: Promise.resolve({ id: '1' }) })
 
       expect(response.status).toBe(403)
+    })
+
+    it('allows admin to delete any article', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'admin', role: 'admin' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+      ;(prisma.article.delete as jest.Mock).mockResolvedValue(mockArticle)
+
+      const request = new NextRequest('http://localhost/api/articles/1', { method: 'DELETE' })
+      const response = await DELETE(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(200)
+    })
+
+    it('returns 404 when delete throws P2025', async () => {
+      ;(getServerSession as jest.Mock).mockResolvedValue({ user: { id: 'user1' } })
+      ;(prisma.article.findUnique as jest.Mock).mockResolvedValue(mockArticle)
+      ;(prisma.article.delete as jest.Mock).mockRejectedValue({ code: 'P2025' })
+
+      const request = new NextRequest('http://localhost/api/articles/1', { method: 'DELETE' })
+      const response = await DELETE(request, { params: Promise.resolve({ id: '1' }) })
+
+      expect(response.status).toBe(404)
     })
   })
 })
