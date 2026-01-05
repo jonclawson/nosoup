@@ -9,6 +9,16 @@ jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
 }));
 
+// Mock useStateContext
+jest.mock('@/contexts/StateContext', () => ({
+  useStateContext: jest.fn(() => ({
+    getSetting: jest.fn((key: string) => {
+      if (key === 'navigation_articles_link') return 'articles';
+      return null;
+    }),
+  })),
+}));
+
 // Mock next/link
 jest.mock('next/link', () => {
   return function MockLink({ href, children, className }: any) {
