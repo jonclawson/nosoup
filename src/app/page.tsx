@@ -4,6 +4,7 @@ import ArticleList from '@/components/ArticleList'
 import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
 import { useDocument } from '@/hooks/useDocument'
+import Featured from '@/components/Featured'
 
 export default function HomePage() {
   const { data: session, status } = useSession()
@@ -29,7 +30,7 @@ export default function HomePage() {
               </div>
           </div>
         </Setting>
-      <ArticleList  featured={true}/>
+      <Featured />
     </div>
   )
 } 
