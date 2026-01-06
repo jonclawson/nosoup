@@ -130,7 +130,7 @@ describe('ArticlePage', () => {
 
       render(<ArticlePage params={Promise.resolve({ id: '1' })} />)
 
-      expect(screen.getByText('← Back to Articles')).toBeInTheDocument()
+      expect(screen.getByText('← Back')).toBeInTheDocument()
     })
   })
 
@@ -252,7 +252,7 @@ describe('ArticlePage', () => {
 
       await waitFor(() => {
         const links = screen.getAllByTestId('link')
-        const backLink = links.find(link => link.textContent.includes('← Back to Articles'))
+        const backLink = links.find(link => link.textContent.includes('← Back'))
         expect(backLink).toHaveAttribute('href', '/articles')
       })
     })

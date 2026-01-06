@@ -32,7 +32,7 @@ describe('NewArticle', () => {
     const backLink = screen.getByTestId('link')
     expect(backLink).toBeInTheDocument()
     expect(backLink).toHaveAttribute('href', '/articles')
-    expect(backLink).toHaveTextContent('← Back to Articles')
+    expect(backLink).toHaveTextContent('← Back')
 
     // Check if the heading is present
     const heading = screen.getByRole('heading', { level: 1 })
@@ -69,7 +69,7 @@ describe('NewArticle', () => {
     expect(mainDiv).toHaveClass('max-w-8xl', 'mx-auto', 'px-4', 'sm:px-6', 'lg:px-8')
 
     // Check back link container
-    const backLinkContainer = screen.getByText('← Back to Articles').parentElement
+    const backLinkContainer = screen.getByText('← Back').parentElement
     expect(backLinkContainer).toHaveClass('mb-8')
 
     // Check heading classes

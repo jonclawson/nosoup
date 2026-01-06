@@ -66,7 +66,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               href="/articles"
               className="text-blue-600 hover:text-blue-900 text-sm font-medium"
             >
-              ← Back to Articles
+              ← Back
             </Link>
           </div>
           <SkeletonArticle />
@@ -80,7 +80,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         <div className="text-center py-12">
           <div className="text-red-500">{error || 'Article not found'}</div>
           <Link href="/articles" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
-            Back to Articles
+            Back
           </Link>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           href="/articles"
           className="text-blue-600 hover:text-blue-900 text-sm font-medium"
         >
-          ← Back to Articles
+          ← Back
         </Link>
       </div>
 

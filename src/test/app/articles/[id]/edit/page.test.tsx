@@ -108,7 +108,7 @@ describe('EditArticlePage', () => {
       render(<EditArticlePage params={Promise.resolve({ id: '1' })} />)
 
       await waitFor(() => {
-        const backLink = screen.getByText('← Back to Article')
+        const backLink = screen.getByText('← Back')
         expect(backLink).toBeInTheDocument()
         expect(backLink.closest('a')).toHaveAttribute('href', '/articles/1')
       })
@@ -190,7 +190,7 @@ describe('EditArticlePage', () => {
       await waitFor(() => {
         const links = screen.queryAllByTestId('link')
         const backLink = links.find(link => link.getAttribute('href') === '/articles')
-        expect(backLink || screen.queryByText(/Back to Articles|Loading article/)).toBeInTheDocument()
+        expect(backLink || screen.queryByText(/Back|Loading article/)).toBeInTheDocument()
       }, { timeout: 3000 })
     })
 
@@ -246,7 +246,7 @@ describe('EditArticlePage', () => {
       render(<EditArticlePage params={Promise.resolve({ id: '1' })} />)
 
       await waitFor(() => {
-        const backLink = screen.getByText('← Back to Article')
+        const backLink = screen.getByText('← Back')
         expect(backLink.closest('a')).toHaveClass(
           'text-blue-600',
           'hover:text-blue-900',

@@ -16,7 +16,7 @@ export default function NewArticle() {
           href="/articles"
           className="text-blue-600 hover:text-blue-900 text-sm font-medium"
         >
-          ← Back to Articles
+          ← Back
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-gray-900">Write New Article</h1>
       </div>

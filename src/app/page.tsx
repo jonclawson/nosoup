@@ -24,7 +24,7 @@ export default function HomePage() {
                   href="/articles/"
                   className="inline-flex items-center justify-center  px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700"
                 >
-                  All Articles
+                  More &rarr;
                 </Link>
               </div>
           </div>

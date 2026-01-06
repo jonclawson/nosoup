@@ -61,7 +61,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
         <div className="text-center py-12">
           <div className="text-red-500">{error}</div>
           <Link href="/articles" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
-            Back to Articles
+            Back
           </Link>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
           href={`/articles/${resolvedParams.id}`}
           className="text-blue-600 hover:text-blue-900 text-sm font-medium"
         >
-          ← Back to Article
+          ← Back
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-gray-900">Edit Article</h1>
       </div>
