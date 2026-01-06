@@ -13,12 +13,11 @@ export async function GET(request: NextRequest) {
   const isSqlite = process.env.DATABASE_URL?.startsWith('file:') || false;
   console.log('Search parameter:', search)
   try {
-    const where = search ? { name: { 
-      contains: search, 
-      mode: isSqlite ? undefined : 'insensitive' 
-    } } : undefined;
     const tags = await prisma.tag.findMany({
-      ...(where ? { where } : {}),
+      ...(search ? { where: { name: isSqlite
+        ? { contains: search }
+        : { contains: search, mode: 'insensitive' } 
+      } } : {}),
       select: {
         id: true,
         name: true
