@@ -17,7 +17,7 @@ export default function ArticlesPage() {
     if (articlesAlias && articlesAlias !== 'articles') {
       router.push(`/${articlesAlias}`)
     }
-  })
+  }, [])
 
   const pageTitle = getSetting('navigation_articles_link') || 'Articles'
   useDocument({ title: pageTitle })
