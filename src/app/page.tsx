@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
 import { useDocument } from '@/hooks/useDocument'
 import Featured from '@/components/Featured'
+import Tags from '@/components/Tags'
 
 export default function HomePage() {
   const { data: session, status } = useSession()
@@ -31,6 +32,7 @@ export default function HomePage() {
           </div>
         </Setting>
       <Featured />
+      <Tags style="justify-between mt-8" />
     </div>
   )
 } 

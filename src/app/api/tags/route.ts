@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     const tags = await prisma.tag.findMany({
       ...(where ? { where } : {}),
       select: {
+        id: true,
         name: true
       },
       distinct: ['name'],

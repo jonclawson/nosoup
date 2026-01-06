@@ -26,9 +26,9 @@ describe('GET /api/tags', () => {
 
   it('should return all tags ordered alphabetically', async () => {
     const mockTags = [
-      { name: 'javascript' },
-      { name: 'react' },
-      { name: 'typescript' },
+      { id: 1, name: 'javascript' },
+      { id: 2, name: 'react' },
+      { id: 3, name: 'typescript' },
     ]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -42,6 +42,7 @@ describe('GET /api/tags', () => {
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
@@ -54,8 +55,8 @@ describe('GET /api/tags', () => {
 
   it('should filter tags by search parameter (non-sqlite and sqlite differences)', async () => {
     const mockTags = [
-      { name: 'javascript' },
-      { name: 'react' },
+      { id: 1, name: 'javascript' },
+      { id: 2, name: 'react' },
     ]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -77,6 +78,7 @@ describe('GET /api/tags', () => {
         },
       },
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
@@ -98,6 +100,7 @@ describe('GET /api/tags', () => {
         },
       },
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
@@ -110,7 +113,7 @@ describe('GET /api/tags', () => {
   })
 
   it('should perform case-insensitive search (non-sqlite and sqlite differences)', async () => {
-    const mockTags = [{ name: 'react' }]
+    const mockTags = [{ id: 2, name: 'react' }]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
     const mockRequest = {
@@ -131,6 +134,7 @@ describe('GET /api/tags', () => {
         },
       },
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
@@ -152,6 +156,7 @@ describe('GET /api/tags', () => {
         },
       },
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
@@ -178,7 +183,7 @@ describe('GET /api/tags', () => {
   })
 
   it('should select only name field from tags', async () => {
-    const mockTags = [{ name: 'javascript' }]
+    const mockTags = [{ id: 1, name: 'javascript' }]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
     const mockRequest = {
@@ -190,14 +195,14 @@ describe('GET /api/tags', () => {
     await GET(mockRequest)
 
     const callArgs = (prisma.tag.findMany as jest.Mock).mock.calls[0][0]
-    expect(callArgs.select).toEqual({ name: true })
+    expect(callArgs.select).toEqual({ id: true, name: true })
   })
 
   it('should return distinct tag names', async () => {
     const mockTags = [
-      { name: 'javascript' },
-      { name: 'react' },
-      { name: 'typescript' },
+      { id: 1, name: 'javascript' },
+      { id: 2, name: 'react' },
+      { id: 3, name: 'typescript' },
     ]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -215,9 +220,9 @@ describe('GET /api/tags', () => {
 
   it('should order results alphabetically by name ascending', async () => {
     const mockTags = [
-      { name: 'javascript' },
-      { name: 'react' },
-      { name: 'typescript' },
+      { id: 1, name: 'javascript' },
+      { id: 2, name: 'react' },
+      { id: 3, name: 'typescript' },
     ]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -253,7 +258,7 @@ describe('GET /api/tags', () => {
   })
 
   it('should handle search parameter with special characters (non-sqlite and sqlite differences)', async () => {
-    const mockTags = [{ name: 'c++' }]
+    const mockTags = [{ id: 4, name: 'c++' }]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
     const mockRequest = {
@@ -294,8 +299,8 @@ describe('GET /api/tags', () => {
 
   it('should handle missing search parameter as empty string', async () => {
     const mockTags = [
-      { name: 'javascript' },
-      { name: 'react' },
+      { id: 1, name: 'javascript' },
+      { id: 2, name: 'react' },
     ]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -309,6 +314,7 @@ describe('GET /api/tags', () => {
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
       select: {
+        id: true,
         name: true,
       },
       distinct: ['name'],
