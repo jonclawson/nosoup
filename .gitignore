@@ -57,3 +57,5 @@ public/uploads
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+*storybook.log
+storybook-static

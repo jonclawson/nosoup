@@ -14,7 +14,9 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -55,6 +57,10 @@
     "mysql2": "^3.15.3",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "storybook": "^10.1.11",
+    "@storybook/nextjs-vite": "^10.1.11",
+    "vite": "^7.3.0",
+    "eslint-plugin-storybook": "^10.1.11"
   }
 }
