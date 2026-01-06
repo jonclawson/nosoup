@@ -41,11 +41,6 @@ describe('GET /api/tags', () => {
     const result = await GET(mockRequest)
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
-      where: {
-        name: {
-          contains: '',
-        },
-      },
       select: {
         name: true,
       },
@@ -57,7 +52,7 @@ describe('GET /api/tags', () => {
     expect(NextResponse.json).toHaveBeenCalledWith(mockTags)
   })
 
-  it('should filter tags by search parameter', async () => {
+  it('should filter tags by search parameter (non-sqlite and sqlite differences)', async () => {
     const mockTags = [
       { name: 'javascript' },
       { name: 'react' },
@@ -70,6 +65,30 @@ describe('GET /api/tags', () => {
       },
     } as unknown as NextRequest
 
+    // non-SQLite: should include mode: 'insensitive'
+    delete process.env.DATABASE_URL
+    await GET(mockRequest)
+
+    expect(prisma.tag.findMany).toHaveBeenCalledWith({
+      where: {
+        name: {
+          contains: 'java',
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        name: true,
+      },
+      distinct: ['name'],
+      orderBy: {
+        name: 'asc',
+      },
+    })
+
+    ;(prisma.tag.findMany as jest.Mock).mockClear()
+
+    // SQLite: DATABASE_URL starts with 'file:' — mode should be omitted
+    process.env.DATABASE_URL = 'file:dev.db'
     await GET(mockRequest)
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
@@ -86,9 +105,11 @@ describe('GET /api/tags', () => {
         name: 'asc',
       },
     })
+
+    delete process.env.DATABASE_URL
   })
 
-  it('should convert search parameter to lowercase', async () => {
+  it('should perform case-insensitive search (non-sqlite and sqlite differences)', async () => {
     const mockTags = [{ name: 'react' }]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -98,12 +119,15 @@ describe('GET /api/tags', () => {
       },
     } as unknown as NextRequest
 
+    // non-SQLite
+    delete process.env.DATABASE_URL
     await GET(mockRequest)
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
       where: {
         name: {
-          contains: 'react',
+          contains: 'REACT',
+          mode: 'insensitive',
         },
       },
       select: {
@@ -114,6 +138,29 @@ describe('GET /api/tags', () => {
         name: 'asc',
       },
     })
+
+    ;(prisma.tag.findMany as jest.Mock).mockClear()
+
+    // SQLite
+    process.env.DATABASE_URL = 'file:dev.db'
+    await GET(mockRequest)
+
+    expect(prisma.tag.findMany).toHaveBeenCalledWith({
+      where: {
+        name: {
+          contains: 'REACT',
+        },
+      },
+      select: {
+        name: true,
+      },
+      distinct: ['name'],
+      orderBy: {
+        name: 'asc',
+      },
+    })
+
+    delete process.env.DATABASE_URL
   })
 
   it('should return empty array when no tags match search', async () => {
@@ -205,7 +252,7 @@ describe('GET /api/tags', () => {
     )
   })
 
-  it('should handle search parameter with special characters', async () => {
+  it('should handle search parameter with special characters (non-sqlite and sqlite differences)', async () => {
     const mockTags = [{ name: 'c++' }]
     ;(prisma.tag.findMany as jest.Mock).mockResolvedValue(mockTags)
 
@@ -215,9 +262,34 @@ describe('GET /api/tags', () => {
       },
     } as unknown as NextRequest
 
+    // non-SQLite
+    delete process.env.DATABASE_URL
     await GET(mockRequest)
 
-    expect(prisma.tag.findMany).toHaveBeenCalled()
+    expect(prisma.tag.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: {
+        name: {
+          contains: 'c++',
+          mode: 'insensitive',
+        },
+      },
+    }))
+
+    ;(prisma.tag.findMany as jest.Mock).mockClear()
+
+    // SQLite
+    process.env.DATABASE_URL = 'file:dev.db'
+    await GET(mockRequest)
+
+    expect(prisma.tag.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: {
+        name: {
+          contains: 'c++',
+        },
+      },
+    }))
+
+    delete process.env.DATABASE_URL
   })
 
   it('should handle missing search parameter as empty string', async () => {
@@ -236,11 +308,6 @@ describe('GET /api/tags', () => {
     await GET(mockRequest)
 
     expect(prisma.tag.findMany).toHaveBeenCalledWith({
-      where: {
-        name: {
-          contains: '',
-        },
-      },
       select: {
         name: true,
       },

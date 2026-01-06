@@ -8,14 +8,17 @@ export async function GET(request: NextRequest) {
   // Returns only the name of each tag
   // filters unique tag names
   const searchParams = request.nextUrl.searchParams
-  const search = searchParams.get('search') || ''
+  const rawSearch = searchParams.get('search')?.trim()
+  const search = rawSearch && rawSearch.length > 0 ? rawSearch : null
+  const isSqlite = process.env.DATABASE_URL?.startsWith('file:') || false;
+  console.log('Search parameter:', search)
   try {
+    const where = search ? { name: { 
+      contains: search, 
+      mode: isSqlite ? undefined : 'insensitive' 
+    } } : undefined;
     const tags = await prisma.tag.findMany({
-      where: {
-        name: {
-          contains: search.toLowerCase(),
-        }
-      },
+      ...(where ? { where } : {}),
       select: {
         name: true
       },

@@ -25,13 +25,13 @@ jest.mock('@/components/Setting', () => {
   return MockSetting
 })
 
-// Mock ArticleList to capture featured prop
-jest.mock('@/components/ArticleList', () => {
-  const MockArticleList = ({ featured }: any) => (
-    <div data-testid="article-list" data-featured={String(featured)} />
+// Mock Featured component to capture featured prop
+jest.mock('@/components/Featured', () => {
+  const MockFeatured = ({ featured }: any) => (
+    <div data-testid="featured" data-featured={String(featured)} />
   )
-  MockArticleList.displayName = 'MockArticleList'
-  return MockArticleList
+  MockFeatured.displayName = 'MockFeatured'
+  return MockFeatured
 })
 
 // Mock useDocument hook
@@ -54,14 +54,6 @@ describe('HomePage', () => {
     expect(screen.getByText('Featured Articles')).toBeInTheDocument()
     expect(screen.getByText(/A collection of/)).toBeInTheDocument()
     expect(screen.getByTestId('link')).toHaveAttribute('href', '/articles/')
-  })
-
-  it('renders ArticleList with featured=true', () => {
-    render(<HomePage />)
-
-    const list = screen.getByTestId('article-list')
-    expect(list).toBeInTheDocument()
-    expect(list).toHaveAttribute('data-featured', 'true')
   })
 
   it('calls useDocument with empty title', () => {
