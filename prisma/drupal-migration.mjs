@@ -4,6 +4,8 @@ import mysql from 'mysql2/promise';
 import { PrismaClient } from '@prisma/client'
 import fs from 'fs';
 import path from 'path';
+import slugify from 'slugify';
+import { error } from 'console';
 
 // const globalForPrisma = globalThis 
 // const prisma = globalForPrisma.prisma ?? new PrismaClient()
@@ -51,27 +53,40 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
 
     for (const node of nodes) {
       console.log(node.nid, node.title);
-      const article = await prisma.article.create({
-        data: {
-          title: node.title,
-          body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
-          authorId: process.env.AUTHOR_DEFAULT_ID,
-          createdAt: new Date(node.created * 1000),
-          updatedAt: new Date(node.changed * 1000),
-          published: node.status === 1,
-          featured: node.promote === 1,
-          sticky: node.sticky === 1
-        },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true
+      const createArticle = async ({slug}= {slug: true}) => {
+        return await prisma.article.create({
+          data: {
+            title: node.title,
+            slug: slug ? slugify(node.title, { lower: true, strict: true }) : undefined,
+            body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
+            authorId: process.env.AUTHOR_DEFAULT_ID,
+            createdAt: new Date(node.created * 1000),
+            updatedAt: new Date(node.changed * 1000),
+            published: node.status === 1,
+            featured: node.promote === 1,
+            sticky: node.sticky === 1
+          },
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                email: true
+                }
               }
             }
+          });
+        }
+        let article;
+        try {
+          article = await createArticle();
+        } catch (err) {
+          console.warn('Error creating article for node:', node, err);
+          if (err.message.includes('slug')) {
+            console.log('Retrying article creation without slug...');
+            article = await createArticle({slug: false});
           }
-        });
+        }
         console.log('Created article:', article.id);
         const [terms] = await drupalConnection.execute(`
           select td.tid, td.vid, tn.nid, td.name 
@@ -114,8 +129,10 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
             }
           });
 
-          if (process.env.DRUPAL_FILES_DIR && process.env.LOCAL_FILES_DIR) {
+          if (process.env.COPY_DRUPAL_FILES === 'true') {
             console.log('Copying image files from Drupal files directory to local files directory')
+            console.log('Source DRUPAL_FILES_DIR:', process.env.DRUPAL_FILES_DIR);
+            console.log('Destination LOCAL_FILES_DIR:', process.env.LOCAL_FILES_DIR);
             const sourcePath = path.join(process.env.DRUPAL_FILES_DIR, image.filepath);
             const destPath = path.join(process.env.LOCAL_FILES_DIR, image.filepath.split('/').pop());
             try {
