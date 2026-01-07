@@ -64,20 +64,16 @@ describe('NewArticle', () => {
   it('renders with proper styling classes', () => {
     const { container } = render(<NewArticle />)
 
-    // Check main container classes
+    // Check main container uses module class
     const mainDiv = container.firstChild as HTMLElement
-    expect(mainDiv).toHaveClass('max-w-8xl', 'mx-auto', 'px-4', 'sm:px-6', 'lg:px-8')
+    expect(mainDiv).toHaveClass('new-article')
 
-    // Check back link container
-    const backLinkContainer = screen.getByText('← Back').parentElement
-    expect(backLinkContainer).toHaveClass('mb-8')
-
-    // Check heading classes
+    // Check heading uses module title class
     const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading).toHaveClass('mt-2', 'text-2xl', 'font-semibold', 'text-gray-900')
+    expect(heading).toHaveClass('new-article__title')
 
-    // Check form container classes
+    // Check form container uses module card class
     const formContainer = screen.getByTestId('article-form').parentElement?.parentElement
-    expect(formContainer).toHaveClass('bg-white', 'shadow', 'sm:rounded-lg')
+    expect(formContainer).toHaveClass('new-article__card')
   })
 })

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import ArticleForm from '@/components/ArticleForm'
 import { useDocument } from '@/hooks/useDocument'
+import styles from './NewArticle.module.css'
 export const dynamic = 'force-dynamic'
 
 export default function NewArticle() {
@@ -10,19 +11,19 @@ export default function NewArticle() {
 
 
   return (
-    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
+    <div className={styles['new-article']}>
+      <div className={styles['new-article__header']}>
         <Link
           href="/articles"
-          className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+          className={styles['new-article__back-link']}
         >
           ← Back
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-900">Write New Article</h1>
+        <h1 className={styles['new-article__title']}>Write New Article</h1>
       </div>
 
-      <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+      <div className={styles['new-article__card']}>
+        <div className={styles['new-article__card-body']}>
           <ArticleForm 
           articleData={{ title: '', 
             body: '', 

@@ -1,0 +1,27 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/app/articles/new/NewArticle.tsx */
+
+.new-article {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.new-article__header {
+  @apply mb-8;
+}
+
+.new-article__back-link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.new-article__title {
+  @apply mt-2 text-2xl font-semibold text-gray-900;
+}
+
+.new-article__card {
+  @apply bg-white shadow sm:rounded-lg;
+}
+
+.new-article__card-body {
+  @apply px-4 py-5 sm:p-6;
+}
