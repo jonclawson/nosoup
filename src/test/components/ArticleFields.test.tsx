@@ -71,7 +71,7 @@ describe('ArticleFields', () => {
     const img = container.querySelector('img') as HTMLImageElement;
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', 'https://example.com/image.jpg');
-    expect(img).toHaveClass('mb-4');
+    expect(img).toHaveClass('article-fields__image');
   });
 
   it('should not render image field when value is null or undefined', () => {
@@ -166,7 +166,7 @@ describe('ArticleFields', () => {
 
     render(<ArticleFields article={article} />);
     const codeContainer = screen.getByTestId('dompurify').parentElement;
-    expect(codeContainer).toHaveClass('bg-gray-100', 'p-4', 'rounded', 'mb-4', 'overflow-x-auto');
+    expect(codeContainer).toHaveClass('article-fields__code');
   });
 
   it('should render link field correctly', () => {
@@ -192,7 +192,7 @@ describe('ArticleFields', () => {
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', 'https://example.com');
     expect(link).toHaveTextContent('https://example.com');
-    expect(link).toHaveClass('text-blue-600', 'hover:text-blue-900', 'mb-4', 'block');
+    expect(link).toHaveClass('article-fields__link');
   });
 
   it('should render multiple fields', () => {
