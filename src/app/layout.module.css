@@ -1,0 +1,36 @@
+/* BEM-style class names for layout component
+   All utilities are applied via Tailwind's @apply
+*/
+@import "tailwindcss" reference;
+
+.layout__container {
+  @apply min-h-screen bg-gray-50;
+}
+
+.layout__nav {
+  @apply bg-white shadow-sm border-b;
+}
+
+.layout__nav-inner {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.layout__nav-row {
+  @apply flex justify-between h-16 px-4 sm:px-6 lg:px-8;
+}
+
+.layout__brand {
+  @apply flex items-center;
+}
+
+.layout__site-name {
+  @apply text-xl font-semibold text-gray-900;
+}
+
+.layout__controls {
+  @apply flex items-center space-x-4;
+}
+
+.layout__main {
+  @apply max-w-7xl mx-auto py-6 sm:px-6 lg:px-8;
+}
