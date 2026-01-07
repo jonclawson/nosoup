@@ -1,0 +1,15 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/ArticleFields.tsx */
+
+.article-fields__image {
+  @apply mb-4;
+}
+
+.article-fields__code {
+  @apply bg-gray-100 p-4 rounded mb-4 overflow-x-auto;
+}
+
+.article-fields__link {
+  @apply text-blue-600 hover:text-blue-900 mb-4 block;
+}

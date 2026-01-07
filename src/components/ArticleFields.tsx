@@ -1,6 +1,7 @@
 'use client'
 import type { Article, Field, Author } from '@/lib/types'
 import Dompurify from './Dompurify';
+import styles from './ArticleFields.module.css' 
 
 export default function ArticleFields({ article }: { article: Article | null }) {
   return  <>
@@ -10,9 +11,9 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                     (() => {
                     switch (field.type) {
                       case 'image':
-                        return field.value && <img src={field.value} alt="" className="mb-4" />
+                        return field.value && <img src={field.value} alt="" className={styles['article-fields__image']} />
                       case 'code':
-                        return <div className="bg-gray-100 p-4 rounded mb-4 overflow-x-auto">
+                        return <div className={styles['article-fields__code']}>
                                 {article && article?.author?.role === 'admin' ? (
                                   <div dangerouslySetInnerHTML={{ __html: field.value }} />
                                   ) : (
@@ -20,7 +21,7 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                                   )}
                               </div>
                       case 'link':
-                        return <a href={field.value} className="text-blue-600 hover:text-blue-900 mb-4 block">{field.value}</a>
+                        return <a href={field.value} className={styles['article-fields__link']}>{field.value}</a>
                       default:
                         return ''
                   }
