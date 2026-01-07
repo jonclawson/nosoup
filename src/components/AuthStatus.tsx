@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import SkeletonLine from './SkeletonLine'
+import styles from './AuthStatus.module.css' 
 
 export default function AuthStatus() {
   const { data: session, status } = useSession()
@@ -15,10 +16,10 @@ export default function AuthStatus() {
 
   if (session) {
     return (
-      <div className="flex items-center space-x-4">
+      <div className={styles['auth-status']}>
         <Link
           href={`/users/${session.user.id}`}
-          className="text-sm text-gray-700 hover:text-gray-900"
+          className={styles['auth-status__profile']}
           title={session.user.name}
         >
           Profile 
@@ -26,25 +27,25 @@ export default function AuthStatus() {
         <Link
           href="#"
           onClick={() => signOut({ callbackUrl: '/auth/login' })}
-          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+          className={styles['auth-status__signout']}
         >
           Sign Out
-        </Link>
+        </Link> 
       </div>
     )
   }
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className={styles['auth-status']}>
       <Link
         href="/auth/login"
-        className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+        className={styles['auth-status__link']}
       >
         Sign In
       </Link>
       <Link
         href="/auth/register"
-        className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+        className={styles['auth-status__signup']}
       >
         Sign Up
       </Link>

@@ -167,7 +167,7 @@ describe('AuthStatus', () => {
 
     render(<AuthStatus />);
     const profileLink = screen.getByRole('link', { name: /Profile/i });
-    expect(profileLink).toHaveClass('text-sm', 'text-gray-700', 'hover:text-gray-900');
+    expect(profileLink).toHaveClass('auth-status__profile');
   });
 
   it('should have correct styling classes on Sign Out link', () => {
@@ -184,7 +184,7 @@ describe('AuthStatus', () => {
 
     render(<AuthStatus />);
     const signOutLink = screen.getByRole('link', { name: /Sign Out/i });
-    expect(signOutLink).toHaveClass('text-gray-600', 'hover:text-gray-900', 'px-3', 'py-2', 'rounded-md', 'text-sm', 'font-medium');
+    expect(signOutLink).toHaveClass('auth-status__signout');
   });
 
   it('should have correct styling classes on Sign In link', () => {
@@ -195,7 +195,7 @@ describe('AuthStatus', () => {
 
     render(<AuthStatus />);
     const signInLink = screen.getByRole('link', { name: /Sign In/i });
-    expect(signInLink).toHaveClass('text-gray-600', 'hover:text-gray-900', 'px-3', 'py-2', 'rounded-md', 'text-sm', 'font-medium');
+    expect(signInLink).toHaveClass('auth-status__link');
   });
 
   it('should have correct styling classes on Sign Up link', () => {
@@ -206,7 +206,7 @@ describe('AuthStatus', () => {
 
     render(<AuthStatus />);
     const signUpLink = screen.getByRole('link', { name: /Sign Up/i });
-    expect(signUpLink).toHaveClass('bg-blue-600', 'text-white', 'px-4', 'py-2', 'rounded-md', 'text-sm', 'font-medium', 'hover:bg-blue-700');
+    expect(signUpLink).toHaveClass('auth-status__signup');
   });
 
   it('should display Profile and Sign Out links in a flex container when authenticated', () => {
@@ -222,8 +222,9 @@ describe('AuthStatus', () => {
     });
 
     const { container } = render(<AuthStatus />);
-    const flexContainer = container.querySelector('.flex');
-    expect(flexContainer).toHaveClass('flex', 'items-center', 'space-x-4');
+    const flexContainer = container.querySelector('.auth-status');
+    expect(flexContainer).toBeInTheDocument();
+    expect(flexContainer).toHaveClass('auth-status');
   });
 
   it('should display Sign In and Sign Up links in a flex container when not authenticated', () => {
@@ -233,8 +234,9 @@ describe('AuthStatus', () => {
     });
 
     const { container } = render(<AuthStatus />);
-    const flexContainer = container.querySelector('.flex');
-    expect(flexContainer).toHaveClass('flex', 'items-center', 'space-x-4');
+    const flexContainer = container.querySelector('.auth-status');
+    expect(flexContainer).toBeInTheDocument();
+    expect(flexContainer).toHaveClass('auth-status');
   });
 
   it('should not display authenticated links when user is not authenticated', () => {

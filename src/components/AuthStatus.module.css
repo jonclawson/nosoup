@@ -1,0 +1,23 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/AuthStatus.tsx */
+
+.auth-status {
+  @apply flex items-center space-x-4;
+}
+
+.auth-status__profile {
+  @apply text-sm text-gray-700 hover:text-gray-900;
+}
+
+.auth-status__signout {
+  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+}
+
+.auth-status__link {
+  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+}
+
+.auth-status__signup {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700;
+}
