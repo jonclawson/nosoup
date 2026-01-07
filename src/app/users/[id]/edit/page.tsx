@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { use } from 'react'
 import { useSession } from 'next-auth/react'
 import { useDocument } from '@/hooks/useDocument'
+import styles from './page.module.css' 
 
 interface User {
   id: string
@@ -88,9 +89,9 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
   if (isLoadingUser) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-gray-500">Loading user...</div>
+      <div className={styles['user-edit-page__loading']}>
+        <div className={styles['user-edit-page__loading__inner']}>
+          <div className={styles['user-edit-page__loading__text']}>Loading user...</div>
         </div>
       </div>
     )
@@ -98,10 +99,10 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
   if (error && !user) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-red-500">{error}</div>
-          <Link href="/users" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
+      <div className={styles['user-edit-page__error']}>
+        <div className={styles['user-edit-page__error__inner']}>
+          <div className={styles['user-edit-page__error__text']}>{error}</div>
+          <Link href="/users" className={styles['user-edit-page__back-link']}>
             Back to Users
           </Link>
         </div>
@@ -110,29 +111,29 @@ export default function EditUserPage({ params }: EditUserPageProps) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
+    <div className={styles['user-edit-page']}>
+      <div className={styles['user-edit-page__header']}>
         <Link
           href={`/users/${resolvedParams.id}`}
-          className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+          className={styles['user-edit-page__back-link']}
         >
           ← Back to User Details
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-900">Edit User</h1>
-      </div>
+        <h1 className={styles['user-edit-page__title']}>Edit User</h1>
+      </div> 
 
-      <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+      <div className={styles['user-edit-page__card']}>
+        <div className={styles['user-edit-page__card-body']}> 
           <form onSubmit={handleSubmit}>
             {error && (
-              <div className="mb-4 rounded-md bg-red-50 p-4">
-                <div className="text-sm text-red-700">{error}</div>
+              <div className={styles['user-edit-page__form-error']}>
+                <div className={styles['user-edit-page__form-error__text']}>{error}</div>
               </div>
-            )}
+            )} 
 
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <div className={styles['user-edit-page__form']}>
+              <div className={styles['user-edit-page__field']}>
+                <label htmlFor="name" className={styles['user-edit-page__label']}>
                   Name
                 </label>
                 <input
@@ -142,12 +143,12 @@ export default function EditUserPage({ params }: EditUserPageProps) {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className={styles['user-edit-page__input']}
                 />
-              </div>
+              </div> 
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <div className={styles['user-edit-page__field']}>
+                <label htmlFor="email" className={styles['user-edit-page__label']}>
                   Email
                 </label>
                 <input
@@ -157,13 +158,13 @@ export default function EditUserPage({ params }: EditUserPageProps) {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className={styles['user-edit-page__input']}
                 />
-              </div>
+              </div> 
 
               {session && session.user && session.user.role === 'admin' && (
-              <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+              <div className={styles['user-edit-page__field']}>
+                <label htmlFor="role" className={styles['user-edit-page__label']}>
                   Role
                 </label>
                 <select
@@ -171,27 +172,27 @@ export default function EditUserPage({ params }: EditUserPageProps) {
                   id="role"
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className={styles['user-edit-page__select']}
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
                   <option value="moderator">Moderator</option>
                 </select>
               </div>
-              )}
+              )} 
             </div>
 
-            <div className="mt-6 flex items-center justify-end space-x-3">
+            <div className={styles['user-edit-page__actions']}>
               <Link
                 href={`/users/${resolvedParams.id}`}
-                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className={styles['user-edit-page__cancel-btn']}
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                className={styles['user-edit-page__submit-btn']}
               >
                 {isLoading ? 'Updating...' : 'Update User'}
               </button>

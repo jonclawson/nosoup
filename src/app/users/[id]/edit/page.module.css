@@ -1,0 +1,89 @@
+@import "tailwindcss" reference;
+
+.user-edit-page {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-edit-page__header {
+  @apply mb-8;
+}
+
+.user-edit-page__back-link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.user-edit-page__title {
+  @apply mt-2 text-2xl font-semibold text-gray-900;
+}
+
+.user-edit-page__card {
+  @apply bg-white shadow sm:rounded-lg;
+}
+
+.user-edit-page__card-body {
+  @apply px-4 py-5 sm:p-6;
+}
+
+.user-edit-page__form-error {
+  @apply mb-4 rounded-md bg-red-50 p-4;
+}
+
+.user-edit-page__form-error__text {
+  @apply text-sm text-red-700;
+}
+
+.user-edit-page__form {
+  @apply space-y-6;
+}
+
+.user-edit-page__field {
+  /* container for label + input */
+}
+
+.user-edit-page__label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.user-edit-page__input {
+  @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
+}
+
+.user-edit-page__select {
+  @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
+}
+
+.user-edit-page__actions {
+  @apply mt-6 flex items-center justify-end space-x-3;
+}
+
+.user-edit-page__cancel-btn {
+  @apply rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.user-edit-page__submit-btn {
+  @apply inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50;
+}
+
+.user-edit-page__loading {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-edit-page__loading__inner {
+  @apply text-center py-12;
+}
+
+.user-edit-page__loading__text {
+  @apply text-gray-500;
+}
+
+.user-edit-page__error {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-edit-page__error__inner {
+  @apply text-center py-12;
+}
+
+.user-edit-page__error__text {
+  @apply text-red-500;
+}
