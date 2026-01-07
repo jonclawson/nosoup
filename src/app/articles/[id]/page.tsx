@@ -15,6 +15,7 @@ import ArticleTags from '@/components/ArticleTags'
 import { useSession } from 'next-auth/react'
 import { handleDownload } from '@/lib/handle-downloads'
 import { useDocument } from '@/hooks/useDocument'
+import styles from './page.module.css'
 interface ArticlePageProps {
   params: Promise<{
     id: string
@@ -60,11 +61,11 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
   if (loading) {
     return (
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
+      <div className={styles['article-page']}>
+          <div className={styles['article-page__back']}>
             <Link
               href="/articles"
-              className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+              className={styles['article-page__back__link']}
             >
               ← Back
             </Link>
@@ -76,10 +77,10 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
   if (error) {
     return (
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-red-500">{error || 'Article not found'}</div>
-          <Link href="/articles" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
+      <div className={styles['article-page']}>
+        <div className={styles['article-page__error']}>
+          <div className={styles['article-page__error__text']}>{error || 'Article not found'}</div>
+          <Link href="/articles" className={styles['article-page__error__back']}>
             Back
           </Link>
         </div>
@@ -88,35 +89,35 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
+    <div className={styles['article-page']}>
+      <div className={styles['article-page__back']}>
         <Link
           href="/articles"
-          className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+          className={styles['article-page__back__link']}
         >
           ← Back
         </Link>
       </div>
 
-      <article className={`${article?.published ? 'bg-white' : 'bg-pink-100'} shadow overflow-hidden sm:rounded-lg`}>
-        <div className="px-4 py-5 sm:px-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      <article className={`${styles['article-page__container']} ${article?.published ? styles['article-page__container--published'] : styles['article-page__container--draft']}`}>
+        <div className={styles['article-page__header']}>
+          <h1 className={styles['article-page__title']}>
             {article?.title}
           </h1>
-          <div className="flex items-center text-sm text-gray-500 mb-6">
+          <div className={styles['article-page__meta']}>
             <span>By {article?.author?.name}</span>
-            <span className="mx-2">•</span>
+            <span className={styles['article-page__meta__dot']}>•</span>
             <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
           </div>
         </div>
         
-        <div className="border-t border-gray-200">
-          <div className="px-4 py-5 sm:px-6">
-            <div className="prose max-w-none">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+        <div className={styles['article-page__divider']}>
+          <div className={styles['article-page__body']}>
+            <div className={styles['article-page__prose']}>
+              <div className={styles['article-page__text']}>
                 <ArticleFields article={article} />
               </div>
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed mt-6" onClick={handleDownload}>
+              <div className={styles['article-page__text--download']} onClick={handleDownload}>
                 <Dompurify html={article?.body || ''} />
               </div>
               <ArticleTags article={article} />
@@ -125,19 +126,19 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         </div>
       </article>
 
-      <div className="mt-6 flex space-x-3">
+      <div className={styles['article-page__actions']}>
         {session && session?.user?.role !== 'user' && (
         <>
           <Link
             href={`/articles/${article?.id}/edit`}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`${styles['article-page__btn']} ${styles['article-page__btn--edit']}`}
           >
             Edit Article
         </Link>
         <DeleteButton 
           userId={article?.id || ''} 
           onDelete={() => router.push('/articles')}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className={`${styles['article-page__btn']} ${styles['article-page__btn--delete']}`}
           resourceType="article"
         >
           Delete Article

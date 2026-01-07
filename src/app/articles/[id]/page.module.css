@@ -1,0 +1,91 @@
+@import "tailwindcss" reference;
+/* @import "@tailwindcss/typography" reference; */
+/* BEM-style classes for src/app/articles/[id]/page.tsx */
+
+.article-page {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.article-page__back {
+  @apply mb-8;
+}
+
+.article-page__back__link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.article-page__error {
+  @apply text-center py-12;
+}
+
+.article-page__error__text {
+  @apply text-red-500;
+}
+
+.article-page__error__back {
+  @apply text-blue-600 hover:text-blue-900 mt-4 inline-block;
+}
+
+.article-page__container {
+  @apply shadow overflow-hidden sm:rounded-lg;
+}
+
+.article-page__container--published {
+  @apply bg-white;
+}
+
+.article-page__container--draft {
+  @apply bg-pink-100;
+}
+
+.article-page__header {
+  @apply px-4 py-5 sm:px-6;
+}
+
+.article-page__title {
+  @apply text-3xl font-bold text-gray-900 mb-4;
+}
+
+.article-page__meta {
+  @apply flex items-center text-sm text-gray-500 mb-6;
+}
+
+.article-page__meta__dot {
+  @apply mx-2;
+}
+
+.article-page__divider {
+  @apply border-t border-gray-200;
+}
+
+.article-page__body {
+  @apply px-4 py-5 sm:px-6;
+}
+
+/* .article-page__prose {
+  @apply prose max-w-none;
+} */
+
+.article-page__text {
+  @apply whitespace-pre-wrap text-gray-700 leading-relaxed;
+}
+
+.article-page__text--download {
+  @apply whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
+}
+
+.article-page__actions {
+  @apply mt-6 flex space-x-3;
+}
+
+.article-page__btn {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.article-page__btn--edit {
+  @apply text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500;
+}
+
+.article-page__btn--delete {
+  @apply text-white bg-red-600 hover:bg-red-700 focus:ring-red-500;
+}
