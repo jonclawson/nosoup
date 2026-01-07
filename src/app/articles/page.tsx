@@ -8,14 +8,16 @@ import { useStateContext } from '@/contexts/StateContext'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import styles from './page.module.css'
+import slugify from 'slugify'
 
 export default function ArticlesPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { getSetting } = useStateContext()
   useEffect (() => {
-    const articlesAlias = getSetting('navigation_articles_link')
+    let articlesAlias = getSetting('navigation_articles_link')
     if (articlesAlias && articlesAlias !== 'articles') {
+      articlesAlias = slugify(articlesAlias, { lower: true })
       router.push(`/${articlesAlias}`)
     }
   }, [])
