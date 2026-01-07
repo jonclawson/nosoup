@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import styles from './Search.module.css'
 import { useDebounce } from '@/lib/debounce'
 
 interface Article {
@@ -59,15 +60,15 @@ export default function Search() {
   }
 
   return (
-    <div className="relative">
+    <div className={styles.search}>
       {!isExpanded ? (
         <button
           onClick={handleIconClick}
-          className="p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+          className={styles['search__icon-btn']}
           aria-label="Search"
         >
           <svg
-            className="w-5 h-5"
+            className={styles['search__icon']}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -82,18 +83,18 @@ export default function Search() {
           </svg>
         </button>
       ) : (
-        <div className="relative">
+        <div className={styles['search__input-wrap']}>
           <input
             type="text"
             value={query}
             onChange={handleInputChange}
             onBlur={handleInputBlur}
             placeholder="Search articles..."
-            className="w-64 px-4 py-2 pl-10 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className={styles['search__input']}
             autoFocus
           />
           <svg
-            className="absolute left-3 top-2.5 w-4 h-4 text-gray-400"
+            className={styles['search__input-icon']}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -107,37 +108,37 @@ export default function Search() {
             />
           </svg>
           {loading && (
-            <div className="absolute right-3 top-2.5">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+            <div className={styles['search__loading']}>
+              <div className={styles['search__spinner']}></div>
             </div>
           )}
         </div>
       )}
 
       {isExpanded && (results.length > 0 || loading) && (
-        <div className="absolute top-full mt-1 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+        <div className={styles['search__results']}>
           {loading ? (
-            <div className="px-4 py-2 text-sm text-gray-500">Searching...</div>
+            <div className={styles['search__searching']}>Searching...</div>
           ) : results.length > 0 ? (
             results.map((article) => (
               <Link
                 key={article.id}
                 href={`/articles/${article.id}`}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                className={styles['search__result']}
                 onClick={() => {
                   setIsExpanded(false)
                   setQuery('')
                   setResults([])
                 }}
               >
-                <div className="font-medium">{article.title}</div>
-                <div className="text-xs text-gray-500">
+                <div className={styles['search__result__title']}>{article.title}</div>
+                <div className={styles['search__result__meta']}>
                   {article.published ? 'Published' : 'Draft'}
                 </div>
               </Link>
             ))
           ) : query.trim() && !loading ? (
-            <div className="px-4 py-2 text-sm text-gray-500">No results found</div>
+            <div className={styles['search__noresults']}>No results found</div>
           ) : null}
         </div>
       )}
