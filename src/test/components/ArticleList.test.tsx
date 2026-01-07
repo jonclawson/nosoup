@@ -235,7 +235,7 @@ describe('ArticleList', () => {
 
     await waitFor(() => {
       const articleElement = container.querySelector('article');
-      expect(articleElement).toHaveClass('bg-white');
+      expect(articleElement).toHaveClass('article-list__item--published');
     });
   });
 
@@ -252,7 +252,7 @@ describe('ArticleList', () => {
 
     await waitFor(() => {
       const articleElement = container.querySelector('article');
-      expect(articleElement).toHaveClass('bg-pink-100');
+      expect(articleElement).toHaveClass('article-list__item--draft');
     });
   });
 

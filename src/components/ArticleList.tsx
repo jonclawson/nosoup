@@ -11,6 +11,7 @@ import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
+import styles from './ArticleList.module.css' 
 
 export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -54,27 +55,27 @@ export default function ArticleList({published = true, featured = null, sticky =
   }, []);
   
   return (
-    <div className="mt-8">
-      <div className="space-y-6">
+    <div className={styles['article-list']}> 
+      <div className={styles['article-list__list']}>
         {loading && articles.length === 0 ? (
           Array.from({ length: 3 }).map((_, i) => <SkeletonArticle key={i} />)
         ) : (
           articles.map((article) => (
-            <article key={article.id} className={`${article.published ? 'bg-white' : 'bg-pink-100'} rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200`}>
-              <div className="p-6">
-                <div className="mb-4">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <article key={article.id} className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
+              <div className={styles['article-list__content']}> 
+                <div className={styles['article-list__header']}>
+                  <h2 className={styles['article-list__title']}>
                     {article.title}
                   </h2>
-                  <div className="flex items-center text-sm text-gray-500 mb-3">
+                  <div className={styles['article-list__meta']}>
                     <span>By {article?.author?.name}</span>
-                    <span className="mx-2">•</span>
+                    <span className={styles['article-list__meta__dot']}>•</span>
                     <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
                   </div>
                 </div>
                 
-                <div className="mb-4">
-                  <div className="text-gray-700 line-clamp-6 leading-relaxed">
+                <div className={styles['article-list__summary']}>
+                  <div className={styles['article-list__excerpt']}>
                     <ArticleFields article={article} />
                     <div onClick={handleDownload}>
                       <Dompurify html={article.body} />
@@ -83,32 +84,32 @@ export default function ArticleList({published = true, featured = null, sticky =
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className={styles['article-list__actions']}>
                   <Link
                     href={`/articles/${article.id}`}
-                    className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                    className={styles['article-list__link']}
                   >
                     Read more →
                   </Link>
                   {session && session?.user?.role !== 'user' && (
-                  <div className="flex space-x-2">
+                  <div className={styles['article-list__admin']}>
                     <Link
                       href={`/articles/${article.id}/edit`}
-                      className="text-indigo-600 hover:text-indigo-900 text-sm"
+                      className={styles['article-list__admin__edit']}
                     >
                       Edit
                     </Link>
                     <DeleteButton 
                       userId={article.id || ''} 
                       onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
-                      className="text-red-600 hover:text-red-900 text-sm"
+                      className={styles['article-list__admin__delete']}
                       resourceType="article"
                     >
                       Delete
                     </DeleteButton>
                   </div>
                   )}
-                </div>
+                </div> 
               </div>
             </article>
           ))
@@ -116,15 +117,15 @@ export default function ArticleList({published = true, featured = null, sticky =
       </div>
 
       {articles.length === 0 && !loading ? (
-        <div className="text-center py-12">
-          <div className="text-gray-500 text-lg">No articles yet.</div>
-          <div className="text-gray-400 text-sm mt-2">Be the first to write an article!</div>
+        <div className={styles['article-list__empty']}>
+          <div className={styles['article-list__empty__title']}>No articles yet.</div>
+          <div className={styles['article-list__empty__desc']}>Be the first to write an article!</div>
         </div>
       ) : !loading && pagination.page < pagination.totalPages && (
-        <div className="flex justify-center">
+        <div className={styles['article-list__loadmore']}>
           <button
             onClick={() => fetchArticles(pagination.page + 1)}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+            className={styles['article-list__loadmore__button']}
           >
             Load more
           </button>

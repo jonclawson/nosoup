@@ -1,0 +1,91 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/ArticleList.tsx */
+
+.article-list {
+  @apply mt-8;
+}
+
+.article-list__list {
+  @apply space-y-6;
+}
+
+.article-list__item {
+  @apply rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200;
+}
+
+.article-list__item--published {
+  @apply bg-white;
+}
+
+.article-list__item--draft {
+  @apply bg-pink-100;
+}
+
+.article-list__content {
+  @apply p-6;
+}
+
+.article-list__header {
+  @apply mb-4;
+}
+
+.article-list__title {
+  @apply text-2xl font-semibold text-gray-900 mb-2;
+}
+
+.article-list__meta {
+  @apply flex items-center text-sm text-gray-500 mb-3;
+}
+
+.article-list__meta__dot {
+  @apply mx-2;
+}
+
+.article-list__summary {
+  @apply mb-4;
+}
+
+.article-list__excerpt {
+  @apply text-gray-700 line-clamp-6 leading-relaxed;
+}
+
+.article-list__actions {
+  @apply flex items-center justify-between pt-4 border-t border-gray-100;
+}
+
+.article-list__link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.article-list__admin {
+  @apply flex space-x-2;
+}
+
+.article-list__admin__edit {
+  @apply text-indigo-600 hover:text-indigo-900 text-sm;
+}
+
+.article-list__admin__delete {
+  @apply text-red-600 hover:text-red-900 text-sm;
+}
+
+.article-list__empty {
+  @apply text-center py-12;
+}
+
+.article-list__empty__title {
+  @apply text-gray-500 text-lg;
+}
+
+.article-list__empty__desc {
+  @apply text-gray-400 text-sm mt-2;
+}
+
+.article-list__loadmore {
+  @apply flex justify-center;
+}
+
+.article-list__loadmore__button {
+  @apply mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer;
+}
