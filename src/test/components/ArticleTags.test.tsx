@@ -148,7 +148,8 @@ describe('ArticleTags', () => {
     const { container } = render(<ArticleTags article={article} />);
 
     const tagSpan = container.querySelector('span');
-    expect(tagSpan).toHaveClass('inline-flex', 'items-center', 'px-3', 'py-1', 'rounded-full', 'text-sm', 'font-medium', 'bg-green-100', 'text-green-800');
+    // component now uses CSS modules; ensure tag has the module class
+    expect(tagSpan).toHaveClass('tags__tag');
   });
 
   it('should render tags in a flex container with gap', () => {
@@ -173,8 +174,9 @@ describe('ArticleTags', () => {
 
     const { container } = render(<ArticleTags article={article} />);
 
-    const flexContainer = container.querySelector('.flex');
-    expect(flexContainer).toHaveClass('flex', 'flex-wrap', 'gap-2');
+    const flexContainer = container.querySelector('.tags__list');
+    expect(flexContainer).toBeInTheDocument();
+    expect(flexContainer).toHaveClass('tags__list');
   });
 
   it('should use tag id as key for rendering', () => {
@@ -224,8 +226,9 @@ describe('ArticleTags', () => {
 
     const { container } = render(<ArticleTags article={article} />);
 
-    const wrapper = container.querySelector('.mt-4');
+    const wrapper = container.querySelector('.tags');
     expect(wrapper).toBeInTheDocument();
+    expect(wrapper).toHaveClass('tags');
   });
 
   it('should handle single tag', () => {

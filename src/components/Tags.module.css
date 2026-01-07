@@ -1,0 +1,15 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/Tags.tsx */
+
+.tags {
+  @apply mt-4;
+}
+
+.tags__list {
+  @apply flex flex-wrap gap-2;
+}
+
+.tags__tag {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800;
+}
