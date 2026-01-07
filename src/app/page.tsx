@@ -1,14 +1,11 @@
 'use client'
 import Link from 'next/link'
-import ArticleList from '@/components/ArticleList'
-import { useSession } from "next-auth/react"
 import Setting from '@/components/Setting'
 import { useDocument } from '@/hooks/useDocument'
 import Featured from '@/components/Featured'
 import Tags from '@/components/Tags'
 
 export default function HomePage() {
-  const { data: session, status } = useSession()
   useDocument({ title: '' })
   
   return (
