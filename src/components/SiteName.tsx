@@ -6,6 +6,7 @@ import { use, useEffect, useState } from "react"
 import SkeletonLine from "./SkeletonLine"
 import { useDebounce } from "@/lib/debounce"
 import { useStateContext } from "@/contexts/StateContext"
+import styles from './SiteName.module.css'
 
 export default function SiteName() {
   const { data: session, status } = useSession()
@@ -113,7 +114,7 @@ export default function SiteName() {
             name="siteName"
             title="siteName"
             defaultValue={siteName}
-            className="border border-gray-300 rounded-md px-2 py-1"
+            className={styles['site-name__input']}
             autoFocus
             onChange={(e) => submitSiteName(e.target.value)}
             onBlur={(e) => setEditSiteName(false)}
@@ -121,28 +122,28 @@ export default function SiteName() {
         </>
       ) : (   
 
-      <Link href="/">
+      <Link href="/" className={styles['site-name__link']}>
         {siteLogo ? (
-          <img src={(siteLogo)} alt={siteName} className="h-8 inline-block mr-2" />
+          <img src={(siteLogo)} alt={siteName} className={styles['site-name__logo']} />
         ) : <span>{siteName}</span>}
       </Link>
       )}
       {status === "authenticated" && session?.user?.role === 'admin' && (
         <>
-        <button onClick={() => setEditSiteName(!editSiteName)} className="" title="Edit Site Name">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block text-blue-600 hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <button onClick={() => setEditSiteName(!editSiteName)} className={styles['site-name__edit-btn']} title="Edit Site Name">
+          <svg xmlns="http://www.w3.org/2000/svg" className={styles['site-name__edit-icon']} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
-        </button>
-        <label htmlFor="siteLogoUpload" className="cursor-pointer text-sm text-blue-600 hover:underline">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+        </button> 
+        <label htmlFor="siteLogoUpload" className={styles['site-name__upload-label']}>
+          <svg xmlns="http://www.w3.org/2000/svg" className={styles['site-name__upload-icon']} viewBox="0 0 20 20" fill="currentColor">
             <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 3 3 5-5 3 3v1a1 1 0 01-1 1z" />
           </svg>
           <input
             id="siteLogoUpload"
             type="file"
             accept="image/*"
-            className="hidden"
+            className={styles['site-name__upload-input']}
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0]

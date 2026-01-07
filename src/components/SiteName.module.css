@@ -1,0 +1,35 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/SiteName.tsx */
+
+.site-name__input {
+  @apply border border-gray-300 rounded-md px-2 py-1;
+}
+
+.site-name__logo {
+  @apply h-8 inline-block mr-2;
+}
+
+.site-name__link {
+  @apply inline-flex items-center;
+}
+
+.site-name__edit-btn {
+  @apply p-1;
+}
+
+.site-name__edit-icon {
+  @apply h-4 w-4 inline-block text-blue-600 hover:text-gray-900;
+}
+
+.site-name__upload-label {
+  @apply cursor-pointer text-sm text-blue-600 hover:underline;
+}
+
+.site-name__upload-icon {
+  @apply h-5 w-5 inline-block mr-1;
+}
+
+.site-name__upload-input {
+  @apply hidden;
+}
