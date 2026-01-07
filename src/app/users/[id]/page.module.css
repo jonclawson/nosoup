@@ -1,0 +1,95 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/app/users/[id]/page.tsx */
+
+.user-page {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-page__loading {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-page__loading__inner {
+  @apply text-center py-12;
+}
+
+.user-page__loading__text {
+  @apply text-gray-500;
+}
+
+.user-page__error {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.user-page__error__inner {
+  @apply text-center py-12;
+}
+
+.user-page__error__text {
+  @apply text-red-500;
+}
+
+.user-page__header {
+  @apply mb-8;
+}
+
+.user-page__back-link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.user-page__title {
+  @apply mt-2 text-2xl font-semibold text-gray-900;
+}
+
+.user-page__card {
+  @apply bg-white shadow overflow-hidden sm:rounded-lg;
+}
+
+.user-page__card-body {
+  @apply px-4 py-5 sm:px-6;
+}
+
+.user-page__name {
+  @apply text-lg leading-6 font-medium text-gray-900;
+}
+
+.user-page__desc {
+  @apply mt-1 max-w-2xl text-sm text-gray-500;
+}
+
+.user-page__divider {
+  @apply border-t border-gray-200;
+}
+
+.user-page__row--gray {
+  @apply bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6;
+}
+
+.user-page__row--white {
+  @apply bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6;
+}
+
+.user-page__dt {
+  @apply text-sm font-medium text-gray-500;
+}
+
+.user-page__dd {
+  @apply mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2;
+}
+
+.user-page__role-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
+}
+
+.user-page__actions {
+  @apply mt-6 flex space-x-3;
+}
+
+.user-page__edit-btn {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+.user-page__delete-btn {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+}
