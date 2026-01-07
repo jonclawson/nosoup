@@ -69,7 +69,7 @@ describe('Navigation', () => {
       });
 
       const { container } = render(<Navigation />);
-      expect(container.querySelector('.flex')).toBeInTheDocument();
+      expect(container.querySelector('.nav')).toBeInTheDocument();
     });
 
     it('should have correct styling on main container', () => {
@@ -80,8 +80,9 @@ describe('Navigation', () => {
       });
 
       const { container } = render(<Navigation />);
-      const mainDiv = container.querySelector('.flex');
-      expect(mainDiv).toHaveClass('flex', 'items-center', 'space-x-4');
+      const mainDiv = container.querySelector('.nav');
+      expect(mainDiv).toBeInTheDocument();
+      expect(mainDiv).toHaveClass('nav');
     });
 
     it('should not render skeleton when session is not loading', () => {
@@ -130,7 +131,7 @@ describe('Navigation', () => {
 
       render(<Navigation />);
       const articlesLink = screen.getByRole('link', { name: /Articles/i });
-      expect(articlesLink).toHaveClass('text-gray-600', 'hover:text-gray-900', 'px-3', 'py-2', 'rounded-md', 'text-sm', 'font-medium');
+      expect(articlesLink).toHaveClass('nav__link');
     });
 
     it('should use Setting component for articles link text', () => {
@@ -258,7 +259,7 @@ describe('Navigation', () => {
 
       render(<Navigation />);
       const usersLink = screen.getByRole('link', { name: 'Users' });
-      expect(usersLink).toHaveClass('text-gray-600', 'hover:text-gray-900', 'px-3', 'py-2', 'rounded-md', 'text-sm', 'font-medium');
+      expect(usersLink).toHaveClass('nav__link');
     });
 
     it('should render both articles and users links for admin', () => {
@@ -525,8 +526,8 @@ describe('Navigation', () => {
       });
 
       const { container } = render(<Navigation />);
-      const mainDiv = container.querySelector('.flex');
-      expect(mainDiv).toHaveClass('items-center');
+      const mainDiv = container.querySelector('.nav');
+      expect(mainDiv).toHaveClass('nav');
     });
 
     it('should have flex container with space-x-4 class', () => {
@@ -537,8 +538,8 @@ describe('Navigation', () => {
       });
 
       const { container } = render(<Navigation />);
-      const mainDiv = container.querySelector('.flex');
-      expect(mainDiv).toHaveClass('space-x-4');
+      const mainDiv = container.querySelector('.nav');
+      expect(mainDiv).toHaveClass('nav');
     });
   });
 

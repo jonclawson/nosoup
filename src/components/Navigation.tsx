@@ -5,6 +5,7 @@ import Link from 'next/link'
 import SkeletonLine from './SkeletonLine'
 import Setting from './Setting'
 import { useStateContext } from '@/contexts/StateContext'
+import styles from './Navigation.module.css'
 
 export default function Navigation() {
   const { data: session, status, update } = useSession()
@@ -17,17 +18,17 @@ export default function Navigation() {
   }
 
     return (
-      <div className="flex items-center space-x-4">
+      <div className={styles.nav}>
         <Link
           href={`/${getSetting('navigation_articles_link') || 'articles'}`}
-          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+          className={styles['nav__link']}
         >
           <Setting type="text" setting="navigation_articles_link">Articles</Setting>
         </Link>
         {session && session.user?.role === 'admin' && (
           <Link
             href="/users"
-            className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+            className={styles['nav__link']}
           >
             Users
           </Link>
