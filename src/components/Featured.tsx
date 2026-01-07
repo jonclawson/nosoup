@@ -11,6 +11,7 @@ import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
+import styles from './Featured.module.css'
 
 export default function Featured({published = true, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -52,28 +53,28 @@ export default function Featured({published = true, sticky = true, tag}: { publi
   }, []);
   
   return (
-    <div className="mt-8 featured-articles">
-      <div className="space-y-6">
+    <div className={styles['featured']}>
+      <div className={styles['featured__list']}>
         {loading && articles.length === 0 ? (
           Array.from({ length: 1 }).map((_, i) => <SkeletonArticle key={i} />)
         ) : (
-          <div className="flex  rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+          <div className={styles['featured__container']}>
           {articles.map((article) => (
-            <article key={article.id} className={`${article.published ? 'bg-white' : 'bg-pink-100'} flex-1`}>
-              <div className="p-6">
-                <div className="mb-4">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <article key={article.id} className={`${styles['featured__item']} ${article.published ? styles['featured__item--published'] : styles['featured__item--draft']}`}>
+              <div className={styles['featured__content']}>
+                <div className={styles['featured__header']}>
+                  <h2 className={styles['featured__title']}>
                     {article.title}
                   </h2>
-                  <div className="flex items-center text-sm text-gray-500 mb-3">
+                  <div className={styles['featured__meta']}>
                     <span>By {article?.author?.name}</span>
-                    <span className="mx-2">•</span>
+                    <span className={styles['featured__meta__dot']}>•</span>
                     <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
                   </div>
                 </div>
                 
-                <div className="mb-4 max-h-96 overflow-y-hidden">
-                  <div className="text-gray-700 line-clamp-6 leading-relaxed">
+                <div className={styles['featured__teaser']}>
+                  <div className={styles['featured__excerpt']}>
                     <ArticleFields article={article} />
                     <div onClick={handleDownload}>
                       <Dompurify html={article.body} />
@@ -82,25 +83,25 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className={styles['featured__actions']}>
                   <Link
                     href={`/articles/${article.id}`}
-                    className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                    className={styles['featured__link']}
                   >
                     Read more →
                   </Link>
                   {session && session?.user?.role !== 'user' && (
-                  <div className="flex space-x-2">
+                  <div className={styles['featured__admin']}>
                     <Link
                       href={`/articles/${article.id}/edit`}
-                      className="text-indigo-600 hover:text-indigo-900 text-sm"
+                      className={styles['featured__admin__edit']}
                     >
                       Edit
                     </Link>
                     <DeleteButton 
                       userId={article.id || ''} 
                       onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
-                      className="text-red-600 hover:text-red-900 text-sm"
+                      className={styles['featured__admin__delete']}
                       resourceType="article"
                     >
                       Delete
@@ -115,7 +116,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
               
                 <button
                   onClick={() => fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1)}
-                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+                  className={styles['featured__next']}
                 >
                   Next
                 </button>
@@ -125,9 +126,9 @@ export default function Featured({published = true, sticky = true, tag}: { publi
       </div>
 
       {articles.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <div className="text-gray-500 text-lg">No articles yet.</div>
-          <div className="text-gray-400 text-sm mt-2">Be the first to write an article!</div>
+        <div className={styles['featured__empty']}>
+          <div className={styles['featured__empty__title']}>No articles yet.</div>
+          <div className={styles['featured__empty__desc']}>Be the first to write an article!</div>
         </div>
       )}
     </div>
