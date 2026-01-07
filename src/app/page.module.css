@@ -1,0 +1,34 @@
+/* BEM-style class names for src/app/page.tsx */
+@import "tailwindcss" reference;
+
+.page {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.page__featured {
+  @apply sm:flex sm:items-center;
+}
+
+.page__featured__content {
+  @apply sm:flex-auto;
+}
+
+.page__featured__title {
+  @apply text-2xl font-semibold text-gray-900;
+}
+
+.page__featured__desc {
+  @apply mt-2 text-sm text-gray-700;
+}
+
+.page__featured__actions {
+  @apply mt-4 sm:mt-0 sm:ml-16 sm:flex-none;
+}
+
+.page__featured__link {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700;
+}
+
+.page__tags {
+  @apply justify-between mt-8;
+}

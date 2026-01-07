@@ -4,24 +4,25 @@ import Setting from '@/components/Setting'
 import { useDocument } from '@/hooks/useDocument'
 import Featured from '@/components/Featured'
 import Tags from '@/components/Tags'
+import styles from './page.module.css'
 
 export default function HomePage() {
   useDocument({ title: '' })
   
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className={styles.page}>
         <Setting setting="featured_articles_header">
-          <div className="sm:flex sm:items-center">
-              <div className="sm:flex-auto">
-                <h1 className="text-2xl font-semibold text-gray-900">Featured Articles</h1>
-                <p className="mt-2 text-sm text-gray-700">
+          <div className={styles['page__featured']}>
+              <div className={styles['page__featured__content']}>
+                <h1 className={styles['page__featured__title']}>Featured Articles</h1>
+                <p className={styles['page__featured__desc']}>
                   A collection of <i>featured</i> articles from our community.
                 </p>
               </div>
-              <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+              <div className={styles['page__featured__actions']}>
                 <Link
                   href="/articles/"
-                  className="inline-flex items-center justify-center  px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  className={styles['page__featured__link']}
                 >
                   More &rarr;
                 </Link>
@@ -29,7 +30,7 @@ export default function HomePage() {
           </div>
         </Setting>
       <Featured />
-      <Tags style="justify-between mt-8" />
+      <Tags style={styles['page__tags']} />
     </div>
   )
 } 
