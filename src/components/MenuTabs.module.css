@@ -1,0 +1,11 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/MenuTabs.tsx */
+
+.menu-tabs {
+  @apply flex items-center space-x-4;
+}
+
+.menu-tabs__link {
+  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+}

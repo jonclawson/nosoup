@@ -87,8 +87,9 @@ describe('MenuTabs', () => {
       const { container } = render(<MenuTabs />);
 
       await waitFor(() => {
-        const mainDiv = container.querySelector('.flex');
-        expect(mainDiv).toHaveClass('flex', 'items-center', 'space-x-4');
+        const mainDiv = container.querySelector('.menu-tabs');
+        expect(mainDiv).toBeInTheDocument();
+        expect(mainDiv).toHaveClass('menu-tabs');
       });
     });
   });
@@ -135,7 +136,7 @@ describe('MenuTabs', () => {
 
       await waitFor(() => {
         const homeLink = screen.getByRole('link', { name: 'Home' });
-        expect(homeLink).toHaveClass('text-gray-600', 'hover:text-gray-900', 'px-3', 'py-2', 'rounded-md', 'text-sm', 'font-medium');
+        expect(homeLink).toHaveClass('menu-tabs__link');
       });
     });
 
@@ -308,7 +309,7 @@ describe('MenuTabs', () => {
       const { container } = render(<MenuTabs />);
 
       await waitFor(() => {
-        const mainDiv = container.querySelector('.flex');
+        const mainDiv = container.querySelector('.menu-tabs');
         expect(mainDiv).toBeInTheDocument();
         expect(screen.queryByRole('link')).not.toBeInTheDocument();
       });
@@ -545,8 +546,9 @@ describe('MenuTabs', () => {
       const { container } = render(<MenuTabs />);
 
       await waitFor(() => {
-        const mainDiv = container.querySelector('.flex');
-        expect(mainDiv).toHaveClass('items-center', 'space-x-4');
+        const mainDiv = container.querySelector('.menu-tabs');
+        expect(mainDiv).toBeInTheDocument();
+        expect(mainDiv).toHaveClass('menu-tabs');
       });
     });
 
@@ -558,7 +560,7 @@ describe('MenuTabs', () => {
       const { container } = render(<MenuTabs />);
 
       await waitFor(() => {
-        const mainDiv = container.querySelector('.flex');
+        const mainDiv = container.querySelector('.menu-tabs');
         const links = mainDiv?.querySelectorAll('a');
         expect(links).toHaveLength(3);
       });
