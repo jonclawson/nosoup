@@ -7,6 +7,7 @@ import { use } from 'react'
 import type { Article, Field, Author, FieldType, Tag } from '@/lib/types'
 import ArticleForm from '@/components/ArticleForm'
 import { useDocument } from '@/hooks/useDocument'
+import styles from './page.module.css'
 
 
 interface EditArticlePageProps {
@@ -47,9 +48,9 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
 
   if (isLoadingArticle) {
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-gray-500">Loading article...</div>
+      <div className={styles['edit-article-page__loading']}>
+        <div className={styles['edit-article-page__loading__inner']}>
+          <div className={styles['edit-article-page__loading__text']}>Loading article...</div>
         </div>
       </div>
     )
@@ -57,10 +58,10 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
 
   if (error && !article) {
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center py-12">
-          <div className="text-red-500">{error}</div>
-          <Link href="/articles" className="text-blue-600 hover:text-blue-900 mt-4 inline-block">
+      <div className={styles['edit-article-page__error']}>
+        <div className={styles['edit-article-page__error__inner']}>
+          <div className={styles['edit-article-page__error__text']}>{error}</div>
+          <Link href="/articles" className={styles['edit-article-page__back-link']}>
             Back
           </Link>
         </div>
@@ -69,19 +70,19 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   }
 
   return (
-    <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className={styles['edit-article-page__wrap']}>
       <div className="mb-8">
         <Link
           href={`/articles/${resolvedParams.id}`}
-          className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+          className={styles['edit-article-page__back-link']}
         >
           ← Back
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-900">Edit Article</h1>
+        <h1 className={styles['edit-article-page__heading']}>Edit Article</h1>
       </div>
 
-      <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+      <div className={styles['edit-article-page__card']}>
+        <div className={styles['edit-article-page__card-body']}>
           <ArticleForm 
           articleData={article}
           />

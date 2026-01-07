@@ -150,7 +150,7 @@ describe('EditArticlePage', () => {
       const { container } = render(<EditArticlePage params={Promise.resolve({ id: '1' })} />)
 
       await waitFor(() => {
-        const formContainer = container.querySelector('.bg-white.shadow')
+        const formContainer = container.querySelector('.edit-article-page__card')
         expect(formContainer).toBeInTheDocument()
       })
     })
@@ -165,7 +165,7 @@ describe('EditArticlePage', () => {
 
       await waitFor(() => {
         const heading = screen.getByText('Edit Article')
-        expect(heading).toHaveClass('text-2xl', 'font-semibold', 'text-gray-900')
+        expect(heading).toHaveClass('edit-article-page__heading')
       })
     })
   })
@@ -218,7 +218,7 @@ describe('EditArticlePage', () => {
       const { container } = render(<EditArticlePage params={Promise.resolve({ id: '1' })} />)
 
       await waitFor(() => {
-        const mainContainer = container.querySelector('.max-w-8xl.mx-auto.px-4')
+        const mainContainer = container.querySelector('.edit-article-page__wrap')
         expect(mainContainer).toBeInTheDocument()
       })
     })
@@ -247,12 +247,7 @@ describe('EditArticlePage', () => {
 
       await waitFor(() => {
         const backLink = screen.getByText('← Back')
-        expect(backLink.closest('a')).toHaveClass(
-          'text-blue-600',
-          'hover:text-blue-900',
-          'text-sm',
-          'font-medium'
-        )
+        expect(backLink.closest('a')).toHaveClass('edit-article-page__back-link')
       })
     })
   })

@@ -1,0 +1,47 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/app/articles/[id]/edit/page.tsx */
+
+.edit-article-page__wrap {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.edit-article-page__loading {
+  @apply max-w-2xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.edit-article-page__loading__inner {
+  @apply text-center py-12;
+}
+
+.edit-article-page__loading__text {
+  @apply text-gray-500;
+}
+
+.edit-article-page__error {
+  @apply max-w-2xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.edit-article-page__error__inner {
+  @apply text-center py-12;
+}
+
+.edit-article-page__error__text {
+  @apply text-red-500;
+}
+
+.edit-article-page__back-link {
+  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+}
+
+.edit-article-page__heading {
+  @apply mt-2 text-2xl font-semibold text-gray-900;
+}
+
+.edit-article-page__card {
+  @apply bg-white shadow sm:rounded-lg;
+}
+
+.edit-article-page__card-body {
+  @apply px-4 py-5 sm:p-6;
+}
