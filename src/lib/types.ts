@@ -1,9 +1,4 @@
-export interface Author {
-  id: string
-  name: string
-  email: string
-  role: 'admin' | 'editor' | 'viewer'
-}
+export type Author = User
 
 export interface MenuTab {
   id?: string
@@ -33,9 +28,9 @@ export interface Article {
   fields: Field[]
   tags?: Tag[]
   authorId?: string
-  author?: Author
-  createdAt?: string
-  updatedAt?: string
+  author?: User
+  createdAt?: string | Date
+  updatedAt?: string | Date
   published?: boolean
   featured?: boolean
   sticky?: boolean
@@ -51,5 +46,5 @@ export interface User {
   id: string
   name: string
   email: string
-  role: 'admin' | 'editor' | 'viewer'
+  role: 'admin' | 'moderator' | 'user'
 }

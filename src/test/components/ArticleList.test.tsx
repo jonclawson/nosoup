@@ -55,7 +55,7 @@ const mockArticle: Article = {
   id: '1',
   title: 'Test Article',
   body: 'Test body content',
-  content: 'Test content',
+  
   author: { id: '1', email: 'test@test.com', role: 'user', name: 'Test Author' },
   fields: [],
   tags: [],

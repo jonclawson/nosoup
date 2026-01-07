@@ -13,8 +13,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [],
       fields: [],
       published: true,
@@ -34,8 +34,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       fields: [],
       published: true,
       sticky: false,
@@ -54,8 +54,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [
         { id: '1', name: 'javascript' },
         { id: '2', name: 'react' },
@@ -80,8 +80,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [{ id: '1', name: 'typescript' }],
       fields: [],
       published: true,
@@ -103,8 +103,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [
         { id: '1', name: 'javascript' },
         { id: '2', name: 'react' },
@@ -133,8 +133,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [{ id: '1', name: 'nodejs' }],
       fields: [],
       published: true,
@@ -157,8 +157,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [
         { id: '1', name: 'tag1' },
         { id: '2', name: 'tag2' },
@@ -184,8 +184,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [
         { id: 'tag-1', name: 'first' },
         { id: 'tag-2', name: 'second' },
@@ -212,8 +212,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [{ id: '1', name: 'test' }],
       fields: [],
       published: true,
@@ -236,8 +236,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [{ id: '1', name: 'solo' }],
       fields: [],
       published: true,
@@ -260,8 +260,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [
         { id: '1', name: 'c++' },
         { id: '2', name: 'c#' },
@@ -288,8 +288,8 @@ describe('ArticleTags', () => {
       id: '1',
       title: 'Test Article',
       body: 'Test body',
-      content: 'Test content',
-      author: { id: '1', email: 'test@test.com', role: 'user' },
+      
+      author: { id: '1', name: 'Test User', email: 'test@test.com', role: 'user' },
       tags: [{ id: '1', name: 'web development' }],
       fields: [],
       published: true,
