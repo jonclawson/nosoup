@@ -33,7 +33,15 @@ export default withAuth(
         return NextResponse.rewrite(new URL(`/articles`, req.url));
       }
     }
-    const res = await fetch(`${req.nextUrl.origin}/api/articles/slug/${encodeURIComponent(slug)}`);
+    const res = await fetch(
+      `${req.nextUrl.origin}/api/articles/slug/${encodeURIComponent(slug)}`,
+      {
+        headers: {
+          cookie: req.headers.get('cookie') ?? ''
+        },
+        cache: 'no-store' // optional to avoid caches
+      }
+    )    
     console.log('Middleware fetch for slug:', slug, 'Response status:', res.status);
     if (res.ok) {
       const data = await res.json();
