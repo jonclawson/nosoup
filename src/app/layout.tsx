@@ -9,6 +9,7 @@ import Link from "next/link";
 import MenuTabs from "@/components/MenuTabs";
 import SiteName from "@/components/SiteName";
 import Search from "@/components/Search";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default function RootLayout({
             <main className={styles["layout__main"]}>
               {children}
             </main>
+          <Footer />
           </div>
         </Providers>
       </body>

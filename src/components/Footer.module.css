@@ -1,0 +1,10 @@
+@import "tailwindcss" reference;
+
+/* BEM-style classes for src/components/Footer.tsx */
+
+.footer {
+  @apply bg-gray-800 text-white py-4 mt-auto;
+}
+.footer__container {
+  @apply container mx-auto text-center;
+}

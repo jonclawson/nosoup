@@ -4,7 +4,7 @@
 @import "tailwindcss" reference;
 
 .layout__container {
-  @apply min-h-screen bg-gray-50;
+  @apply min-h-screen bg-gray-50 flex flex-col;
 }
 
 .layout__nav {
@@ -32,5 +32,5 @@
 }
 
 .layout__main {
-  @apply max-w-7xl mx-auto py-6 sm:px-6 lg:px-8;
+  @apply max-w-7xl py-6 sm:px-6 lg:px-8;
 }
