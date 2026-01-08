@@ -36,6 +36,11 @@ jest.mock('@/components/Search', () => {
   MockSearch.displayName = 'MockSearch';
   return MockSearch;
 });
+jest.mock('@/components/Setting', () => {
+  const MockSetting = ({ children }) => <div data-testid="setting">{children}</div>;
+  MockSetting.displayName = 'MockSetting';
+  return MockSetting;
+});
 
 import RootLayout from '@/app/layout';
 

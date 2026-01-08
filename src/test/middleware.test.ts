@@ -1,6 +1,7 @@
 import { withAuth as originalWithAuth } from 'next-auth/middleware'
 import middleware from '@/middleware'
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 
 // Mock withAuth to return the inner function and expose the options
 jest.mock('next-auth/middleware', () => {
@@ -138,6 +139,7 @@ describe('middleware', () => {
         nextUrl: { pathname: '/test-slug', origin: 'http://localhost' },
         url: 'http://localhost/test-slug',
         method: 'GET',
+        headers: { get: () => '' } // mock headers.get for cookies 
       }
 
       await middleware(req)
