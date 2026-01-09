@@ -24,7 +24,8 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                       case 'code':
                         return <div className={styles['article-fields__code']}>
                                 {article && article?.author?.role === 'admin' ? (
-                                  <div dangerouslySetInnerHTML={{ __html: field.value }} />
+                                  // <div dangerouslySetInnerHTML={{ __html: field.value }} />
+                                  <iframe src={`/api/code/${field.id}`} className={styles['article-fields__code-iframe']} />
                                   ) : (
                                     <Dompurify html={field.value } />
                                   )}
