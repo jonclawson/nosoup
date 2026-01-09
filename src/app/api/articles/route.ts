@@ -82,7 +82,27 @@ export async function GET(request: NextRequest) {
         skip,
         take: size
       }),
-      prisma.article.count()
+      prisma.article.count({
+        where: {
+          AND: [
+            featured != null ? {featured: featured === 'true'} : {},
+            tag != null ? { tags: { some: { name: tag } } } : {},
+            {
+              OR: published != null ? [
+                 {published: published === 'true'},
+                { 
+                  AND: [
+                    session?.user?.id ? { authorId: session.user.id } : {},
+                    session?.user?.id ? { published: false } : { published: true }
+                  ]
+                }
+              ] : []
+            },
+            tab === 'false' ? { tab: null } : {},
+            tab === 'true' ? { tab: { isNot: null } } : {},
+          ]
+        }
+      })
     ])
     
     // Serialize dates to prevent hydration issues
