@@ -2,8 +2,12 @@
 
 /* BEM-style classes for src/components/ArticleFields.tsx */
 
+.article-fields__image-container {
+  /* @apply mb-4 relative w-full h-64 overflow-hidden rounded-lg; */
+}
 .article-fields__image {
-  @apply mb-4;
+  /* @apply object-cover; */
+  @apply w-auto h-auto
 }
 
 .article-fields__code {

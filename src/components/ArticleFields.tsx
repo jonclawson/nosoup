@@ -2,8 +2,10 @@
 import type { Article, Field, Author } from '@/lib/types'
 import Dompurify from './Dompurify';
 import styles from './ArticleFields.module.css' 
+import ImageField from './ImageField';
 
 export default function ArticleFields({ article }: { article: Article | null }) {
+
   return  <>
             {article?.fields && article.fields.length > 0 && article.fields.map((field) => (
               <div key={field.id}>
@@ -11,7 +13,14 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                     (() => {
                     switch (field.type) {
                       case 'image':
-                        return field.value && <img src={field.value} alt="" className={styles['article-fields__image']} />
+                        return field.value && <div className={styles['article-fields__image-container']}>
+                          <ImageField
+                            src={field.value}
+                            alt=""
+                            className={styles['article-fields__image']}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                        </div>
                       case 'code':
                         return <div className={styles['article-fields__code']}>
                                 {article && article?.author?.role === 'admin' ? (

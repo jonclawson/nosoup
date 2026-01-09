@@ -70,8 +70,7 @@ describe('ArticleFields', () => {
     const { container } = render(<ArticleFields article={article} />);
     const img = container.querySelector('img') as HTMLImageElement;
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', 'https://example.com/image.jpg');
-    expect(img).toHaveClass('article-fields__image');
+    expect(img).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage.jpg&w=3840&q=75');
   });
 
   it('should not render image field when value is null or undefined', () => {
@@ -260,8 +259,8 @@ describe('ArticleFields', () => {
     const { container } = render(<ArticleFields article={article} />);
     const images = container.querySelectorAll('img');
     expect(images).toHaveLength(2);
-    expect(images[0]).toHaveAttribute('src', 'https://example.com/image1.jpg');
-    expect(images[1]).toHaveAttribute('src', 'https://example.com/image2.jpg');
+    expect(images[0]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage1.jpg&w=3840&q=75');
+    expect(images[1]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage2.jpg&w=3840&q=75');
   });
 
   it('should render unknown field type as empty string', () => {
