@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     src: "https://picsum.photos/200",
+    alt: "Random image from Picsum",
     className: "rounded-lg shadow-lg",
     sizes: "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   },
