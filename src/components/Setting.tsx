@@ -1,9 +1,12 @@
+'use client';
 import React, { useEffect } from 'react';
 import ContentEdit from './ContentEdit';
 import SkeletonLine from './SkeletonLine';
 import { useStateContext } from '@/contexts/StateContext';
+import { useSession } from 'next-auth/react';
 
 export default function Setting({ type, setting, children }: { type?: string, setting: string, children: React.ReactNode }) {
+  const { data: session } = useSession();
   const [value, setValue] = React.useState<any>(null);
   const [error, setError] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -47,6 +50,22 @@ export default function Setting({ type, setting, children }: { type?: string, se
       }
     }
 
+    const handleDelete = async () => {
+      try {
+        const response = await fetch(`/api/settings/${setting}`, {
+          method: 'DELETE',
+        })
+        if (response.ok) {
+          setValue(null)
+          setSetting(setting, null)
+        } else {
+          console.error('Failed to delete setting')
+        }
+      } catch (error) {
+        console.error('Error deleting setting:', error)
+      }
+    }
+
     if (isLoading) {
       return //<SkeletonLine />
     }
@@ -60,6 +79,14 @@ export default function Setting({ type, setting, children }: { type?: string, se
       <ContentEdit type={type} onChange={handleOnChange}>
         {value || children}
       </ContentEdit>
+      {!!value && !!session?.user &&     
+      <button
+        type="button"
+        onClick={() => handleDelete()}
+        className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+        &times;
+      </button>}
       </>
     )
 }

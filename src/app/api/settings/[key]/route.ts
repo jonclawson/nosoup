@@ -58,3 +58,25 @@ export async function PUT(
     );
   }
 }
+
+// Delete Setting by key
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ key: string }> }
+) {
+  const key = (await params).key;
+  try {
+    // delete setting from database
+    await prisma.setting.delete({
+      where: { key },
+    });
+
+    return NextResponse.json({ message: 'Setting deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting setting:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}

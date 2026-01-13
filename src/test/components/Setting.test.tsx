@@ -38,6 +38,11 @@ jest.mock('@/contexts/StateContext', () => ({
   }),
 }));
 
+// Mock useSession from next-auth/react
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(() => ({ data: { user: { role: 'admin' } }, status: 'authenticated' })),
+}));
+
 describe('Setting', () => {
   beforeEach(() => {
     jest.clearAllMocks();
