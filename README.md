@@ -2,6 +2,8 @@
 
 A NextJS 15 application with full CRUD operations for blog articles and user management, built with the App Router, Prisma ORM, and Tailwind CSS.
 
+See demo: https://nosoup.vercel.app
+
 ## Features
 
 ### Blog Articles
