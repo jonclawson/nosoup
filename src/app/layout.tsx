@@ -38,7 +38,9 @@ export default function RootLayout({
                     <Setting title="Show Sign In" setting="show_auth_status" type="show">      
                       <AuthStatus />
                     </Setting>
-                    <Search />
+                    <Setting title="Show Search" setting="show_search_bar" type="show">
+                      <Search />
+                    </Setting>
                   </div>
                 </div>
               </div>
