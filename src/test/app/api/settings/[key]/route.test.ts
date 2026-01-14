@@ -56,8 +56,8 @@ describe('GET /api/settings/[key]', () => {
       where: { key: 'nonexistent' },
     })
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { error: 'Setting not found' },
-      { status: 404 }
+      null,
+      { status: 200 }
     )
   })
 

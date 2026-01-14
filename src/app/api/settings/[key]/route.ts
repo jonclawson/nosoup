@@ -17,8 +17,8 @@ export async function GET(
 
     if (!setting) {
       return NextResponse.json(
-        { error: 'Setting not found' },
-        { status: 404 }
+        null,
+        { status: 200 }
       );
     }
 
