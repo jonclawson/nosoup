@@ -6,7 +6,7 @@ import { useStateContext } from '@/contexts/StateContext';
 import { useSession } from 'next-auth/react';
 import SkeletonArticle from './SkeletonArticle';
 
-export default function Setting({ title, type, setting, children }: { title?: string, type?: string, setting: string, children: React.ReactNode }) {
+export default function Setting({ title, type, setting, children, loading }: { title?: string, type?: string, setting: string, children: React.ReactNode, loading?: boolean }) {
   const { data: session } = useSession();
   const [value, setValue] = React.useState<any>(null);
   const [error, setError] = React.useState<string | null>(null)
@@ -72,7 +72,9 @@ export default function Setting({ title, type, setting, children }: { title?: st
         case 'text':
           return <SkeletonLine />
         case 'show':
-          // no return for show type
+          if (loading) {
+            return <SkeletonLine />
+          }
           break;
         default:
           return <SkeletonArticle />

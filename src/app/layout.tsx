@@ -34,9 +34,7 @@ export default function RootLayout({
                   <div className={styles["layout__controls"]}>
                     <MenuTabs />
                     <Navigation />
-                    <Setting title="Show Sign In" setting="show_auth_status" type="show">      
-                      <AuthStatus />
-                    </Setting>
+                    <AuthStatus />
                     <Setting title="Show Search" setting="show_search_bar" type="show">
                       <Search />
                     </Setting>

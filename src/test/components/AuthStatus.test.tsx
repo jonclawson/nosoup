@@ -23,6 +23,13 @@ jest.mock('@/components/SkeletonLine', () => {
   };
 });
 
+// Mock the Setting component
+jest.mock('@/components/Setting', () => {
+  return function SettingMock({ children }: { children: React.ReactNode }) {
+    return <div>{children}</div>;
+  };
+});
+
 describe('AuthStatus', () => {
   beforeEach(() => {
     jest.clearAllMocks();
