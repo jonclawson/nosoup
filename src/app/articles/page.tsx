@@ -29,8 +29,8 @@ export default function ArticlesPage() {
     <div className={styles.articles}>
       <div className="section-outer">
         <div className="section">
+        <Setting title="Show Articles Page Header" type="show" setting="show_articles_page_header">
           <div className="section-inner">
-          <Setting title="Show Articles Page Header" type="show" setting="show_articles_page_header">
             <div className={styles['articles__header']}>
               <div className={styles['articles__header__content']}>
               <Setting setting="articles_page_header">
@@ -51,8 +51,8 @@ export default function ArticlesPage() {
               </div>
               )}
             </div>
-          </Setting>
           </div>
+        </Setting>
         </div>
       </div>
       <ArticleList  />

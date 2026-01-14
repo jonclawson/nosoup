@@ -13,8 +13,8 @@ export default function HomePage() {
     <div className={styles.page}>
       <div className="section-outer">
         <div className="section">
+          <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
           <div className="section-inner">
-            <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
               <Setting setting="featured_articles_header">
                 <div className={styles['page__featured']}>
                     <div className={styles['page__featured__content']}>
@@ -33,8 +33,8 @@ export default function HomePage() {
                     </div>
                 </div>
               </Setting>
-            </Setting>
           </div>
+          </Setting>
         </div>
       </div>
       <div className="section-outer bg-white">

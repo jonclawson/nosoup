@@ -1,5 +1,5 @@
-@import "tailwindcss" reference;
-
+/* @import "tailwindcss" reference; */
+@reference "../app/globals.css";
 /* BEM-style classes for src/components/Featured.tsx */
 
 .featured {
@@ -19,7 +19,7 @@
 }
 
 .featured__item--published {
-  @apply bg-white;
+  @apply bg-white animate-[fade-in_1s_ease-in-out];
 }
 
 .featured__item--draft {
