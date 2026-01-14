@@ -62,15 +62,21 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   if (loading) {
     return (
       <div className={styles['article-page']}>
-          <div className={styles['article-page__back']}>
-            <Link
-              href="/articles"
-              className={styles['article-page__back__link']}
-            >
-              ← Back
-            </Link>
+        <div className="section-outer">
+          <div className="section">
+            <div className="section-inner">
+            <div className={styles['article-page__back']}>
+              <Link
+                href="/articles"
+                className={styles['article-page__back__link']}
+              >
+                ← Back
+              </Link>
+            </div>
+            <SkeletonArticle />
+            </div>
           </div>
-          <SkeletonArticle />
+        </div>
       </div>
     )
   }
@@ -92,12 +98,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     <div className={styles['article-page']}>
       <div className="section-outer">
         <div className="section">
-          <div className={styles['article-page__back']}>
-            <Link
-              href="/articles"
-              className={styles['article-page__back__link']}
-            >
-              ← Back
+          <div className="section-inner">
+            <div className={styles['article-page__back']}>
+              <Link
+                href="/articles"
+                className={styles['article-page__back__link']}
+              >
+                ← Back
             </Link>
           </div>
 
@@ -147,6 +154,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             </DeleteButton>
             </>
             )}
+          </div>
           </div>
         </div>
       </div>

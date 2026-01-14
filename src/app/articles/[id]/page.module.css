@@ -39,7 +39,7 @@
 }
 
 .article-page__header {
-  @apply px-4 py-5 sm:px-6;
+  /* @apply py-5; */
 }
 
 .article-page__title {
@@ -59,7 +59,7 @@
 }
 
 .article-page__body {
-  @apply px-4 py-5 sm:px-6;
+  @apply py-5;
 }
 
 /* .article-page__prose {
