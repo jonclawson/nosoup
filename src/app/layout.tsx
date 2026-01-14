@@ -10,6 +10,7 @@ import MenuTabs from "@/components/MenuTabs";
 import SiteName from "@/components/SiteName";
 import Search from "@/components/Search";
 import Footer from "@/components/Footer";
+import Setting from "@/components/Setting";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +35,9 @@ export default function RootLayout({
                   <div className={styles["layout__controls"]}>
                     <MenuTabs />
                     <Navigation />
-                    <AuthStatus />
+                    <Setting title="Show Sign In" setting="show_auth_status" type="show">      
+                      <AuthStatus />
+                    </Setting>
                     <Search />
                   </div>
                 </div>
