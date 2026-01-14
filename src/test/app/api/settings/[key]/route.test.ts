@@ -1,4 +1,4 @@
-import { GET, PUT } from '@/app/api/settings/[key]/route';
+import { GET, PUT, DELETE } from '@/app/api/settings/[key]/route';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -16,6 +16,7 @@ jest.mock('@/lib/prisma', () => ({
     setting: {
       findUnique: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
     },
   },
 }))
@@ -208,5 +209,51 @@ describe('PUT /api/settings/[key]', () => {
     await PUT(mockRequest, { params: paramsPromise })
 
     expect(prisma.setting.update).toHaveBeenCalled()
+  })
+})
+
+describe('DELETE /api/settings/[key]', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should delete the setting and return 200', async () => {
+    ;(prisma.setting.delete as jest.Mock).mockResolvedValue({ key: 'site_name' })
+
+    const result = await DELETE(
+      {} as NextRequest,
+      { params: Promise.resolve({ key: 'site_name' }) }
+    )
+
+    expect(prisma.setting.delete).toHaveBeenCalledWith({
+      where: { key: 'site_name' },
+    })
+    expect(NextResponse.json).toHaveBeenCalledWith(
+      { message: 'Setting deleted successfully' },
+      { status: 200 }
+    )
+  })
+
+  it('should return 500 on delete error', async () => {
+    ;(prisma.setting.delete as jest.Mock).mockRejectedValue(new Error('Delete failed'))
+
+    await DELETE(
+      {} as NextRequest,
+      { params: Promise.resolve({ key: 'site_name' }) }
+    )
+
+    expect(NextResponse.json).toHaveBeenCalledWith(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    )
+  })
+
+  it('should properly await the params promise', async () => {
+    ;(prisma.setting.delete as jest.Mock).mockResolvedValue({ key: 'test_key' })
+
+    const paramsPromise = Promise.resolve({ key: 'test_key' })
+    await DELETE({} as NextRequest, { params: paramsPromise })
+
+    expect(prisma.setting.delete).toHaveBeenCalled()
   })
 })
