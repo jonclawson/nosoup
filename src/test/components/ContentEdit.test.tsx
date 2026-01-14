@@ -551,7 +551,7 @@ describe('ContentEdit', () => {
       );
 
       const svg = container.querySelector('svg');
-      expect(svg).toHaveClass('h-4', 'w-4', 'inline-block', 'text-blue-600', 'hover:text-gray-900');
+      expect(svg).toHaveClass('h-4', 'w-4', 'cursor-pointer', 'inline-block', 'text-blue-600', 'hover:bg-blue-500', 'hover:text-white');
     });
 
     it('should be clickable', () => {

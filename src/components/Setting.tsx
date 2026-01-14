@@ -4,6 +4,7 @@ import ContentEdit from './ContentEdit';
 import SkeletonLine from './SkeletonLine';
 import { useStateContext } from '@/contexts/StateContext';
 import { useSession } from 'next-auth/react';
+import SkeletonArticle from './SkeletonArticle';
 
 export default function Setting({ title, type, setting, children }: { title?: string, type?: string, setting: string, children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -67,7 +68,15 @@ export default function Setting({ title, type, setting, children }: { title?: st
     }
 
     if (isLoading) {
-      return //<SkeletonLine />
+      switch (type) {
+        case 'text':
+          return <SkeletonLine />
+        case 'show':
+          // no return for show type
+          break;
+        default:
+          return <SkeletonArticle />
+      }
     }
 
     if (error) {      
