@@ -27,28 +27,32 @@ export default function ArticlesPage() {
 
   return (
     <div className={styles.articles}>
-      <Setting title="Show Articles Page Header" type="show" setting="show_articles_page_header">
-        <div className={styles['articles__header']}>
-          <div className={styles['articles__header__content']}>
-          <Setting setting="articles_page_header">
-            <h1 className={styles['articles__title']}>Articles</h1>
-            <p className={styles['articles__desc']}>
-              A collection of articles from our community.
-            </p>
-          </Setting>
+      <div className="section-outer">
+        <div className="section">
+        <Setting title="Show Articles Page Header" type="show" setting="show_articles_page_header">
+          <div className={styles['articles__header']}>
+            <div className={styles['articles__header__content']}>
+            <Setting setting="articles_page_header">
+              <h1 className={styles['articles__title']}>Articles</h1>
+              <p className={styles['articles__desc']}>
+                A collection of articles from our community.
+              </p>
+            </Setting>
+            </div>
+            {session && session?.user?.role !== 'user' && (
+              <div className={styles['articles__actions']}>
+              <Link
+                href="/articles/new"
+                className={styles['articles__actions__add']}
+                >
+                +
+              </Link>
+            </div>
+            )}
           </div>
-          {session && session?.user?.role !== 'user' && (
-            <div className={styles['articles__actions']}>
-            <Link
-              href="/articles/new"
-              className={styles['articles__actions__add']}
-              >
-              +
-            </Link>
-          </div>
-          )}
+        </Setting>
         </div>
-      </Setting>
+      </div>
       <ArticleList  />
     </div>
   )

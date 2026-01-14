@@ -3,15 +3,15 @@
 /* BEM-style classes for src/components/Featured.tsx */
 
 .featured {
-  @apply mt-8;
+  @apply bg-white /*mt-8*/ ;
 }
 
 .featured__list {
-  @apply space-y-6;
+  /* @apply max-w-7xl mx-auto space-y-6 px-8 sm:px-12 lg:px-14; */
 }
 
 .featured__container {
-  @apply flex rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200;
+  @apply flex flex-col overflow-hidden;
 }
 
 .featured__item {
@@ -55,7 +55,7 @@
 }
 
 .featured__actions {
-  @apply flex items-center justify-between pt-4 border-t border-gray-100;
+  @apply flex items-center justify-between pt-4 border-gray-100;
 }
 
 .featured__link {
@@ -75,7 +75,7 @@
 }
 
 .featured__next {
-  @apply px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700 cursor-pointer;
+  @apply px-4 py-2  text-gray-500 cursor-pointer;
 }
 
 .featured__empty {

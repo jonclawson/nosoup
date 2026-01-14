@@ -3,7 +3,7 @@
 /* BEM-style classes for src/components/Tags.tsx */
 
 .tags {
-  @apply mt-4;
+  @apply my-4;
 }
 
 .tags__list {

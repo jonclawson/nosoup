@@ -90,62 +90,67 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <div className={styles['article-page']}>
-      <div className={styles['article-page__back']}>
-        <Link
-          href="/articles"
-          className={styles['article-page__back__link']}
-        >
-          ← Back
-        </Link>
-      </div>
-
-      <article className={`${styles['article-page__container']} ${article?.published ? styles['article-page__container--published'] : styles['article-page__container--draft']}`}>
-        <div className={styles['article-page__header']}>
-          <h1 className={styles['article-page__title']}>
-            {article?.title}
-          </h1>
-          <div className={styles['article-page__meta']}>
-            <span>By {article?.author?.name}</span>
-            <span className={styles['article-page__meta__dot']}>•</span>
-            <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
+      <div className="section-outer">
+        <div className="section">
+          <div className={styles['article-page__back']}>
+            <Link
+              href="/articles"
+              className={styles['article-page__back__link']}
+            >
+              ← Back
+            </Link>
           </div>
-        </div>
-        
-        <div className={styles['article-page__divider']}>
-          <div className={styles['article-page__body']}>
-            <div className={styles['article-page__prose']}>
-              <div className={styles['article-page__text']}>
-                <ArticleFields article={article} />
+
+          <article className={`${styles['article-page__container']} ${article?.published ? styles['article-page__container--published'] : styles['article-page__container--draft']}`}>
+            <div className={styles['article-page__header']}>
+              <h1 className={styles['article-page__title']}>
+                {article?.title}
+              </h1>
+              <div className={styles['article-page__meta']}>
+                <span>By {article?.author?.name}</span>
+                <span className={styles['article-page__meta__dot']}>•</span>
+                <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
               </div>
-              <div className={styles['article-page__text--download']} onClick={handleDownload}>
-                <Dompurify html={article?.body || ''} />
-              </div>
-              <ArticleTags article={article} />
             </div>
+            
+            <div className={styles['article-page__divider']}>
+              <div className={styles['article-page__body']}>
+                <div className={styles['article-page__prose']}>
+                  <div className={styles['article-page__text']}>
+                    <ArticleFields article={article} />
+                  </div>
+                  <div className={styles['article-page__text--download']} onClick={handleDownload}>
+                    <Dompurify html={article?.body || ''} />
+                  </div>
+                  <ArticleTags article={article} />
+                </div>
+              </div>
+            </div>
+          </article>
+          
+          <div className={styles['article-page__actions']}>
+            {session && session?.user?.role !== 'user' && (
+            <>
+              <Link
+                href={`/articles/${article?.id}/edit`}
+                className={`${styles['article-page__btn']} ${styles['article-page__btn--edit']}`}
+              >
+                Edit Article
+            </Link>
+            <DeleteButton 
+              userId={article?.id || ''} 
+              onDelete={() => router.push('/articles')}
+              className={`${styles['article-page__btn']} ${styles['article-page__btn--delete']}`}
+              resourceType="article"
+            >
+              Delete Article
+            </DeleteButton>
+            </>
+            )}
           </div>
         </div>
-      </article>
-
-      <div className={styles['article-page__actions']}>
-        {session && session?.user?.role !== 'user' && (
-        <>
-          <Link
-            href={`/articles/${article?.id}/edit`}
-            className={`${styles['article-page__btn']} ${styles['article-page__btn--edit']}`}
-          >
-            Edit Article
-        </Link>
-        <DeleteButton 
-          userId={article?.id || ''} 
-          onDelete={() => router.push('/articles')}
-          className={`${styles['article-page__btn']} ${styles['article-page__btn--delete']}`}
-          resourceType="article"
-        >
-          Delete Article
-        </DeleteButton>
-        </>
-        )}
       </div>
+
     </div>
   )
 } 

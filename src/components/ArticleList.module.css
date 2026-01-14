@@ -11,11 +11,11 @@
 }
 
 .article-list__item {
-  @apply rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200;
+  @apply overflow-hidden;
 }
 
 .article-list__item--published {
-  @apply bg-white;
+  /* @apply bg-white; */
 }
 
 .article-list__item--draft {

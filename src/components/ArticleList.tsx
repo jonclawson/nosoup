@@ -61,57 +61,62 @@ export default function ArticleList({published = true, featured = null, sticky =
           Array.from({ length: 3 }).map((_, i) => <SkeletonArticle key={i} />)
         ) : (
           articles.map((article) => (
-            <article key={article.id} className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
-              <div className={styles['article-list__content']}> 
-                <div className={styles['article-list__header']}>
-                  <h2 className={styles['article-list__title']}>
-                    {article.title}
-                  </h2>
-                  <div className={styles['article-list__meta']}>
-                    <span>By {article?.author?.name}</span>
-                    <span className={styles['article-list__meta__dot']}>•</span>
-                    <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
-                  </div>
-                </div>
-                
-                <div className={styles['article-list__summary']}>
-                  <div className={styles['article-list__excerpt']}>
-                    <ArticleFields article={article} />
-                    <div onClick={handleDownload}>
-                      <Dompurify html={article.body} />
+            <div className="section-outer" key={article.id}>
+              <div className="section">
+                <article key={article.id} 
+                className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
+                  <div className={styles['article-list__content']}> 
+                    <div className={styles['article-list__header']}>
+                      <h2 className={styles['article-list__title']}>
+                        {article.title}
+                      </h2>
+                      <div className={styles['article-list__meta']}>
+                        <span>By {article?.author?.name}</span>
+                        <span className={styles['article-list__meta__dot']}>•</span>
+                        <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    <ArticleTags article={article} />
+                    
+                    <div className={styles['article-list__summary']}>
+                      <div className={styles['article-list__excerpt']}>
+                        <ArticleFields article={article} />
+                        <div onClick={handleDownload}>
+                          <Dompurify html={article.body} />
+                        </div>
+                        <ArticleTags article={article} />
+                      </div>
+                    </div>
+                    
+                    <div className={styles['article-list__actions']}>
+                      <Link
+                        href={`/articles/${article.id}`}
+                        className={styles['article-list__link']}
+                      >
+                        Read more →
+                      </Link>
+                      {session && session?.user?.role !== 'user' && (
+                      <div className={styles['article-list__admin']}>
+                        <Link
+                          href={`/articles/${article.id}/edit`}
+                          className={styles['article-list__admin__edit']}
+                        >
+                          Edit
+                        </Link>
+                        <DeleteButton 
+                          userId={article.id || ''} 
+                          onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
+                          className={styles['article-list__admin__delete']}
+                          resourceType="article"
+                        >
+                          Delete
+                        </DeleteButton>
+                      </div>
+                      )}
+                    </div> 
                   </div>
-                </div>
-                
-                <div className={styles['article-list__actions']}>
-                  <Link
-                    href={`/articles/${article.id}`}
-                    className={styles['article-list__link']}
-                  >
-                    Read more →
-                  </Link>
-                  {session && session?.user?.role !== 'user' && (
-                  <div className={styles['article-list__admin']}>
-                    <Link
-                      href={`/articles/${article.id}/edit`}
-                      className={styles['article-list__admin__edit']}
-                    >
-                      Edit
-                    </Link>
-                    <DeleteButton 
-                      userId={article.id || ''} 
-                      onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
-                      className={styles['article-list__admin__delete']}
-                      resourceType="article"
-                    >
-                      Delete
-                    </DeleteButton>
-                  </div>
-                  )}
-                </div> 
+                </article>
               </div>
-            </article>
+            </div>
           ))
         )}
       </div>

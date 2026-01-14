@@ -11,7 +11,6 @@ import SiteName from "@/components/SiteName";
 import Search from "@/components/Search";
 import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({

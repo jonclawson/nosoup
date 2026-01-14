@@ -118,7 +118,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                   onClick={() => fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1)}
                   className={styles['featured__next']}
                 >
-                  Next
+                  Next &rarr;
                 </button>
             )}
               </div>

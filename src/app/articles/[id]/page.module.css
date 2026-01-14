@@ -3,7 +3,7 @@
 /* BEM-style classes for src/app/articles/[id]/page.tsx */
 
 .article-page {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  /* @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; */
 }
 
 .article-page__back {
@@ -27,11 +27,11 @@
 }
 
 .article-page__container {
-  @apply shadow overflow-hidden sm:rounded-lg;
+  /* @apply shadow overflow-hidden sm:rounded-lg; */
 }
 
 .article-page__container--published {
-  @apply bg-white;
+  /* @apply bg-white; */
 }
 
 .article-page__container--draft {

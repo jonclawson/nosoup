@@ -11,28 +11,42 @@ export default function HomePage() {
   
   return (
     <div className={styles.page}>
-        <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
-          <Setting setting="featured_articles_header">
-            <div className={styles['page__featured']}>
-                <div className={styles['page__featured__content']}>
-                  <h1 className={styles['page__featured__title']}>Featured Articles</h1>
-                  <p className={styles['page__featured__desc']}>
-                    A collection of <i>featured</i> articles from our community.
-                  </p>
-                </div>
-                <div className={styles['page__featured__actions']}>
-                  <Link
-                    href="/articles/"
-                    className={styles['page__featured__link']}
-                  >
-                    More &rarr;
-                  </Link>
-                </div>
-            </div>
+      <div className="section-outer">
+        <div className="section">
+          <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
+            <Setting setting="featured_articles_header">
+              <div className={styles['page__featured']}>
+                  <div className={styles['page__featured__content']}>
+                    <h1 className={styles['page__featured__title']}>Featured Articles</h1>
+                    <p className={styles['page__featured__desc']}>
+                      A collection of <i>featured</i> articles from our community.
+                    </p>
+                  </div>
+                  <div className={styles['page__featured__actions']}>
+                    <Link
+                      href="/articles/"
+                      className={styles['page__featured__link']}
+                    >
+                      More &rarr;
+                    </Link>
+                  </div>
+              </div>
+            </Setting>
           </Setting>
-        </Setting>
-      <Featured />
-      <Tags style={styles['page__tags']} />
+        </div>
+      </div>
+      <div className="section-outer bg-white">
+        <div className="section">
+          <Featured />
+        </div>
+      </div>
+      <div className="section-outer">
+        <div className="section">
+          <Setting title="Show Tags" type="show" setting="show_tags">
+            <Tags style={styles['page__tags']} />
+          </Setting>
+        </div>
+      </div>
     </div>
   )
 } 

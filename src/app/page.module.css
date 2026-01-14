@@ -1,12 +1,13 @@
 /* BEM-style class names for src/app/page.tsx */
-@import "tailwindcss" reference;
+/* @import "tailwindcss" reference; */
+@reference "./globals.css";
 
 .page {
-  @apply px-4 sm:px-6 lg:px-8;
+  /* @apply max-w-7xl mx-auto ; px-4 sm:px-6 lg:px-8; */
 }
 
 .page__featured {
-  @apply sm:flex sm:items-center;
+  @apply sm:flex sm:items-center  my-4;
 }
 
 .page__featured__content {

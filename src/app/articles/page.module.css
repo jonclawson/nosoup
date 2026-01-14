@@ -3,7 +3,7 @@
 /* BEM-style class names for src/app/articles/page.tsx */
 
 .articles {
-  @apply px-4 sm:px-6 lg:px-8;
+  /* @apply px-4 sm:px-6 lg:px-8; */
 }
 
 .articles__header {
