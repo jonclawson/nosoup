@@ -17,29 +17,36 @@ export default function ContentEdit({type, onChange, children}: {type?: string, 
     }
   }, 300);
 
+  
   if (editing) {
-    return (
-      <div>
-        {type && type === 'text' ? (
-          <input 
-          defaultValue={value} 
-          onChange={(e) => handleChange(e.target.value)}
-          />
-        ) : ( 
-          <BlockNoteEditor 
-          value={value.toString()} 
-          onChange={(value) => {
-            setValue(value);
-            if (onChange) {
-              onChange(value);
-            }
-          }}
-          />
-        )}
-        <button className="ml-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={() => setEditing(false)}>Done</button>
-        
-      </div>
-    );
+    const DoneEditingButton = () => <button className="ml-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={() => setEditing(false)}>Done</button>
+    switch (type) {
+      case 'text':
+        return (
+          <div>
+            <input 
+            defaultValue={value} 
+            onChange={(e) => handleChange(e.target.value)}
+            />
+            <DoneEditingButton />
+          </div>
+        );
+      default:
+        return (
+          <div>
+              <BlockNoteEditor 
+              value={value.toString()} 
+              onChange={(value) => {
+                setValue(value);
+                if (onChange) {
+                  onChange(value);
+                }
+              }}
+              />
+            <DoneEditingButton />
+          </div>
+        );
+    }
   }
 
   if ( session && session?.user?.role === 'admin') {
