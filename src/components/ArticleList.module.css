@@ -23,7 +23,7 @@
 }
 
 .article-list__content {
-  @apply p-6;
+  /* @apply py-6; */
 }
 
 .article-list__header {

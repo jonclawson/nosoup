@@ -27,7 +27,7 @@
 }
 
 .featured__content {
-  @apply p-6;
+  @apply py-6;
 }
 
 .featured__header {

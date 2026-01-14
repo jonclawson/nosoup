@@ -13,31 +13,35 @@ export default function HomePage() {
     <div className={styles.page}>
       <div className="section-outer">
         <div className="section">
-          <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
-            <Setting setting="featured_articles_header">
-              <div className={styles['page__featured']}>
-                  <div className={styles['page__featured__content']}>
-                    <h1 className={styles['page__featured__title']}>Featured Articles</h1>
-                    <p className={styles['page__featured__desc']}>
-                      A collection of <i>featured</i> articles from our community.
-                    </p>
-                  </div>
-                  <div className={styles['page__featured__actions']}>
-                    <Link
-                      href="/articles/"
-                      className={styles['page__featured__link']}
-                    >
-                      More &rarr;
-                    </Link>
-                  </div>
-              </div>
+          <div className="section-inner">
+            <Setting title="Show Featured Title" type="show" setting="show_featured_articles_header">
+              <Setting setting="featured_articles_header">
+                <div className={styles['page__featured']}>
+                    <div className={styles['page__featured__content']}>
+                      <h1 className={styles['page__featured__title']}>Featured Articles</h1>
+                      <p className={styles['page__featured__desc']}>
+                        A collection of <i>featured</i> articles from our community.
+                      </p>
+                    </div>
+                    <div className={styles['page__featured__actions']}>
+                      <Link
+                        href="/articles/"
+                        className={styles['page__featured__link']}
+                      >
+                        More &rarr;
+                      </Link>
+                    </div>
+                </div>
+              </Setting>
             </Setting>
-          </Setting>
+          </div>
         </div>
       </div>
       <div className="section-outer bg-white">
         <div className="section">
+          <div className="section-inner">
           <Featured />
+          </div>
         </div>
       </div>
       <div className="section-outer">

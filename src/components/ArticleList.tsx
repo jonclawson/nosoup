@@ -58,11 +58,18 @@ export default function ArticleList({published = true, featured = null, sticky =
     <div className={styles['article-list']}> 
       <div className={styles['article-list__list']}>
         {loading && articles.length === 0 ? (
-          Array.from({ length: 3 }).map((_, i) => <SkeletonArticle key={i} />)
+          Array.from({ length: 3 }).map((_, i) => (
+          <div className="section-outer" key={i}>
+            <div className="section">
+              <SkeletonArticle key={i} />
+            </div>
+          </div>  
+        ))
         ) : (
           articles.map((article) => (
             <div className="section-outer" key={article.id}>
               <div className="section">
+                <div className="section-inner">
                 <article key={article.id} 
                 className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
                   <div className={styles['article-list__content']}> 
@@ -115,6 +122,7 @@ export default function ArticleList({published = true, featured = null, sticky =
                     </div> 
                   </div>
                 </article>
+                </div>
               </div>
             </div>
           ))
