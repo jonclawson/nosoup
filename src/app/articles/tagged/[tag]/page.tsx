@@ -16,15 +16,23 @@ export default function ArticlesPage({ params }: {
   useDocument({ title: `Articles tagged with ${tag}` })
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-        <Setting setting="articles_tagged_page_header">
-          <h1 className="text-2xl font-semibold text-gray-900">Articles tagged with {tag}</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A collection of articles tagged with {tag} from our community.
-          </p>
-        </Setting>
+    <div className="">
+      <div className="section-outer">
+        <div className="section">
+          <Setting title="Show Articles Tagged Page Header" type="show" setting="show_articles_tagged_page_header">
+          <div className="section-inner">
+            <div className="sm:flex sm:items-center">
+              <div className="sm:flex-auto">
+              <Setting setting="articles_tagged_page_header">
+                <h1 className="text-2xl font-semibold text-gray-900">Articles tagged with {tag}</h1>
+                <p className="mt-2 text-sm text-gray-700">
+                  A collection of articles tagged with {tag} from our community.
+                </p>
+              </Setting>
+              </div>
+            </div>
+          </div>
+          </Setting>
         </div>
       </div>
       <ArticleList tag={tag} />
