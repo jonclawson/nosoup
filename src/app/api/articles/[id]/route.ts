@@ -93,7 +93,8 @@ export async function PUT(
       )
     }
 
-    console.log('Processing PUT request for article ID:', (await params).id);
+    const articleId = (await params).id;
+    console.log('Processing PUT request for article ID:', articleId);
     const form = await request.formData()
     console.log('Received form data:', form);
     const title = form.get('title')?.toString() ?? ''
@@ -109,10 +110,42 @@ export async function PUT(
 
     const uploadsDir = path.join(process.cwd(), 'public', 'files')
 
+    // Identify and delete removed images from
+    const currentImages = prisma.field.findMany({
+      where: {
+        articleId: articleId,
+        type: 'image'
+      },
+      select: {
+        value: true
+      }
+    });
+    const removedImages = (await currentImages).filter(img => {
+      return !fields.some((f: any) => f.type === 'image' && f.value === img.value)
+    });
+    console.log('Images to be removed:', removedImages);
+    if (process.env.R2_USE_R2 === 'true' && removedImages.length > 0) {
+      await deleteFiles(removedImages.map(img => img.value.replace('/files/', '')), { bucket: process.env.R2_BUCKET_NAME! })
+    } 
+    else {
+      // Delete from local storage
+      for (const img of removedImages) {
+        const filePath = path.join(uploadsDir, img.value.replace('/files/', ''))
+        try {
+          await fs.unlink(filePath)
+        } catch (err) {
+          console.error('Error deleting file:', filePath, err)
+          // Continue deleting other files even if one fails
+        }
+      }
+    }
+
+    // Process new file uploads
     try {
       for (const [index, field] of fields.entries()) {
         console.log('Processing field:', field);
         if (field.type === 'image' && form.get(`files[${index}]`)) {
+          // the files index was set statically in the form data to match the fields index !?
           const file = form.get(`files[${index}]`) as File
           const arrayBuffer = await file.arrayBuffer()
           if (process.env.R2_USE_R2 !== 'true') {
@@ -158,7 +191,7 @@ export async function PUT(
 
     // Check if article exists and user is the author
     const existingArticle = await prisma.article.findUnique({
-      where: { id: (await params).id }
+      where: { id: articleId }
     })
 
     if (!existingArticle) {
