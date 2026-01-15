@@ -45,7 +45,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         }
         const articleData = await response.json()
         if (articleData && articleData.slug) {
-          router.push(`/${articleData.slug}`)
+          router.replace(`/${articleData.slug}`)
         }
         setTitle(articleData.title)
         setArticle(articleData)
