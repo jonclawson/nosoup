@@ -4,18 +4,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import fs from 'fs/promises'
 import path from 'path';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { uploadFile } from '@/lib/file-storage'
 import { randomUUID } from 'crypto' 
 import slugify from 'slugify'
-
-const s3Client = new S3Client({
-  region: 'auto', // R2 uses 'auto'
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-})
 
 export async function GET(
   request: NextRequest,
@@ -135,15 +126,9 @@ export async function PUT(
             const buffer = Buffer.from(arrayBuffer)
             const bucketName = process.env.R2_BUCKET_NAME!;
             const key = `${Date.now()}-${randomUUID()}${file.name}`;
-            const putObjectParams = {
-              Bucket: bucketName,
-              Key: key,
-              Body: buffer,
-              ContentType: file.type,
-            };
 
             try {
-              await s3Client.send(new PutObjectCommand(putObjectParams));
+              await uploadFile(key, buffer, { bucket: bucketName, fileType: file.type });
               console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
               field.value = `/files/${key}`;
             } catch (err) {

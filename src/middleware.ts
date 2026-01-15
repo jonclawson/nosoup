@@ -25,12 +25,16 @@ export default withAuth(
     && !pathname.includes('.')) {
     const slug = pathname.slice(1)
     const articlesAlias = await fetch(`${req.nextUrl.origin}/api/settings/navigation_articles_link`);
+    // ugh hacky but fetch inside middleware to get alias setting
     if (articlesAlias.ok) {
-      let { value: alias } = await articlesAlias.json();
-      alias = slugify(alias, { lower: true });
-      if (alias && slug === alias) {
-        console.log('Rewriting to articles list:',`/articles`);
-        return NextResponse.rewrite(new URL(`/articles`, req.url));
+      const data = await articlesAlias.json();
+      let alias = data?.value;  
+      if (alias != null) {
+        alias = slugify(alias, { lower: true });
+        if (alias && slug === alias) {
+          console.log('Rewriting to articles list:',`/articles`);
+          return NextResponse.rewrite(new URL(`/articles`, req.url));
+        }
       }
     }
     const res = await fetch(
