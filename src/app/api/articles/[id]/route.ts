@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import fs from 'fs/promises'
-import path from 'path';
 import { uploadFile, deleteFiles, deleteFile } from '@/lib/file-storage'
 import { randomUUID } from 'crypto' 
 import slugify from 'slugify'
@@ -107,9 +105,6 @@ export async function PUT(
     const tab = form.get('tab') ? JSON.parse(form.get('tab')?.toString() ?? '{}') : undefined;
     console.log('Received tab data for update:', tab);
 
-
-    const uploadsDir = path.join(process.cwd(), 'public', 'files')
-
     // Identify and delete removed images from
     const currentImages = prisma.field.findMany({
       where: {
@@ -120,25 +115,15 @@ export async function PUT(
         value: true
       }
     });
+
+    // Determine which images have been removed
     const removedImages = (await currentImages).filter(img => {
       return !fields.some((f: any) => f.type === 'image' && f.value === img.value)
     });
     console.log('Images to be removed:', removedImages);
-    if (process.env.R2_USE_R2 === 'true' && removedImages.length > 0) {
+    if (removedImages.length > 0) {
       await deleteFiles(removedImages.map(img => img.value.replace('/files/', '')), { bucket: process.env.R2_BUCKET_NAME! })
     } 
-    else {
-      // Delete from local storage
-      for (const img of removedImages) {
-        const filePath = path.join(uploadsDir, img.value.replace('/files/', ''))
-        try {
-          await fs.unlink(filePath)
-        } catch (err) {
-          console.error('Error deleting file:', filePath, err)
-          // Continue deleting other files even if one fails
-        }
-      }
-    }
 
     // Process new file uploads
     try {

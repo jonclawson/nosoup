@@ -96,13 +96,28 @@ export const deleteFile = async ( key: string, options?: { bucket?: string }) =>
 }
 // export const deleteFiles = s3DeleteMany
 export const deleteFiles = async ( keys: string[], options?: { bucket?: string }) => {
-  try {
-    const res = await s3DeleteMany(keys, options)
-    console.log('Successfully deleted files from R2:', keys, res)
-  } catch (err) {
-    console.error('Error deleting files from R2:', err)
-    throw err;
+   if (process.env.R2_USE_R2 === 'true' && keys.length > 0) {
+    try {
+      const res = await s3DeleteMany(keys, options)
+      console.log('Successfully deleted files from R2:', keys, res)
+    } catch (err) {
+      console.error('Error deleting files from R2:', err)
+      throw err;
+    }
   }
+  else {
+  // Delete from local storage
+  const uploadsDir = path.join(process.cwd(), 'public', 'files')
+  for (const key of keys) {
+    const filePath = path.join(uploadsDir, key)
+    try {
+      await fs.unlink(filePath)
+    } catch (err) {
+      console.error('Error deleting file:', filePath, err)
+      // Continue deleting other files even if one fails
+    }
+  }
+}
 }
 const fileStorage = {
   uploadFile,
