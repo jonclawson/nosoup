@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import fs from 'fs/promises'
 import path from 'path';
-import { uploadFile, deleteFiles } from '@/lib/file-storage'
+import { uploadFile, deleteFiles, deleteFile } from '@/lib/file-storage'
 import { randomUUID } from 'crypto' 
 import slugify from 'slugify'
 
@@ -320,40 +320,19 @@ export async function DELETE(
       )
     }
 
-    if (process.env.R2_USE_R2 === 'true') {
-      const fileKeysToDelete: string[] = []
-      for (const field of existingArticle.fields) {
-        if (field.type === 'image' && field.value.startsWith('/files/')) {
-          const fileKey = field.value.replace('/files/', '')
-          fileKeysToDelete.push(fileKey)
+    const fileKeysToDelete: string[] = []
+    for (const field of existingArticle.fields) {
+      if (field.type === 'image' && field.value.startsWith('/files/')) {
+        const fileKey = field.value.replace('/files/', '')
+        if (process.env.R2_USE_R2 !== 'true') {
+          deleteFile(fileKey)
         }
-      }
-      if (fileKeysToDelete.length > 0) {
-        try {
-          const res = await deleteFiles(fileKeysToDelete, { bucket: process.env.R2_BUCKET_NAME! })
-          console.log('Successfully deleted files from R2:', fileKeysToDelete, res)
-        } catch (err) {
-          console.error('Error deleting files from R2:', err)
-          return NextResponse.json(
-            { error: 'Failed to delete associated files from R2' },
-            { status: 500 }
-          )
-        }
+        fileKeysToDelete.push(fileKey)
       }
     }
-    else {
-      // Delete associated files from local storage
-      const uploadsDir = path.join(process.cwd(), 'public', 'files')
-      for (const field of existingArticle.fields) {
-        if (field.type === 'image' && field.value.startsWith('/files/')) {
-          const filePath = path.join(uploadsDir, field.value.replace('/files/', ''))
-          try {
-            await fs.unlink(filePath)
-          } catch (err) {
-            console.error('Error deleting file:', filePath, err)
-            // Continue deleting other files even if one fails
-          }
-        }
+    if (process.env.R2_USE_R2 === 'true') {
+      if (fileKeysToDelete.length > 0) {
+        await deleteFiles(fileKeysToDelete, { bucket: process.env.R2_BUCKET_NAME! })
       }
     }
 

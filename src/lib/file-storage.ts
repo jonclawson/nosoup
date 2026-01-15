@@ -41,11 +41,11 @@ const s3Download = async ( key: string, options?: { bucket?: string }) => {
 }
 
 const s3Delete = async ( key: string, options?: { bucket?: string }) => {
-   const command = new DeleteObjectCommand({
-        Bucket: options?.bucket || S3_BUCKET,
-        Key: key,
-      })
-      return await s3Client.send(command);
+  const command = new DeleteObjectCommand({
+      Bucket: options?.bucket || S3_BUCKET,
+      Key: key,
+    })
+    return await s3Client.send(command);
 }
 
 const s3DeleteMany = async ( keys: string[], options?: { bucket?: string }) => {
@@ -79,8 +79,31 @@ export const uploadFile = async ( key: string, body: Buffer | Uint8Array | Blob 
   }
 }
 export const downloadFile = s3Download
-export const deleteFile = s3Delete
-export const deleteFiles = s3DeleteMany
+export const deleteFile = async ( key: string, options?: { bucket?: string }) => {
+    if (process.env.R2_USE_R2 !== 'true') {
+    const uploadsDir = path.join(process.cwd(), 'public', 'files')
+    const filePath = path.join(uploadsDir, key)
+    try {
+      return await fs.unlink(filePath)
+    } catch (err) {
+      console.error('Error deleting file:', filePath, err)
+      return err;
+    }
+  }
+  if (process.env.R2_USE_R2 === 'true') {
+    return await s3Delete(key, options);
+  }
+}
+// export const deleteFiles = s3DeleteMany
+export const deleteFiles = async ( keys: string[], options?: { bucket?: string }) => {
+  try {
+    const res = await s3DeleteMany(keys, options)
+    console.log('Successfully deleted files from R2:', keys, res)
+  } catch (err) {
+    console.error('Error deleting files from R2:', err)
+    throw err;
+  }
+}
 const fileStorage = {
   uploadFile,
   downloadFile,
