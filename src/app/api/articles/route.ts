@@ -153,31 +153,10 @@ export async function POST(request: NextRequest) {
         if (field.type === 'image' && form.get(`files[${index}]`)) {
           const file = form.get(`files[${index}]`) as File
           const arrayBuffer = await file.arrayBuffer()
-          if (process.env.R2_USE_R2 !== 'true') {
-            const buffer = Buffer.from(arrayBuffer)
-            const fileName = `${Date.now()}-${randomUUID()}${file.name}`
-            const filePath = path.join(uploadsDir, fileName)
-            await fs.writeFile(filePath, buffer)
-            field.value = `/files/${fileName}`
-          }
-          if (process.env.R2_USE_R2 === 'true') {
-            const buffer = Buffer.from(arrayBuffer)
-            const bucketName = process.env.R2_BUCKET_NAME!;
-            const key = `${Date.now()}-${randomUUID()}${file.name}`
-
-            try {
-              console.log(`Uploading ${key} to R2 bucket ${bucketName}... ${process.env.R2_ACCOUNT_ID} -- ${process.env.R2_ACCESS_KEY_ID} -- ${process.env.R2_SECRET_ACCESS_KEY}`);
-              await uploadFile(key, buffer, { bucket: bucketName, fileType: file.type });
-              console.log(`Successfully uploaded ${key} to R2 bucket ${bucketName}`);
-              field.value = `/files/${key}`;
-            } catch (err) {
-              console.error('Error uploading to R2:', err);
-              return NextResponse.json(
-                { error: 'Failed to upload file to R2' },
-                { status: 500 }
-              )
-            }
-          }
+          const buffer = Buffer.from(arrayBuffer)
+          const fileName = `${Date.now()}-${randomUUID()}${file.name}`
+          field.value = `/files/${fileName}`
+          await uploadFile(fileName, buffer, { bucket: process.env.R2_BUCKET_NAME!, fileType: file.type });
         }
       }
     } catch (fileError) {
