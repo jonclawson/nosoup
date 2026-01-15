@@ -36,6 +36,9 @@ jest.mock('@/lib/prisma', () => ({
     menuTab: {
       findFirst: jest.fn(),
     },
+    field: {
+      findMany: jest.fn().mockResolvedValue([]),
+    },
   },
 }))
 
@@ -257,6 +260,8 @@ describe('/api/articles/[id]/route', () => {
       const client = await import('@aws-sdk/client-s3')
       // set send on prototype so existing s3Client instance (created at module init) has send
       client.S3Client.prototype.send = jest.fn().mockResolvedValue({})
+      // ensure PutObjectCommand stores its input for inspection
+      ;(client.PutObjectCommand as unknown as jest.Mock).mockImplementation(function (input: any) { (this as any).input = input; return this })
 
       const form = {
         get: (k: string) => {
@@ -276,6 +281,10 @@ describe('/api/articles/[id]/route', () => {
       expect(response.status).toBe(200)
       const clientModule = await import('@aws-sdk/client-s3')
       expect(clientModule.S3Client.prototype.send).toHaveBeenCalled()
+      // inspect the command passed to send to ensure ContentType was set
+      const sentCmd = clientModule.S3Client.prototype.send.mock.calls[0][0]
+      expect(sentCmd.input).toBeDefined()
+      expect(sentCmd.input.ContentType).toBe('image/png')
     })
 
     it('returns 500 if R2 upload fails', async () => {
@@ -295,6 +304,7 @@ describe('/api/articles/[id]/route', () => {
       const client = await import('@aws-sdk/client-s3')
       // set send on prototype to simulate rejection
       client.S3Client.prototype.send = jest.fn().mockRejectedValue(new Error('upload fail'))
+      ;(client.PutObjectCommand as unknown as jest.Mock).mockImplementation(function (input: any) { (this as any).input = input; return this })
 
       const form = {
         get: (k: string) => {
@@ -312,6 +322,9 @@ describe('/api/articles/[id]/route', () => {
       const response = await PUT(request, { params: Promise.resolve({ id: '1' }) })
 
       expect(response.status).toBe(500)
+      const clientModule = await import('@aws-sdk/client-s3')
+      const sentCmd = clientModule.S3Client.prototype.send.mock.calls[0][0]
+      expect(sentCmd.input.ContentType).toBe('image/png')
     })
 
     it('returns 500 if file processing throws', async () => {
