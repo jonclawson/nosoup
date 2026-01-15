@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, DeleteObjectsCommand } from '@aws-sdk/client-s3'
 
 const S3_BUCKET = process.env.R2_BUCKET_NAME!
 const S3_ENDPOINT = `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
@@ -37,12 +37,35 @@ const s3Download = async ( key: string, options?: { bucket?: string }) => {
       })
       return await s3Client.send(command);
 }
+
+const s3Delete = async ( key: string, options?: { bucket?: string }) => {
+   const command = new DeleteObjectCommand({
+        Bucket: options?.bucket || S3_BUCKET,
+        Key: key,
+      })
+      return await s3Client.send(command);
+}
+
+const s3DeleteMany = async ( keys: string[], options?: { bucket?: string }) => {
+   const deleteParams = {
+        Bucket: options?.bucket || S3_BUCKET,
+        Delete: {
+          Objects: keys.map((key) => ({ Key: key })),
+          Quiet: false,
+        },
+      };
+      const command = new DeleteObjectsCommand(deleteParams);
+      return await s3Client.send(command);
+}
 // Generic interface for extending to other storage providers in the future
 export const uploadFile = s3Upload
 export const downloadFile = s3Download
+export const deleteFile = s3Delete
+export const deleteFiles = s3DeleteMany
 const fileStorage = {
   uploadFile,
   downloadFile,
+  deleteFile,
 }
 
 export default fileStorage
