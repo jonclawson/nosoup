@@ -15,7 +15,7 @@
 }
 
 .featured__item {
-  @apply flex flex-grow y-overflow-hidden;
+  @apply flex flex-grow;
 }
 
 .featured__item--published {
