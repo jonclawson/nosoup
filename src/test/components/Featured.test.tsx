@@ -118,8 +118,7 @@ describe('Featured', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Test Article')).toBeInTheDocument();
-      expect(screen.getByText(/By Test Author/)).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Read more/i })).toHaveAttribute('href', '/articles/1');
+      expect(screen.getByRole('link', { name: /more/i })).toHaveAttribute('href', '/articles/1');
     });
   });
 

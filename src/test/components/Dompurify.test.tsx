@@ -30,17 +30,17 @@ describe('Dompurify', () => {
   });
 
   describe('Rendering', () => {
-    it('should render a span element', async () => {
+    it('should render a div element', async () => {
       const { container } = render(<Dompurify html="<p>Test</p>" />);
-      const span = container.querySelector('span');
-      expect(span).toBeInTheDocument();
+      const div = container.querySelector('div');
+      expect(div).toBeInTheDocument();
     });
 
     it('should render with dangerouslySetInnerHTML', async () => {
       const testHtml = '<b>Bold text</b>';
       const { container } = render(<Dompurify html={testHtml} />);
-      const span = container.querySelector('span');
-      expect(span?.innerHTML).toContain('Bold text');
+      const div = container.querySelector('div');
+      expect(div?.innerHTML).toContain('Bold text');
     });
 
     it('should render safe HTML content', async () => {
@@ -52,9 +52,9 @@ describe('Dompurify', () => {
 
     it('should render empty content when html is empty', async () => {
       const { container } = render(<Dompurify html="" />);
-      const span = container.querySelector('span');
-      expect(span).toBeInTheDocument();
-      expect(span?.innerHTML).toBe('');
+      const div = container.querySelector('div');
+      expect(div).toBeInTheDocument();
+      expect(div?.innerHTML).toBe('');
     });
 
     it('should render with React.StrictMode', async () => {
@@ -64,7 +64,7 @@ describe('Dompurify', () => {
         </React.StrictMode>
       );
       await waitFor(() => {
-        expect(container.querySelector('span')).toBeInTheDocument();
+        expect(container.querySelector('div')).toBeInTheDocument();
       });
     });
   });
@@ -74,8 +74,8 @@ describe('Dompurify', () => {
       const unsafeHtml = '<p>Safe</p><script>alert("xss")</script>';
       const { container } = render(<Dompurify html={unsafeHtml} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span?.innerHTML).not.toContain('<script>');
+        const div = container.querySelector('div');
+        expect(div?.innerHTML).not.toContain('<script>');
       });
     });
 
@@ -119,8 +119,8 @@ describe('Dompurify', () => {
       const htmlWithChars = '<p>&nbsp;&copy;&reg;&trade;</p>';
       const { container } = render(<Dompurify html={htmlWithChars} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span?.innerHTML).toContain('&nbsp;');
+        const div = container.querySelector('div');
+        expect(div?.innerHTML).toContain('&nbsp;');
       });
     });
 
@@ -174,8 +174,8 @@ describe('Dompurify', () => {
       const longHtml = '<p>' + 'Lorem ipsum '.repeat(100) + '</p>';
       const { container } = render(<Dompurify html={longHtml} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
 
@@ -245,8 +245,8 @@ describe('Dompurify', () => {
       const malformedHtml = '<div><p>Unclosed paragraph</div>';
       const { container } = render(<Dompurify html={malformedHtml} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
 
@@ -260,8 +260,8 @@ describe('Dompurify', () => {
 
     it('should handle empty string gracefully', async () => {
       const { container } = render(<Dompurify html="" />);
-      const span = container.querySelector('span');
-      expect(span).toBeInTheDocument();
+      const div = container.querySelector('div');
+      expect(div).toBeInTheDocument();
     });
   });
 
@@ -274,9 +274,9 @@ describe('Dompurify', () => {
       render(<Dompurify html={htmlWithEvent} />);
 
       await waitFor(() => {
-        // The span is rendered, but onclick should be removed by sanitization
-        const span = document.querySelector('span');
-        expect(span).toBeInTheDocument();
+        // The div is rendered, but onclick should be removed by sanitization
+        const div = document.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
 
       delete (window as any).testHandler;
@@ -286,8 +286,8 @@ describe('Dompurify', () => {
       const htmlWithJSURI = '<a href="javascript:alert(\'xss\')">Click</a>';
       const { container } = render(<Dompurify html={htmlWithJSURI} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span?.innerHTML).not.toContain('javascript:');
+        const div = container.querySelector('div');
+        expect(div?.innerHTML).not.toContain('javascript:');
       });
     });
 
@@ -295,8 +295,8 @@ describe('Dompurify', () => {
       const htmlWithDangerousAttrs = '<img src="x" onerror="alert(\'xss\')">';
       const { container } = render(<Dompurify html={htmlWithDangerousAttrs} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span?.innerHTML).not.toContain('onerror');
+        const div = container.querySelector('div');
+        expect(div?.innerHTML).not.toContain('onerror');
       });
     });
 
@@ -304,8 +304,8 @@ describe('Dompurify', () => {
       const htmlWithBase = '<base href="http://evil.com/"><p>Content</p>';
       const { container } = render(<Dompurify html={htmlWithBase} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
 
@@ -313,8 +313,8 @@ describe('Dompurify', () => {
       const htmlWithForm = '<form action="http://evil.com"><input type="text"><button>Submit</button></form>';
       const { container } = render(<Dompurify html={htmlWithForm} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
   });
@@ -324,15 +324,15 @@ describe('Dompurify', () => {
       // This test verifies the component checks for typeof window
       const { container } = render(<Dompurify html="<p>SSR Test</p>" />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
 
     it('should render as client component', () => {
       const { container } = render(<Dompurify html="<p>Client Component</p>" />);
-      const span = container.querySelector('span');
-      expect(span).toBeInTheDocument();
+      const div = container.querySelector('div');
+      expect(div).toBeInTheDocument();
     });
   });
 
@@ -350,8 +350,8 @@ describe('Dompurify', () => {
       const htmlWithCDATA = '<p>Normal</p><![CDATA[CDATA content]]>';
       const { container } = render(<Dompurify html={htmlWithCDATA} />);
       await waitFor(() => {
-        const span = container.querySelector('span');
-        expect(span).toBeInTheDocument();
+        const div = container.querySelector('div');
+        expect(div).toBeInTheDocument();
       });
     });
 
@@ -443,19 +443,19 @@ describe('Dompurify', () => {
   describe('Component Type', () => {
     it('should be a client component', () => {
       const { container } = render(<Dompurify html="<p>Test</p>" />);
-      expect(container.querySelector('span')).toBeInTheDocument();
+      expect(container.querySelector('div')).toBeInTheDocument();
     });
 
     it('should accept proper prop interface', () => {
       const props = { html: '<p>Test</p>' };
       const { container } = render(<Dompurify {...props} />);
-      expect(container.querySelector('span')).toBeInTheDocument();
+      expect(container.querySelector('div')).toBeInTheDocument();
     });
 
     it('should not accept undefined html prop', () => {
       // This should handle gracefully - component expects string
       const { container } = render(<Dompurify html="" />);
-      expect(container.querySelector('span')).toBeInTheDocument();
+      expect(container.querySelector('div')).toBeInTheDocument();
     });
   });
 });
