@@ -35,6 +35,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     const fetchArticle = async () => {
       try {
         const response = await fetch(`/api/articles/${resolvedParams.id}`)
+        setLoading(false)
         if (!response.ok) {
           if (response.status === 404) {
             setError('Article not found')
@@ -45,11 +46,11 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         }
         const articleData = await response.json()
         if (articleData && articleData.slug) {
-          router.replace(`/${articleData.slug}`)
+          window.history.replaceState(null, '', `/${articleData.slug}`)  
         }
         setTitle(articleData.title)
         setArticle(articleData)
-        setLoading(false)
+        console.log('Article data:', article)
       } catch (err) {
         setError('Failed to fetch article')
         setLoading(false)
