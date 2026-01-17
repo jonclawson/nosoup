@@ -12,6 +12,7 @@ import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 import styles from './Featured.module.css'
+import truncate from 'truncate-html';
 
 export default function Featured({published = true, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -48,10 +49,19 @@ export default function Featured({published = true, sticky = true, tag}: { publi
       console.error('Error fetching articles:', error);
     }
   };
+
   useEffect(() => {
     fetchArticles();
   }, []);
-  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
+    },  30 * 1000);
+
+    return () => clearInterval(interval);
+  }, [pagination, pagination.totalPages]);
+
   return (
     <div className={styles['featured']}>
       <div className={styles['featured__list']}>
@@ -61,23 +71,26 @@ export default function Featured({published = true, sticky = true, tag}: { publi
           <div className={styles['featured__container']}>
           {articles.map((article) => (
             <article key={article.id} className={`${styles['featured__item']} ${article.published ? styles['featured__item--published'] : styles['featured__item--draft']}`}>
+              {article.fields.length > 0 && (
+              <div className={styles['featured__fields']}>
+                <ArticleFields article={article} />
+              </div>
+              )}
               <div className={styles['featured__content']}>
                 <div className={styles['featured__header']}>
                   <h2 className={styles['featured__title']}>
-                    {article.title}
+                    <Link
+                      href={`/articles/${article.id}`}
+                    >
+                      {article.title}
+                    </Link>
                   </h2>
-                  <div className={styles['featured__meta']}>
-                    <span>By {article?.author?.name}</span>
-                    <span className={styles['featured__meta__dot']}>•</span>
-                    <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
-                  </div>
                 </div>
                 
                 <div className={styles['featured__teaser']}>
                   <div className={styles['featured__excerpt']}>
-                    <ArticleFields article={article} />
                     <div onClick={handleDownload}>
-                      <Dompurify html={article.body} />
+                      <Dompurify html={truncate(article.body, 300)} />
                     </div>
                     <ArticleTags article={article} />
                   </div>
@@ -88,7 +101,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                     href={`/articles/${article.id}`}
                     className={styles['featured__link']}
                   >
-                    Read more →
+                    more →
                   </Link>
                   {session && session?.user?.role !== 'user' && (
                   <div className={styles['featured__admin']}>

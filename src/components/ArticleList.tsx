@@ -75,7 +75,11 @@ export default function ArticleList({published = true, featured = null, sticky =
                   <div className={styles['article-list__content']}> 
                     <div className={styles['article-list__header']}>
                       <h2 className={styles['article-list__title']}>
-                        {article.title}
+                        <Link
+                          href={`/articles/${article.id}`}
+                        >
+                          {article.title}
+                        </Link>
                       </h2>
                       <div className={styles['article-list__meta']}>
                         <span>By {article?.author?.name}</span>
