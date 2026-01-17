@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status !== 'passed') {
+    const buffer = await page.screenshot({ fullPage: true });
+    await testInfo.attach('final-screenshot', { body: buffer, contentType: 'image/png' });
+  }
+});
+
+test('test', async ({ page }, testInfo) => {
   await page.goto('http://localhost:3000/');
   await page.getByRole('link', { name: 'Sign In' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).click();
@@ -35,4 +42,7 @@ test('test', async ({ page }) => {
   });
   await page.getByRole('button', { name: 'Delete Article' }).click();
   await expect(page.getByRole('heading', { name: 'Test Article Edit' })).toHaveCount(0);
+  const buffer = await page.screenshot({ fullPage: true });
+  // attach to Playwright test artifacts (will show up in HTML report)
+  await testInfo.attach('final-screenshot', { body: buffer, contentType: 'image/png' });
 });
