@@ -50,7 +50,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         }
         setTitle(articleData.title)
         setArticle(articleData)
-        console.log('Article data:', article)
       } catch (err) {
         setError('Failed to fetch article')
         setLoading(false)
