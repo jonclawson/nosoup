@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   // Fetch all tags from the database accepting an optional search parameter to filter tags by name
@@ -16,9 +17,8 @@ export async function GET(request: NextRequest) {
     const tags = await prisma.tag.findMany({
       ...(search ? { where: { name: isSqlite
         ? { contains: search }
-        // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
         : { contains: search, mode: 'insensitive' } 
-      } } : {}),
+      } as unknown as Prisma.TagWhereInput } : {}),
       select: {
         id: true,
         name: true

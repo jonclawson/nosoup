@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { Prisma } from '@prisma/client';
 
 const isSqlite = process.env.DATABASE_URL?.startsWith('file:') || false;
 
@@ -22,9 +23,7 @@ export async function GET(
           AND: [
             {
               OR: [
-                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
-                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { body: { contains: keyword, } } : { body: { contains: keyword, mode: 'insensitive' } }
               ]
             },
@@ -35,7 +34,7 @@ export async function GET(
               ],
             },
           ],
-        },
+        } as unknown as Prisma.ArticleWhereInput,
         skip,
         take: size,
         orderBy: {
@@ -51,9 +50,7 @@ export async function GET(
           AND: [
             {
               OR: [
-                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
-                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { body: { contains: keyword } } : { body: { contains: keyword, mode: 'insensitive'   } }
               ]
             },
@@ -64,7 +61,7 @@ export async function GET(
               ],
             },
           ],
-        },
+        } as unknown as Prisma.ArticleWhereInput,
       }),
     ])
     return NextResponse.json({ articles, total })
