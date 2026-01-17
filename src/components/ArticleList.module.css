@@ -11,7 +11,7 @@
 }
 
 .article-list__item {
-  @apply overflow-hidden;
+  @apply overflow-hidden  min-h-[calc(100vh-170px)] flex flex-col justify-between h-full;
 }
 
 .article-list__item--published {
@@ -23,7 +23,7 @@
 }
 
 .article-list__content {
-  /* @apply py-6; */
+  /* @apply ; */
 }
 
 .article-list__header {
@@ -43,11 +43,15 @@
 }
 
 .article-list__summary {
-  @apply mb-4;
+  @apply mb-4 flex flex-row;
+}
+
+.article-list__fields {
+  @apply mb-4  flex-shrink-0;
 }
 
 .article-list__excerpt {
-  @apply text-gray-700 line-clamp-6 leading-relaxed;
+  @apply text-gray-700  flex-grow;
 }
 
 .article-list__actions {

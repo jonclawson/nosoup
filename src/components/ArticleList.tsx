@@ -12,6 +12,7 @@ import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 import styles from './ArticleList.module.css' 
+import truncate from 'truncate-html';
 
 export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -89,42 +90,44 @@ export default function ArticleList({published = true, featured = null, sticky =
                     </div>
                     
                     <div className={styles['article-list__summary']}>
-                      <div className={styles['article-list__excerpt']}>
+                      <div className={styles['article-list__fields']}>
                         <ArticleFields article={article} />
+                      </div>
+                      <div className={styles['article-list__excerpt']}>
                         <div onClick={handleDownload}>
-                          <Dompurify html={article.body} />
+                          <Dompurify html={truncate(article.body, 800)} />
                         </div>
                         <ArticleTags article={article} />
                       </div>
                     </div>
-                    
-                    <div className={styles['article-list__actions']}>
-                      <Link
-                        href={`/articles/${article.id}`}
-                        className={styles['article-list__link']}
-                      >
-                        Read more →
-                      </Link>
-                      {session && session?.user?.role !== 'user' && (
-                      <div className={styles['article-list__admin']}>
-                        <Link
-                          href={`/articles/${article.id}/edit`}
-                          className={styles['article-list__admin__edit']}
-                        >
-                          Edit
-                        </Link>
-                        <DeleteButton 
-                          userId={article.id || ''} 
-                          onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
-                          className={styles['article-list__admin__delete']}
-                          resourceType="article"
-                        >
-                          Delete
-                        </DeleteButton>
-                      </div>
-                      )}
-                    </div> 
                   </div>
+
+                  <div className={styles['article-list__actions']}>
+                    <Link
+                      href={`/articles/${article.id}`}
+                      className={styles['article-list__link']}
+                    >
+                      Read more →
+                    </Link>
+                    {session && session?.user?.role !== 'user' && (
+                    <div className={styles['article-list__admin']}>
+                      <Link
+                        href={`/articles/${article.id}/edit`}
+                        className={styles['article-list__admin__edit']}
+                      >
+                        Edit
+                      </Link>
+                      <DeleteButton 
+                        userId={article.id || ''} 
+                        onDelete={() => setArticles(articles.filter(a => a.id !== article.id))}
+                        className={styles['article-list__admin__delete']}
+                        resourceType="article"
+                      >
+                        Delete
+                      </DeleteButton>
+                    </div>
+                    )}
+                  </div> 
                 </article>
                 </div>
               </div>
