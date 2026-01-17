@@ -35,7 +35,7 @@ jobs:
         run: npm test
 
   playwright:
-    name: Run Playwright E2E (Docker)
+    name: Run Playwright E2E
     needs: test
     runs-on: ubuntu-latest
     steps:
