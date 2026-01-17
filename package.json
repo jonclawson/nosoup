@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbo",
     "docker": "docker-compose up",
+    "exec": "docker exec -it nosoup bash",
     "build": "prisma generate --schema=prisma/postgres/schema.prisma && next build",
     "build_local": "prisma generate && next build",
     "start": "next start",

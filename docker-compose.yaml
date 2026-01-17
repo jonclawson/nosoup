@@ -2,20 +2,22 @@ version: '3.8'
 
 services:
   nosoup:
-    image: node:20-alpine
+    image: node:20-slim
+    container_name: nosoup
     ports: 
-      - "8080:3000"
+      - "3000:3000"
     working_dir: /app
     volumes:
       - ./:/app:delegated
-      - /app/node_modules  
-      - /app/.next  
+      # - /app/node_modules  
+      # - /app/.next  
     depends_on:
       - postgres
     command:
-      - sh 
+      - bash 
       - -c 
       - |
+        # tail -f /dev/null
         echo "$${DATABASE_URL}"
         SHA=$(cat .git/refs/heads/main); 
         SHORT_SHA="$${SHA:0:7}";
@@ -33,7 +35,7 @@ services:
       NODE_ENV: production
       # DATABASE_URL: postgres://nosoup:rootpassword@postgres:5432/nosoup?sslmode=disable
       # NEXTAUTH_SECRET: your-secret-key-here-change-in-production
-      # NEXTAUTH_URL: http://localhost:8080
+      # NEXTAUTH_URL: http://localhost:3000
       # DRUPAL_DB_HOST: docker.for.mac.localhost
       # DRUPAL_DB_PORT: 3307
       # DRUPAL_DB_USER: 
