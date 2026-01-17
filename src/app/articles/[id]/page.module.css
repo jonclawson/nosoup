@@ -58,20 +58,16 @@
   @apply border-t border-gray-200;
 }
 
+.article-page__body-container {
+  @apply py-5 flex flex-row;
+}
+
+.article-page__fields {
+  @apply whitespace-pre-wrap text-gray-700 leading-relaxed flex-shrink-0;
+}
+
 .article-page__body {
-  @apply py-5;
-}
-
-/* .article-page__prose {
-  @apply prose max-w-none;
-} */
-
-.article-page__text {
-  @apply whitespace-pre-wrap text-gray-700 leading-relaxed;
-}
-
-.article-page__text--download {
-  @apply whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
+  @apply flex-grow whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
 }
 
 .article-page__actions {

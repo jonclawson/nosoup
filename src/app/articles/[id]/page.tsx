@@ -121,17 +121,15 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             </div>
             
             <div className={styles['article-page__divider']}>
-              <div className={styles['article-page__body']}>
-                <div className={styles['article-page__prose']}>
-                  <div className={styles['article-page__text']}>
-                    <ArticleFields article={article} />
-                  </div>
-                  <div className={styles['article-page__text--download']} onClick={handleDownload}>
-                    <Dompurify html={article?.body || ''} />
-                  </div>
-                  <ArticleTags article={article} />
+              <div className={styles['article-page__body-container']}>
+                <div className={styles['article-page__fields']}>
+                  <ArticleFields article={article} />
+                </div>
+                <div className={styles['article-page__body']} onClick={handleDownload}>
+                  <Dompurify html={article?.body || ''} />
                 </div>
               </div>
+              <ArticleTags article={article} />
             </div>
           </article>
           
