@@ -58,6 +58,7 @@ jobs:
           export NEXTAUTH_URL="http://localhost:3000"
           npx prisma generate;
           npx prisma migrate deploy;
+          npx prisma db seed;
           npm run build_local;
           npm start &
           npx wait-on http://localhost:3000  
@@ -71,20 +72,6 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
         run: npx playwright test --reporter=github,html
-      
-      - name: List Playwright report files
-        if: always()
-        run: |
-          echo "=== playwright-report directory ==="
-          if [ -d playwright-report ]; then
-            ls -la playwright-report || true
-            echo "=== Screenshots (png) ==="
-            find playwright-report -type f -name '*.png' -print || true
-            echo "=== HTML files ==="
-            find playwright-report -type f -name '*.html' -print || true
-          else
-            echo "No playwright-report directory found"
-          fi
 
       - name: Upload Playwright HTML report
         if: always()
@@ -93,45 +80,10 @@ jobs:
           name: playwright-report-${{ github.run_id }}
           path: playwright-report
 
-      - name: Upload screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ github.run_id }}
-          path: playwright-report/**/*.png
-
-      - name: Install terminal-image
-        if: always()
-        run: npm install terminal-image@3
-
-      - name: Print screenshots to log (ANSI preview, up to 5)
-        if: always()
-        run: |
-          echo "Rendering up to 5 screenshots to the log (may not display in all terminals)"
-          if [ -d playwright-report ]; then
-            imgs=$(find playwright-report -type f -name '*.png' | head -n 5)
-            if [ -z "$imgs" ]; then
-              echo "No screenshots found"
-            else
-              for img in $imgs; do
-                echo "---- $img ----"
-                node --input-type=module -e "import terminalImage from 'terminal-image'; const f=process.argv[1]; console.log(await terminalImage.file(f));" "$img"
-              done
-            fi
-          else
-            echo "No playwright-report directory found"
-          fi
-
-      - name: Download instructions
-        if: always()
-        run: |
-          echo "Artifacts uploaded: playwright-report-${{ github.run_id }} and screenshots-${{ github.run_id }}."
-          echo "Download them from the Actions run UI. After download, open playwright-report/index.html or run 'npx playwright show-report' locally to view the HTML report."
-
   terraform:
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
     name: Provision Infrastructure
-    needs: test
+    needs: playwright
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
