@@ -22,7 +22,9 @@ export async function GET(
           AND: [
             {
               OR: [
+                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
+                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { body: { contains: keyword, } } : { body: { contains: keyword, mode: 'insensitive' } }
               ]
             },
@@ -49,7 +51,9 @@ export async function GET(
           AND: [
             {
               OR: [
+                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
+                // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
                 isSqlite ? { body: { contains: keyword } } : { body: { contains: keyword, mode: 'insensitive'   } }
               ]
             },

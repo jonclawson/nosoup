@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const tags = await prisma.tag.findMany({
       ...(search ? { where: { name: isSqlite
         ? { contains: search }
+        // @ts-expect-error -- Prisma types do not yet reflect 'mode' option
         : { contains: search, mode: 'insensitive' } 
       } } : {}),
       select: {
