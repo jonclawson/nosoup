@@ -53,6 +53,9 @@ jobs:
       - name: Start App
         run: |
           echo "Waiting for app on http://localhost:3000..."
+          export DATABASE_URL="file:./dev.db"
+          export NEXTAUTH_SECRET="your-secret-key-here-change-in-production"
+          export NEXTAUTH_URL="http://localhost:3000"
           npx prisma generate;
           npx prisma migrate deploy;
           npm run build_local;
