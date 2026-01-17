@@ -6,7 +6,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-export default function Dompurify({ html }: { html: string }) {
+export default function Dompurify({ html, className }: { html: string; className?: string }) {
   const [sanitized, setSanitized] = useState<string>(html)
 
   useEffect(() => {
@@ -24,5 +24,5 @@ export default function Dompurify({ html }: { html: string }) {
     return () => { mounted = false }
   }, [html])
 
-  return <div dangerouslySetInnerHTML={{ __html: sanitized }} />
+  return <div className={className} dangerouslySetInnerHTML={{ __html: sanitized }} />
 }

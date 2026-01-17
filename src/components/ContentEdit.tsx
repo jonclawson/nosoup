@@ -52,7 +52,7 @@ export default function ContentEdit({type, onChange, children}: {type?: string, 
   if ( session && session?.user?.role === 'admin') {
     return (
       <>
-        {typeof value === 'object' ? value : <Dompurify html={value || ''} />}
+        {typeof value === 'object' ? value : <Dompurify className="inline" html={value || ''} />}
        
         <span onClick={() => setEditing(true)}>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 cursor-pointer inline-block text-blue-600 hover:bg-blue-500 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
