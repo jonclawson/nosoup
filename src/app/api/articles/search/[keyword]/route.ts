@@ -22,12 +22,8 @@ export async function GET(
           AND: [
             {
               OR: [
-                { title: { contains: keyword, 
-                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
-                } },
-                { body: { contains: keyword, 
-                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
-                } }
+                isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
+                isSqlite ? { body: { contains: keyword, } } : { body: { contains: keyword, mode: 'insensitive' } }
               ]
             },
             {
@@ -53,12 +49,8 @@ export async function GET(
           AND: [
             {
               OR: [
-                { title: { contains: keyword, 
-                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
-                } },
-                { body: { contains: keyword, 
-                  mode: isSqlite ? undefined : 'insensitive' // not compatible with sqlite
-                } }
+                isSqlite ? { title: { contains: keyword } } : { title: { contains: keyword, mode: 'insensitive' } },
+                isSqlite ? { body: { contains: keyword } } : { body: { contains: keyword, mode: 'insensitive'   } }
               ]
             },
             {
