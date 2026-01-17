@@ -14,7 +14,8 @@ export default function ImageField({ ...props }: React.ComponentProps<typeof Ima
             {...(dimensions.width === 0 
               ? { 
                 width: props.width || 300, height: props.height || 300,
-                onLoadingComplete: (img) => setDimensions({ width: img.naturalWidth, height: img.naturalHeight }) }
+                onLoadingComplete: (img) => setDimensions({ width: img.naturalWidth, height: img.naturalHeight }) 
+              }
               : { width: dimensions.width, height: dimensions.height }
             )}                          
           />

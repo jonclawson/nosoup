@@ -90,7 +90,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                 <div className={styles['featured__teaser']}>
                   <div className={styles['featured__excerpt']}>
                     <div onClick={handleDownload}>
-                      <Dompurify html={truncate(article.body, 300)} />
+                      <Dompurify html={truncate(article.body, 800)} />
                     </div>
                     <ArticleTags article={article} />
                   </div>
