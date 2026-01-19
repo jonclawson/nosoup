@@ -51,7 +51,7 @@
 }
 
 .featured__teaser {
-  @apply mb-4 max-h-96 break-words whitespace-normal;
+  @apply mb-4 break-words whitespace-normal overflow-hidden;
 }
 
 .featured__excerpt {

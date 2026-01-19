@@ -13,9 +13,11 @@ import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 import styles from './Featured.module.css'
 import truncate from 'truncate-html';
+import { useElementSize } from '@/hooks/useElementSize'
 
 export default function Featured({published = true, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
+  const [teaserRef, { width, height, area: teaserArea}] = useElementSize();
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -56,11 +58,14 @@ export default function Featured({published = true, sticky = true, tag}: { publi
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
+      // fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
     },  30 * 1000);
 
     return () => clearInterval(interval);
   }, [pagination, pagination.totalPages]);
+
+  const truncSize = Math.floor(teaserArea / 900) || 600;
+  console.log('truncSize:', truncSize);
 
   return (
     <div className={styles['featured']}>
@@ -76,7 +81,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                 <ArticleFields article={article} />
               </div>
               )}
-              <div className={styles['featured__content']}>
+              <div className={styles['featured__content']} ref={teaserRef}>
                 <div className={styles['featured__header']}>
                   <h2 className={styles['featured__title']}>
                     <Link
@@ -87,16 +92,16 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                   </h2>
                 </div>
                 
-                <div className={styles['featured__teaser']}>
-                  <div className={styles['featured__excerpt']}>
+                <div className={styles['featured__teaser']} >
+                  <div className={styles['featured__excerpt']} >
                     <div onClick={handleDownload}>
-                      <Dompurify html={truncate(article.body, 800)} />
+                      <Dompurify html={truncate(article.body, truncSize)} />
                     </div>
-                    <ArticleTags article={article} />
                   </div>
                 </div>
                 
                 <div className={styles['featured__actions']}>
+                  <ArticleTags article={article} />
                   <Link
                     href={`/articles/${article.id}`}
                     className={styles['featured__link']}

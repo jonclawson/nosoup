@@ -12,6 +12,19 @@ import Search from "@/components/Search";
 import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
 const inter = Inter({ subsets: ["latin"] });
+import type { Viewport } from 'next'
+ 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // maximumScale: 1,
+  // userScalable: false,
+  // Also supported but less commonly used
+  // interactiveWidget: 'resizes-visual',
+}
+// export const metadata = {
+//   viewport: 'width=device-width, initial-scale=1.0',
+// };
 
 export default function RootLayout({
   children,

@@ -1,7 +1,8 @@
 /* BEM-style class names for layout component
    All utilities are applied via Tailwind's @apply
 */
-@import "tailwindcss" reference;
+/* @import "tailwindcss" reference; */
+@reference "../app/globals.css";
 
 .layout__container {
   @apply min-h-screen bg-gray-50 flex flex-col;
@@ -12,11 +13,11 @@
 }
 
 .layout__nav-inner {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply section;
 }
 
 .layout__nav-row {
-  @apply flex justify-between h-16 px-4 sm:px-6 lg:px-8;
+  @apply flex justify-between h-16;
 }
 
 .layout__brand {
