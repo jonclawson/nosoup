@@ -65,8 +65,9 @@ export async function PUT(
     }
     
     if (error.code === 'P2002') {
+      console.log('Update error: User with this email already exists')
       return NextResponse.json(
-        { error: 'User with this email already exists' },
+        { error: 'Bad Request' },
         { status: 400 }
       )
     }

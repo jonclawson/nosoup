@@ -3,11 +3,6 @@ import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
-  // Fetch all tags from the database accepting an optional search parameter to filter tags by name
-  // filtering is case-insensitive and matches any part of the tag name
-  // Results are ordered alphabetically by name
-  // Returns only the name of each tag
-  // filters unique tag names
   const searchParams = request.nextUrl.searchParams
   const rawSearch = searchParams.get('search')?.trim()
   const search = rawSearch && rawSearch.length > 0 ? rawSearch : null
