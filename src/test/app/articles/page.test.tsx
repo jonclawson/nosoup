@@ -65,11 +65,6 @@ describe('ArticlesPage', () => {
     // Check the description
     expect(screen.getByText(/a collection of articles from our community/i)).toBeInTheDocument()
 
-    // Check the link
-    const link = screen.getByRole('link', { name: /\+/i })
-    expect(link).toBeInTheDocument()
-    expect(link).toHaveAttribute('href', '/articles/new')
-
     // Check that ArticleList is rendered
     expect(screen.getByTestId('article-list')).toBeInTheDocument()
   })

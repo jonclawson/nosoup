@@ -22,6 +22,14 @@ export default function Navigation() {
 
     return (
       <div className={styles.nav}>
+        {session && session?.user?.role !== 'user' && (
+          <Link
+            href="/articles/new"
+            className={styles['nav__link_add']}
+            >
+            +
+          </Link>
+        )}
         <Link
           href={`/${articlesLink || 'articles'}`}
           className={styles['nav__link']}

@@ -670,5 +670,25 @@ describe('Navigation', () => {
       const usersLink = screen.getByRole('link', { name: 'Users' }) as HTMLAnchorElement;
       expect(usersLink.href).toContain('/users');
     });
+
+    it('should render the articles page correctly', () => {
+      (useSession as jest.Mock).mockReturnValue({
+        data: {
+          user: {
+            id: 'admin-123',
+            email: 'admin@example.com',
+            role: 'admin',
+          },
+        },
+        status: 'authenticated',
+        update: jest.fn(),
+      });
+
+      render(<Navigation />);
+      // Check the link
+      const link = screen.getByRole('link', { name: /\+/i })
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', '/articles/new')
+    })
   });
 });

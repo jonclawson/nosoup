@@ -40,16 +40,6 @@ export default function ArticlesPage() {
                 </p>
               </Setting>
               </div>
-              {session && session?.user?.role !== 'user' && (
-                <div className={styles['articles__actions']}>
-                <Link
-                  href="/articles/new"
-                  className={styles['articles__actions__add']}
-                  >
-                  +
-                </Link>
-              </div>
-              )}
             </div>
           </div>
         </Setting>
