@@ -11,7 +11,7 @@
 }
 
 .featured__container {
-  @apply min-h-[calc(100vh-94px)] flex flex-col overflow-hidden;
+  @apply min-h-[calc(100vh-194px)] flex flex-col overflow-hidden;
 }
 
 .featured__item {

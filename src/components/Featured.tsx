@@ -140,16 +140,17 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                   Next &rarr;
                 </button>
             )}
+
+            {articles.length === 0 && !loading && (
+              <div className={styles['featured__empty']}>
+                <div className={styles['featured__empty__title']}>No articles yet.</div>
+                <div className={styles['featured__empty__desc']}>Be the first to write an article!</div>
               </div>
+            )}
+            </div>
         )}
       </div>
 
-      {articles.length === 0 && !loading && (
-        <div className={styles['featured__empty']}>
-          <div className={styles['featured__empty__title']}>No articles yet.</div>
-          <div className={styles['featured__empty__desc']}>Be the first to write an article!</div>
-        </div>
-      )}
     </div>
   )
 } 
