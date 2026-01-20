@@ -11,7 +11,7 @@ const csp = [
   "base-uri 'self'",
   "form-action 'self'",
   "block-all-mixed-content",
-  "upgrade-insecure-requests"
+  // "upgrade-insecure-requests"
 ].join('; ');
 
 const nextConfig: NextConfig = {
