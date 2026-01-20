@@ -13,10 +13,12 @@ import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 import styles from './ArticleList.module.css' 
 import truncate from 'truncate-html';
+import { useElementSize } from '@/hooks/useElementSize'
 
 export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
   const { data: session, status } = useSession()
+  const [teaserRef, { size: truncSize }] = useElementSize();
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
@@ -72,6 +74,7 @@ export default function ArticleList({published = true, featured = null, sticky =
               <div className="section">
                 <div className="section-inner">
                 <article key={article.id} 
+                ref={teaserRef}
                 className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
                   <div className={styles['article-list__content']}> 
                     <div className={styles['article-list__header']}>
@@ -95,7 +98,7 @@ export default function ArticleList({published = true, featured = null, sticky =
                       </div>
                       <div className={styles['article-list__excerpt']}>
                         <div onClick={handleDownload}>
-                          <Dompurify html={truncate(article.body, 800)} />
+                          <Dompurify html={truncate(article.body, truncSize)} />
                         </div>
                         <ArticleTags article={article} />
                       </div>

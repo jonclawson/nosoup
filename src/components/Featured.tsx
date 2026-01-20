@@ -17,7 +17,7 @@ import { useElementSize } from '@/hooks/useElementSize'
 
 export default function Featured({published = true, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
-  const [teaserRef, { width, height, area: teaserArea}] = useElementSize();
+  const [teaserRef, { size: truncSize }] = useElementSize();
   const [paused, setPaused] = useState(false);
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true);
@@ -67,7 +67,6 @@ export default function Featured({published = true, sticky = true, tag}: { publi
     return () => clearInterval(interval);
   }, [pagination, pagination.totalPages]);
 
-  const truncSize = Math.floor(teaserArea / 900) || 600;
 
   return (
     <div className={styles['featured']}>

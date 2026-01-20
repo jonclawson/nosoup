@@ -51,6 +51,12 @@ jest.mock('@/lib/handle-downloads', () => ({
   handleDownload: jest.fn(),
 }));
 
+jest.mock('@/hooks/useElementSize', () => ({
+  useElementSize: () => {
+    return [jest.fn(), { width: 800, height: 600, area: 480000, size: 533 }];
+  },
+}));
+
 const mockArticle: Article = {
   id: '1',
   title: 'Test Article',

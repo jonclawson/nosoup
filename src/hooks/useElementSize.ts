@@ -1,7 +1,7 @@
 import { useState, useCallback, useLayoutEffect } from 'react';
 
 export function useElementSize() {
-  const [size, setSize] = useState({ width: 0, height: 0, area: 0 });
+  const [size, setSize] = useState({ width: 0, height: 0, area: 0, size: 600 });
   const [node, setNode] = useState<HTMLElement | null>(null);
 
   const ref = useCallback((node: HTMLElement | null) => {
@@ -18,6 +18,8 @@ export function useElementSize() {
             width: entry.contentRect.width,
             height: entry.contentRect.height,
             area: entry.contentRect.width * entry.contentRect.height,
+            size: Math.min(Math.max(Math.floor(entry.contentRect.width * entry.contentRect.height / 900), 300), 600),
+
           });
         }
       }
