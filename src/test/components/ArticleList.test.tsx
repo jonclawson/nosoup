@@ -174,7 +174,6 @@ describe('ArticleList', () => {
     render(<ArticleList />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('article-fields')).toBeInTheDocument();
       expect(screen.getByTestId('dompurify')).toBeInTheDocument();
       expect(screen.getByTestId('article-tags')).toBeInTheDocument();
     });

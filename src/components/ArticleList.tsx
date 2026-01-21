@@ -93,9 +93,11 @@ export default function ArticleList({published = true, featured = null, sticky =
                     </div>
                     
                     <div className={styles['article-list__summary']}>
+                      {article.fields && article.fields.length > 0 && (
                       <div className={styles['article-list__fields']}>
                         <ArticleFields article={article} />
                       </div>
+                      )}
                       <div className={styles['article-list__excerpt']}>
                         <div onClick={handleDownload}>
                           <Dompurify html={truncate(article.body, truncSize)} />
