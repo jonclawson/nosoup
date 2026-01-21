@@ -51,6 +51,28 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
     const deleteManyFields = await prisma.field.deleteMany({where: {}});
     console.log(`Deleted ${deleteManyFields.count} existing fields.`);
 
+    let authorId = await prisma.user.findUnique({
+      where: {
+        id: process.env.AUTHOR_DEFAULT_ID || ''
+      },
+      select: { id: true  }
+    }).then(user => user ? user.id : null);
+
+    if (!authorId) {
+      let admin = await prisma.user.findUnique({
+        where: {
+          email: 'admin@example.com'
+        },
+        select: { id: true  }
+      });
+      if (!admin) {
+        throw new Error('Default admin user with email "admin@example.com" not found in the database.');
+        return;
+      }
+    
+      authorId = admin.id;
+    }
+
     for (const node of nodes) {
       console.log(node.nid, node.title);
       const createArticle = async ({slug}= {slug: true}) => {
@@ -59,7 +81,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
             title: node.title,
             slug: slug ? slugify(node.title, { lower: true, strict: true }) : undefined,
             body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
-            authorId: process.env.AUTHOR_DEFAULT_ID,
+            authorId: authorId,
             createdAt: new Date(node.created * 1000),
             updatedAt: new Date(node.changed * 1000),
             published: node.status === 1,
@@ -174,7 +196,10 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           await prisma.field.create({
             data: {
               type: 'link',
-              value: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
+              value: JSON.stringify({ 
+                title: link.field_lnk_title,
+                url: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/')
+              }),
               article: {
                 connect: {
                   id: article.id

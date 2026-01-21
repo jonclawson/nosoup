@@ -31,7 +31,14 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                                   )}
                               </div>
                       case 'link':
-                        return <a href={field.value} className={styles['article-fields__link']}>{field.value}</a>
+                        try {
+                          const linkData = JSON.parse(field.value || '{}');
+                          if (linkData.url) {
+                            return <a href={linkData.url} className={styles['article-fields__link']}>{linkData.title || linkData.url}</a>
+                          }
+                        } catch (e) {
+                          return <a href={field.value} className={styles['article-fields__link']}>{field.value}</a>
+                        }
                       default:
                         return ''
                   }
