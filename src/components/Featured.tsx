@@ -60,7 +60,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
   useEffect(() => {
     const interval = setInterval(() => {
       if (!paused) {
-        fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
+        // fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
       }
     },  30 * 1000);
 

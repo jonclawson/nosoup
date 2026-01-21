@@ -23,11 +23,11 @@
 }
 
 .article-list__content {
-  /* @apply ; */
+  @apply flex flex-col flex-grow;
 }
 
 .article-list__header {
-  @apply mb-4;
+  @apply mb-4 flex flex-col;
 }
 
 .article-list__title {
@@ -43,11 +43,11 @@
 }
 
 .article-list__summary {
-  @apply mb-4 flex flex-row;
+  @apply mb-4 flex flex-row flex-grow gap-4;
 }
 
 .article-list__fields {
-  @apply mb-4  flex-shrink-0;
+  @apply mb-4 flex flex-col flex-grow flex-shrink-0;
 }
 
 .article-list__excerpt {

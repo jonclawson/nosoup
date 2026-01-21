@@ -1,7 +1,18 @@
 @import "tailwindcss" reference;
 
 /* BEM-style classes for src/components/ArticleFields.tsx */
-
+.article-fields__field {
+  @apply flex;
+}
+.article-fields__field--image {
+  @apply flex flex-grow;
+}
+.article-fields__field--code {
+  @apply flex flex-grow-2;
+}
+.article-fields__field--link {
+  @apply flex;
+}
 .article-fields__image-container {
   /* @apply mb-4 relative w-full h-64 overflow-hidden rounded-lg; */
 }
@@ -11,9 +22,13 @@
 }
 
 .article-fields__code {
-  @apply bg-gray-100 p-4 rounded mb-4 overflow-x-auto;
+  @apply flex flex-grow;
 }
 
 .article-fields__link {
-  @apply text-blue-600 hover:text-blue-900 mb-4 block;
+  @apply text-blue-600 hover:text-blue-900 mb-4 block flex flex-shrink-0 flex-grow-0;
+}
+
+.article-fields__code-iframe {
+  @apply w-full flex flex-grow;
 }

@@ -59,11 +59,11 @@
 }
 
 .article-page__body-container {
-  @apply py-5 flex flex-row;
+  @apply py-5 flex flex-row gap-8;
 }
 
 .article-page__fields {
-  @apply whitespace-pre-wrap text-gray-700 leading-relaxed flex-shrink-0;
+  @apply whitespace-pre-wrap text-gray-700 leading-relaxed flex flex-col;
 }
 
 .article-page__body {

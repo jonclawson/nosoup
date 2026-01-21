@@ -8,7 +8,7 @@ export default function ArticleFields({ article }: { article: Article | null }) 
 
   return  <>
             {article?.fields && article.fields.length > 0 && article.fields.map((field) => (
-              <div key={field.id}>
+              <div key={field.id} className={`${styles['article-fields__field']} ${styles['article-fields__field--' + field.type]}`}>
                 {
                     (() => {
                     switch (field.type) {
