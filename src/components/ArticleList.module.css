@@ -47,7 +47,9 @@
 }
 
 .article-list__fields {
-  @apply mb-4 flex flex-col flex-grow flex-shrink-0;
+  @apply mb-4 flex flex-col flex-grow;
+  max-width: 33%;
+  min-width: 33%;
 }
 
 .article-list__excerpt {

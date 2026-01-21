@@ -1,0 +1,24 @@
+@reference "../app/globals.css";
+
+/* BEM-style classes for src/components/ImageSlide.tsx */
+.image-slide {
+  @apply w-full h-full object-cover  flex flex-wrap justify-between items-center ;
+}
+.image-slide__image-container {
+  @apply rounded overflow-hidden ;
+  width: 33%;
+}
+.image-slide__image-container--0 {
+  /* @apply w-full; */
+  width: 100%;
+}
+.image-slide__image {
+  @apply w-full cursor-pointer animate-fade-in duration-500;
+  /* width: 25%; */
+}
+.image-slide__image--0 {
+  /* @apply  w-full; */
+}
+.image-slide__caption {
+  /* @apply absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4 text-sm; */
+}

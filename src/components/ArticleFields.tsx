@@ -3,11 +3,18 @@ import type { Article, Field, Author } from '@/lib/types'
 import Dompurify from './Dompurify';
 import styles from './ArticleFields.module.css' 
 import ImageField from './ImageField';
+import ImageSlide from './ImageSlide';
 
 export default function ArticleFields({ article }: { article: Article | null }) {
 
+  const images = article?.fields ? article.fields.filter((field) => field.type === 'image') : [];
+  const otherFields = article?.fields ? article.fields.filter((field) => field.type !== 'image') : [];
+
   return  <>
-            {article?.fields && article.fields.length > 0 && article.fields.map((field) => (
+            {images.length > 0 && <div className={`${styles['article-fields__field']} ${styles['article-fields__field--image']}`}>
+              <ImageSlide images={images} />
+            </div>}
+            {otherFields && otherFields.length > 0 && otherFields.map((field) => (
               <div key={field.id} className={`${styles['article-fields__field']} ${styles['article-fields__field--' + field.type]}`}>
                 {
                     (() => {
