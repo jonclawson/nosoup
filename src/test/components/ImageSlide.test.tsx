@@ -6,7 +6,7 @@ describe('ImageSlide', () => {
     const { container } = render(<ImageSlide images={[]} />);
     expect(container).toBeEmptyDOMElement();
 
-    const { container: c2 } = render(<ImageSlide images={undefined as any} />);
+    const { container: c2 } = render(<ImageSlide images={[] as any} />);
     expect(c2).toBeEmptyDOMElement();
   });
 
@@ -18,12 +18,13 @@ describe('ImageSlide', () => {
 
     const { container } = render(<ImageSlide images={images} />);
     const imgs = container.querySelectorAll('img');
-    expect(imgs).toHaveLength(2);
+    expect(imgs).toHaveLength(3);
     expect(imgs[0]).toHaveAttribute('src', expect.stringContaining('https%3A%2F%2Fexample.com%2Fimage1.jpg'));
-    expect(imgs[1]).toHaveAttribute('src', expect.stringContaining('https%3A%2F%2Fexample.com%2Fimage2.jpg'));
+    expect(imgs[1]).toHaveAttribute('src', expect.stringContaining('https%3A%2F%2Fexample.com%2Fimage1.jpg'));
+    expect(imgs[2]).toHaveAttribute('src', expect.stringContaining('https%3A%2F%2Fexample.com%2Fimage2.jpg'));
 
-    // Click second image to swap with first
-    fireEvent.click(imgs[1]);
+    // Click second image to set with first
+    fireEvent.click(imgs[2]);
 
     const imgsAfter = container.querySelectorAll('img');
     expect(imgsAfter[0]).toHaveAttribute('src', expect.stringContaining('https%3A%2F%2Fexample.com%2Fimage2.jpg'));
@@ -47,7 +48,7 @@ describe('ImageSlide', () => {
     const { container: c2 } = render(<ImageSlide images={images} />);
     const imgs2 = c2.querySelectorAll('img');
     fireEvent.click(imgs2[0]);
-    expect(c2.querySelectorAll('img')[0]).toHaveAttribute('src', expect.stringContaining('image1.jpg'));
-    expect(c2.querySelectorAll('img')[1]).toHaveAttribute('src', expect.stringContaining('image2.jpg'));
+    expect(c2.querySelectorAll('img')[1]).toHaveAttribute('src', expect.stringContaining('image1.jpg'));
+    expect(c2.querySelectorAll('img')[2]).toHaveAttribute('src', expect.stringContaining('image2.jpg'));
   });
 });

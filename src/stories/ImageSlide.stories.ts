@@ -18,6 +18,12 @@ const meta = {
       { value: 'https://picsum.photos/600/400?text=Image+1' },
       { value: 'https://picsum.photos/600/400?text=Image+2' },
       { value: 'https://picsum.photos/600/400?text=Image+3' },
+      { value: 'https://picsum.photos/600/400?text=Image+4' },
+      { value: 'https://picsum.photos/600/400?text=Image+5' },
+      { value: 'https://picsum.photos/600/400?text=Image+6' },
+      { value: 'https://picsum.photos/600/400?text=Image+7' },
+      { value: 'https://picsum.photos/600/400?text=Image+8' },
+      { value: 'https://picsum.photos/600/400?text=Image+9' },
     ],
   },
 } satisfies Meta<typeof ImageSlide>;
@@ -34,7 +40,7 @@ export const Default: Story = {
 export const SingleImage: Story = {
   args: {
     images: [
-      { value: 'https://via.placeholder.com/600x400?text=Only+Image' },
+      { value: 'https://picsum.photos/600/400?text=Image+3' },
     ],
   },
 };
@@ -42,5 +48,20 @@ export const SingleImage: Story = {
 export const NoImages: Story = {
   args: {
     images: [],
+  },
+};
+
+export const WithLayout: Story = {
+  args: {
+    layout: 'landscape',
+  },
+};
+
+export const SingleImageLayout: Story = {
+  args: {
+    images: [
+      { value: 'https://picsum.photos/600/400?text=Image+3' },
+    ],
+    layout: 'landscape',
   },
 };

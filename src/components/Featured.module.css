@@ -15,7 +15,7 @@
 }
 
 .featured__item {
-  @apply flex flex-grow gap-4;
+  @apply flex flex-grow gap-4 flex-row;
 }
 
 .featured__item--published {
@@ -27,7 +27,7 @@
 }
 
 .featured__fields {
-  @apply mb-4 flex flex-col flex-shrink-0;
+  @apply mb-4 flex flex-col flex-shrink-0 max-w-[33%];
 }
 
 .featured__content {

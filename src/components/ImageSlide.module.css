@@ -2,21 +2,39 @@
 
 /* BEM-style classes for src/components/ImageSlide.tsx */
 .image-slide {
-  @apply w-full h-full object-cover  flex flex-wrap justify-between items-center content-start;
+  @apply w-full h-full object-cover  flex flex-col gap-2;
+}
+
+.image-slide--landscape {
+  @apply w-full h-full object-cover  flex flex-row gap-2;
+}
+.image-slide--container-thumbs {
+  @apply w-full flex flex-wrap flex flex-wrap justify-between items-center content-start gap-2;
+}
+.image-slide--landscape  .image-slide--container-thumbs {
+  @apply w-full flex flex-wrap flex flex-row flex-wrap justify-between items-center content-start gap-2;
 }
 .image-slide__image-container {
   @apply rounded overflow-hidden ;
-  width: 33%;
+  width: 30%;
+  max-height: 100px;
+  border: 1px solid #ddd;
+  position: relative;
 }
-.image-slide__image-container--0 {
-  /* @apply w-full; */
+.image-slide--landscape .image-slide__image-container {
+  height: 40%;
+}
+.image-slide__image-container--main {
+  @apply w-full;
   width: 100%;
+  max-height: 300px;
+  border: none;
 }
 .image-slide__image {
-  @apply w-full cursor-pointer animate-fade-in duration-500;
+  @apply w-full cursor-pointer animate-fade-in duration-500 object-cover;
   /* width: 25%; */
 }
-.image-slide__image--0 {
+.image-slide__image--main {
   /* @apply  w-full; */
 }
 .image-slide__caption {

@@ -258,9 +258,10 @@ describe('ArticleFields', () => {
 
     const { container } = render(<ArticleFields article={article} />);
     const images = container.querySelectorAll('img');
-    expect(images).toHaveLength(2);
+    expect(images).toHaveLength(3);
     expect(images[0]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage1.jpg&w=3840&q=75');
-    expect(images[1]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage2.jpg&w=3840&q=75');
+    expect(images[1]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage1.jpg&w=3840&q=75');
+    expect(images[2]).toHaveAttribute('src', '/_next/image?url=https%3A%2F%2Fexample.com%2Fimage2.jpg&w=3840&q=75');
   });
 
   it('should render unknown field type as empty string', () => {

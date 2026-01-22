@@ -23,6 +23,10 @@
   /* @apply py-5; */
 }
 
+.article__header-images {
+  @apply mb-6;
+}
+
 .article__title {
   @apply text-3xl font-bold text-gray-900 mb-4;
 }
