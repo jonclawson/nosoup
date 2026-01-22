@@ -2,7 +2,7 @@
 
 /* BEM-style classes for src/components/ImageSlide.tsx */
 .image-slide {
-  @apply w-full h-full object-cover  flex flex-wrap justify-between items-center ;
+  @apply w-full h-full object-cover  flex flex-wrap justify-between items-center content-start;
 }
 .image-slide__image-container {
   @apply rounded overflow-hidden ;

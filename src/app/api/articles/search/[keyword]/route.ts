@@ -35,8 +35,8 @@ export async function GET(
             },
           ],
         } as unknown as Prisma.ArticleWhereInput,
-        skip,
-        take: size,
+        // skip,
+        // take: size,
         orderBy: {
           createdAt: 'desc',
         },

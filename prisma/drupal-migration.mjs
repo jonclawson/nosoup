@@ -80,7 +80,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           data: {
             title: node.title,
             slug: slug ? slugify(node.title, { lower: true, strict: true }) : undefined,
-            body: node.body.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
+            body: node.body.replace(`/sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
             authorId: authorId,
             createdAt: new Date(node.created * 1000),
             updatedAt: new Date(node.changed * 1000),
@@ -176,7 +176,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
           await prisma.field.create({
             data: {
               type: 'code',
-              value: cd.field_code_value.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
+              value: cd.field_code_value.replace(`/sites/${process.env.DRUPAL_SITE}/files/`, '/files/'),
               article: {
                 connect: {
                   id: article.id
@@ -198,7 +198,7 @@ async function migrateDrupal6ToSqlite(drupalConfig) {
               type: 'link',
               value: JSON.stringify({ 
                 title: link.field_lnk_title,
-                url: link.field_lnk_url.replace(`sites/${process.env.DRUPAL_SITE}/files/`, '/files/')
+                url: link.field_lnk_url.replace(`/sites/${process.env.DRUPAL_SITE}/files/`, '/files/')
               }),
               article: {
                 connect: {

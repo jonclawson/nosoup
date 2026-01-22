@@ -89,7 +89,7 @@
 }
 
 .article-list__loadmore {
-  @apply flex justify-center;
+  @apply flex justify-center py-6;
 }
 
 .article-list__loadmore__button {
