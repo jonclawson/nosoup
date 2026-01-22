@@ -1,0 +1,54 @@
+/* @import "tailwindcss" reference; */
+/* @import "@tailwindcss/typography" reference; */
+/* BEM-style classes for src/app/articles/[id]/.tsx */
+@reference '../app/globals.css';
+
+.article- {
+  /* @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; */
+}
+
+.article__container {
+  /* @apply shadow overflow-hidden sm:rounded-lg; */
+}
+
+.article__container--published {
+  /* @apply bg-white; */
+}
+
+.article__container--draft {
+  @apply bg-pink-100;
+}
+
+.article__header {
+  /* @apply py-5; */
+}
+
+.article__title {
+  @apply text-3xl font-bold text-gray-900 mb-4;
+}
+
+.article__meta {
+  @apply flex items-center text-sm text-gray-500 mb-6;
+}
+
+.article__meta__dot {
+  @apply mx-2;
+}
+
+.article__divider {
+  @apply border-t border-gray-200;
+}
+
+.article__body-container {
+  @apply py-5 flex flex-row gap-8;
+}
+
+.article__fields {
+  @apply whitespace-pre-wrap text-gray-700 leading-relaxed flex flex-col;
+}
+
+.article__body {
+  @apply flex-grow whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
+}
+
+

@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react'
 import { handleDownload } from '@/lib/handle-downloads'
 import { useDocument } from '@/hooks/useDocument'
 import styles from './page.module.css'
+import ArticleView from '@/components/ArticleView'
 interface ArticlePageProps {
   params: Promise<{
     id: string
@@ -108,30 +109,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             </Link>
           </div>
 
-          <article className={`${styles['article-page__container']} ${article?.published ? styles['article-page__container--published'] : styles['article-page__container--draft']}`}>
-            <div className={styles['article-page__header']}>
-              <h1 className={styles['article-page__title']}>
-                {article?.title}
-              </h1>
-              <div className={styles['article-page__meta']}>
-                <span>By {article?.author?.name}</span>
-                <span className={styles['article-page__meta__dot']}>•</span>
-                <span>{new Date(article?.createdAt || '').toLocaleDateString()}</span>
-              </div>
-            </div>
-            
-            <div className={styles['article-page__divider']}>
-              <div className={styles['article-page__body-container']}>
-                <div className={styles['article-page__fields']}>
-                  <ArticleFields article={article} />
-                </div>
-                <div className={styles['article-page__body']} onClick={handleDownload}>
-                  <Dompurify html={article?.body || ''} />
-                </div>
-              </div>
-              <ArticleTags article={article} />
-            </div>
-          </article>
+          <ArticleView article={article as Article} />
           
           <div className={styles['article-page__actions']}>
             {session && session?.user?.role !== 'user' && (

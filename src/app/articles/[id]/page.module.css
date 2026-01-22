@@ -38,38 +38,6 @@
   @apply bg-pink-100;
 }
 
-.article-page__header {
-  /* @apply py-5; */
-}
-
-.article-page__title {
-  @apply text-3xl font-bold text-gray-900 mb-4;
-}
-
-.article-page__meta {
-  @apply flex items-center text-sm text-gray-500 mb-6;
-}
-
-.article-page__meta__dot {
-  @apply mx-2;
-}
-
-.article-page__divider {
-  @apply border-t border-gray-200;
-}
-
-.article-page__body-container {
-  @apply py-5 flex flex-row gap-8;
-}
-
-.article-page__fields {
-  @apply whitespace-pre-wrap text-gray-700 leading-relaxed flex flex-col;
-}
-
-.article-page__body {
-  @apply flex-grow whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
-}
-
 .article-page__actions {
   @apply mt-6 flex space-x-3;
 }

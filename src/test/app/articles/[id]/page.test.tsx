@@ -163,7 +163,7 @@ describe('ArticlePage', () => {
 
       await waitFor(() => {
         const article = container.querySelector('article')
-        expect(article).toHaveClass('article-page__container--published')
+        expect(article).toHaveClass('article__container--published')
       })
     })
 
@@ -178,7 +178,7 @@ describe('ArticlePage', () => {
 
       await waitFor(() => {
         const article = container.querySelector('article')
-        expect(article).toHaveClass('article-page__container--draft')
+        expect(article).toHaveClass('article__container--draft')
       })
     })
 
