@@ -4,6 +4,8 @@ import Dompurify from './Dompurify';
 import styles from './ArticleFields.module.css' 
 import ImageField from './ImageField';
 import ImageSlide from './ImageSlide';
+import CodeField from './CodeField';
+import LinkField from './LinkField';
 
 export default function ArticleFields({ article }: { article: Article | null }) {
 
@@ -30,22 +32,12 @@ export default function ArticleFields({ article }: { article: Article | null }) 
                         </div>
                       case 'code':
                         return <div className={styles['article-fields__code']}>
-                                {article && article?.author?.role === 'admin' ? (
-                                  // <div dangerouslySetInnerHTML={{ __html: field.value }} />
-                                  <iframe src={`/api/code/${field.id}`} className={styles['article-fields__code-iframe']} />
-                                  ) : (
-                                    <Dompurify html={field.value } />
-                                  )}
-                              </div>
+                          <CodeField article={article as any} field={field} />
+                        </div>
                       case 'link':
-                        try {
-                          const linkData = JSON.parse(field.value || '{}');
-                          if (linkData.url) {
-                            return <a href={linkData.url} className={styles['article-fields__link']}>{linkData.title || linkData.url}</a>
-                          }
-                        } catch (e) {
-                          return <a href={field.value} className={styles['article-fields__link']}>{field.value}</a>
-                        }
+                        return <div className={styles['article-fields__link']}>
+                                <LinkField field={field} />
+                              </div>;
                       default:
                         return ''
                   }

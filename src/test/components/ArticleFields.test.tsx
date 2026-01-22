@@ -191,7 +191,7 @@ describe('ArticleFields', () => {
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', 'https://example.com');
     expect(link).toHaveTextContent('https://example.com');
-    expect(link).toHaveClass('article-fields__link');
+    expect(link.parentElement).toHaveClass('article-fields__link');
   });
 
   it('should render multiple fields', () => {

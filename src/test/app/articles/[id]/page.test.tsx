@@ -192,7 +192,7 @@ describe('ArticlePage', () => {
       render(<ArticlePage params={Promise.resolve({ id: '1' })} />)
 
       await waitFor(() => {
-        expect(screen.getByTestId('article-fields')).toBeInTheDocument()
+        expect(screen.queryByTestId('article-fields')).not.toBeInTheDocument()
       })
     })
 

@@ -43,6 +43,14 @@
   @apply border-t border-gray-200;
 }
 
+.article__code-container {
+  @apply py-5 w-full;
+}
+
+.article__code-field {
+  @apply mb-6 w-full;
+}
+
 .article__body-container {
   @apply py-5 flex flex-row gap-8;
 }
@@ -55,4 +63,10 @@
   @apply flex-grow whitespace-pre-wrap text-gray-700 leading-relaxed mt-6;
 }
 
+.article__link-container {
+  @apply mt-6 flex flex-col gap-4 items-end;
+}
 
+.article__link-field {
+  @apply text-blue-500 hover:underline;
+}

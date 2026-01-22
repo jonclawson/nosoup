@@ -2,8 +2,15 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { fn } from 'storybook/test';
 
+
+
 import ArticleView from '../components/ArticleView';
 import type { Article } from '@/lib/types';
+
+
+// mock an endpoint /api/code/ here?
+
+
 
 const meta = {
   title: 'Components/ArticleView',
@@ -61,10 +68,31 @@ export const WithImages: Story = {
 export const WithCodeField: Story = {
   args: {
     article: {
-      fields: [{ id: 'code1', type: 'code', value: 'console.log("Hello, world!");' }],
+      fields: [{ id: 'code1', type: 'code', value: '<div><h1>Hello, code!</h1><img width="100%" src="https://picsum.photos/600/400?text=Code+Field" /></div>' }],
       title: 'Sample Article with Code Field',
       body: '<p>This article includes a code field.</p>',
       author: { id: '2', name: 'Alice Johnson', email: 'alice.johnson@example.com', role: 'user' },
+    },
+  },
+};
+export const WithCodeFieldAdmin: Story = {
+  args: {
+    article: {
+      id: 'x',
+      fields: [{ id: 'code1', type: 'code', value: '<div><h1>Hello, code!</h1><img width="100%" src="https://picsum.photos/600/400?text=Code+Field" /></div>' }],
+      title: 'Sample Article with Code Field',
+      body: '<p>This article includes a code field.</p>',
+      author: { id: '2', name: 'Alice Johnson', email: 'alice.johnson@example.com', role: 'admin' },
+    },
+  },
+};
+export const WithLinkField: Story = {
+  args: {
+    article: {
+      fields: [{ id: 'link1', type: 'link', value: 'https://example.com' }],
+      title: 'Sample Article with Link Field',
+      body: '<p>This article includes a link field.</p>',
+      author: { id: '3', name: 'Bob Brown', email: 'bob.brown@example.com', role: 'user' },
     },
   },
 };
