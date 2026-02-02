@@ -39,7 +39,7 @@
 }
 
 .featured__title {
-  @apply text-2xl font-semibold text-gray-900 mb-2;
+  @apply text-2xl text-gray-900 mb-2;
 }
 
 .featured__meta {

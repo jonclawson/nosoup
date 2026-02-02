@@ -24,7 +24,7 @@ export default function ArticlesPage({ params }: {
             <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">
               <Setting setting="articles_tagged_page_header">
-                <h1 className="text-2xl font-semibold text-gray-900">Articles tagged with {tag}</h1>
+                <h1 className="text-2xl text-gray-900">Articles tagged with {tag}</h1>
                 <p className="mt-2 text-sm text-gray-700">
                   A collection of articles tagged with {tag} from our community.
                 </p>

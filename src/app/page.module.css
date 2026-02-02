@@ -15,7 +15,7 @@
 }
 
 .page__featured__title {
-  @apply text-2xl font-semibold text-gray-900;
+  @apply text-2xl text-gray-900;
 }
 
 .page__featured__desc {

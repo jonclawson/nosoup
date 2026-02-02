@@ -1,17 +1,15 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Afacad_Flux } from "next/font/google";
 import "./globals.css";
 import styles from "./layout.module.css";
 import Providers from "@/components/Providers";
 import AuthStatus from "@/components/AuthStatus";
 import Navigation from "@/components/Navigation";
-import Link from "next/link";
 import MenuTabs from "@/components/MenuTabs";
 import SiteName from "@/components/SiteName";
 import Search from "@/components/Search";
 import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
-const inter = Inter({ subsets: ["latin"] });
+const afacadFlux = Afacad_Flux({ subsets: ["latin"] });
 import type { Viewport } from 'next'
  
 export const viewport: Viewport = {
@@ -22,9 +20,6 @@ export const viewport: Viewport = {
   // Also supported but less commonly used
   // interactiveWidget: 'resizes-visual',
 }
-// export const metadata = {
-//   viewport: 'width=device-width, initial-scale=1.0',
-// };
 
 export default function RootLayout({
   children,
@@ -33,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} suppressHydrationWarning={true}>
+      <body className={afacadFlux.className} suppressHydrationWarning={true}>
         <Providers>
             <div className={styles["layout__container"]}>
               <nav className={styles["layout__nav"]}>
