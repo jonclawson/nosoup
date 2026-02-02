@@ -4,7 +4,7 @@ import ArticleFields from "./ArticleFields";
 import ArticleTags from "./ArticleTags";
 import Dompurify from "./Dompurify";
 import type { Article } from "@/lib/types";
-import styles from './Article.module.css'
+import styles from './ArticleView.module.css'
 import ImageSlide from "./ImageSlide";
 import CodeField from "./CodeField";
 import LinkField from "./LinkField";
@@ -14,7 +14,6 @@ export default function ArticleView({article}: { article: Article }) {
     return <></>;
   }
   const images = article.fields ? article.fields.filter((field) => field.type === 'image') : [];
-  const otherFields: any  =  []; // article.fields ? article.fields.filter((field) => field.type !== 'image') : [];
   const codeFields = article.fields ? article.fields.filter((field) => field.type === 'code') : [];
   const linkFields = article.fields ? article.fields.filter((field) => field.type === 'link') : [];
   return (
@@ -36,34 +35,29 @@ export default function ArticleView({article}: { article: Article }) {
             </div>
             
             <div className={styles['article__divider']}>
-              {codeFields.length > 0 && 
-              <div className={styles['article__code-container']}>
-                {codeFields.map((field) => (
-                  <div key={field.id} className={styles['article__code-field']}>
-                    <CodeField article={article as any} field={field} />
+              <div className={styles['article__body-container']}>
+                <div className={styles['article__body']} onClick={handleDownload}>
+                  <Dompurify html={article?.body || ''} />
+                </div>
+                {codeFields.length > 0 && 
+                <div className={styles['article__code-container']}>
+                  {codeFields.map((field) => (
+                    <div key={field.id} className={styles['article__code-field']}>
+                      <CodeField article={article as any} field={field} />
+                    </div>
+                  ))}
+                </div>
+                }
+              </div>
+              {linkFields.length > 0 && 
+              <div className={styles['article__link-container']}>
+                {linkFields.map((field) => (
+                  <div key={field.id} className={styles['article__link-field']}>
+                    <LinkField field={field} />
                   </div>
                 ))}
               </div>
               }
-              <div className={styles['article__body-container']}>
-                { otherFields.length > 0 && 
-                  <div className={styles['article__fields']}>
-                    <ArticleFields article={{ ...article, fields: otherFields }} />
-                  </div>
-                }
-                <div className={styles['article__body']} onClick={handleDownload}>
-                  <Dompurify html={article?.body || ''} />
-                  {linkFields.length > 0 && 
-                  <div className={styles['article__link-container']}>
-                    {linkFields.map((field) => (
-                      <div key={field.id} className={styles['article__link-field']}>
-                        <LinkField field={field} />
-                      </div>
-                    ))}
-                  </div>
-                  }
-                </div>
-              </div>
               <ArticleTags article={article} />
             </div>
           </article>

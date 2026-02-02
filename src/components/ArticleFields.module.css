@@ -30,5 +30,5 @@
 }
 
 .article-fields__code-iframe {
-  @apply w-full flex flex-grow;
+  @apply w-full h-full flex flex-grow;
 }
