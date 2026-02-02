@@ -38,11 +38,12 @@ export default function ImageSlide({ images, layout }: { images: any[], layout?:
                   className={styles['image-slide__image'] + ' ' + styles['image-slide__image--' + index]}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   onClick={() => swapImage(index)}
-                  {...(layout === 'landscape' ? { fill: true } : {})}
-                  {...(layout === 'landscape' 
-                    ? { }
-                    : { width: 100, height: 100}
-                  )}   
+                  fill={true}
+                  // {...(layout === 'landscape' ? { fill: true } : {})}
+                  // {...(layout === 'landscape' 
+                  //   ? { }
+                  //   : { width: 100, height: 100}
+                  // )}   
                 />
               </div>
             ))}

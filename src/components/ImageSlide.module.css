@@ -19,22 +19,18 @@
   width: 30%;
   border: 1px solid #ddd;
   position: relative;
+  height: 100px;
 }
 .image-slide--landscape .image-slide__image-container {
-  height: 40%;
 }
 .image-slide__image-container--main {
   @apply w-full;
   width: 100%;
   border: none;
+  height: auto
 }
 .image-slide__image {
   @apply w-full cursor-pointer animate-fade-in duration-500 object-cover;
-  /* width: 25%; */
 }
 .image-slide__image--main {
-  /* @apply  w-full; */
-}
-.image-slide__caption {
-  /* @apply absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4 text-sm; */
 }
