@@ -15,9 +15,8 @@
   @apply w-full flex flex-wrap flex flex-row flex-wrap justify-between items-center content-start gap-2;
 }
 .image-slide__image-container {
-  @apply rounded overflow-hidden ;
+  @apply rounded ;
   width: 30%;
-  max-height: 100px;
   border: 1px solid #ddd;
   position: relative;
 }
@@ -27,7 +26,6 @@
 .image-slide__image-container--main {
   @apply w-full;
   width: 100%;
-  max-height: 300px;
   border: none;
 }
 .image-slide__image {
