@@ -17,14 +17,14 @@ export default function ImageSlide({ images, layout }: { images: any[], layout?:
       {(images && images.length > 0) && (   
         <div className={styles['image-slide'] + ' ' + (layout ? styles['image-slide--' + layout] : '') + ' ' + (loaded ? styles['image-slide--loaded'] : '')}>
           <div className={styles['image-slide__image-container'] + ' ' + styles['image-slide__image-container--main']}>
-            <Image
+            <ImageField
               key={imageMain.value}
               src={imageMain.value}
               onLoad={() => setLoaded(true)}
               alt=""
               className={styles['image-slide__image'] + ' ' + styles['image-slide__image--main']}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              fill={true} 
+              fill={false} 
             />
           </div>
           {images.length > 1 && (
