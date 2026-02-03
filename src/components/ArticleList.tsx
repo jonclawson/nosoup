@@ -14,6 +14,7 @@ import { handleDownload } from '@/lib/handle-downloads'
 import styles from './ArticleList.module.css' 
 import truncate from 'truncate-html';
 import { useElementSize } from '@/hooks/useElementSize'
+import useMotion from '@/hooks/useMotion'
 
 export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -22,6 +23,7 @@ export default function ArticleList({published = true, featured = null, sticky =
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
+  const motionRef = useMotion(articles);
   const fetchArticles = async (page: number = 1) => {
     try {
       const urlParams = new URLSearchParams();
@@ -58,7 +60,7 @@ export default function ArticleList({published = true, featured = null, sticky =
   }, []);
   
   return (
-    <div className={styles['article-list']}> 
+    <div className={styles['article-list']} ref={motionRef}> 
       <div className={styles['article-list__list']}>
         {loading && articles.length === 0 ? (
           Array.from({ length: 3 }).map((_, i) => (
@@ -70,13 +72,12 @@ export default function ArticleList({published = true, featured = null, sticky =
         ))
         ) : (
           articles.map((article) => (
-            <div className="section-outer" key={article.id}>
+            <div className="section-outer" key={article.id} >
               <div className="section">
-                <div className="section-inner">
-                <article key={article.id} 
-                ref={teaserRef}
-                className={`${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
-                  <div className={styles['article-list__content']}> 
+                <div className="section-inner" >
+                <article
+                  className={`motion ${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
+                  <div className={styles['article-list__content']} ref={teaserRef}> 
                     <div className={styles['article-list__header']}>
                       <h2 className={styles['article-list__title']}>
                         <Link

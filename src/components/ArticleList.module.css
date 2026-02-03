@@ -1,4 +1,4 @@
-@import "tailwindcss" reference;
+@reference "../app/globals.css";
 
 /* BEM-style classes for src/components/ArticleList.tsx */
 

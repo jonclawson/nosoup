@@ -57,6 +57,11 @@ jest.mock('@/hooks/useElementSize', () => ({
   },
 }));
 
+jest.mock('@/hooks/useMotion', () => ({
+  __esModule: true,
+  default: jest.fn(() => jest.fn()),
+}));
+
 const mockArticle: Article = {
   id: '1',
   title: 'Test Article',

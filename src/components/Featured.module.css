@@ -15,11 +15,11 @@
 }
 
 .featured__item {
-  @apply flex flex-grow gap-4 flex-row;
+  @apply flex flex-grow gap-4 flex-row animate-fade-in-left;
 }
 
 .featured__item--published {
-  @apply bg-white animate-[fade-in_1s_ease-in-out];
+  /* @apply bg-white animate-[fade-in_1s_ease-in-out]; */
 }
 
 .featured__item--draft {
