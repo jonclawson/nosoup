@@ -15,7 +15,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     images: [
-      { value: 'https://picsum.photos/600/400?text=Image+1' },
+      { value: 'https://picsum.photos/300/300?text=Image+1' },
       { value: 'https://picsum.photos/600/400?text=Image+2' },
       { value: 'https://picsum.photos/600/400?text=Image+3' },
       { value: 'https://picsum.photos/600/400?text=Image+4' },

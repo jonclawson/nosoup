@@ -54,7 +54,7 @@ export const WithImages: Story = {
   args: {
     article: {
       fields: [
-        { id: 'img1', type: 'image', value: 'https://picsum.photos/600/400?text=Article+Image+1' },
+        { id: 'img1', type: 'image', value: 'https://picsum.photos/600/600?text=Article+Image+1' },
         { id: 'img2', type: 'image', value: 'https://picsum.photos/600/400?text=Article+Image+2' },
         { id: 'img2', type: 'image', value: 'https://picsum.photos/600/400?text=Article+Image+3' },
         { id: 'img2', type: 'image', value: 'https://picsum.photos/600/400?text=Article+Image+4' },

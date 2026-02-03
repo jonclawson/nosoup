@@ -17,13 +17,14 @@ export default function ImageSlide({ images, layout }: { images: any[], layout?:
       {(images && images.length > 0) && (   
         <div className={styles['image-slide'] + ' ' + (layout ? styles['image-slide--' + layout] : '') + ' ' + (loaded ? styles['image-slide--loaded'] : '')}>
           <div className={styles['image-slide__image-container'] + ' ' + styles['image-slide__image-container--main']}>
-            <ImageField
+            <Image
               key={imageMain.value}
               src={imageMain.value}
               onLoad={() => setLoaded(true)}
               alt=""
               className={styles['image-slide__image'] + ' ' + styles['image-slide__image--main']}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              fill={true} 
             />
           </div>
           {images.length > 1 && (
@@ -38,12 +39,7 @@ export default function ImageSlide({ images, layout }: { images: any[], layout?:
                   className={styles['image-slide__image'] + ' ' + styles['image-slide__image--' + index]}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   onClick={() => swapImage(index)}
-                  fill={true}
-                  // {...(layout === 'landscape' ? { fill: true } : {})}
-                  // {...(layout === 'landscape' 
-                  //   ? { }
-                  //   : { width: 100, height: 100}
-                  // )}   
+                  fill={true} 
                 />
               </div>
             ))}
