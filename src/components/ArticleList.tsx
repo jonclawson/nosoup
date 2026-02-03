@@ -60,7 +60,7 @@ export default function ArticleList({published = true, featured = null, sticky =
   }, []);
   
   return (
-    <div className={styles['article-list']} ref={motionRef}> 
+    <div className={styles['article-list']} ref={motionRef as React.RefObject<HTMLDivElement>}> 
       <div className={styles['article-list__list']}>
         {loading && articles.length === 0 ? (
           Array.from({ length: 3 }).map((_, i) => (
@@ -75,9 +75,9 @@ export default function ArticleList({published = true, featured = null, sticky =
             <div className="section-outer" key={article.id} >
               <div className="section">
                 <div className="section-inner" >
-                <article
+                <article ref={teaserRef}
                   className={`motion ${styles['article-list__item']} ${article.published ? styles['article-list__item--published'] : styles['article-list__item--draft']}`}>
-                  <div className={styles['article-list__content']} ref={teaserRef}> 
+                  <div className={styles['article-list__content']} > 
                     <div className={styles['article-list__header']}>
                       <h2 className={styles['article-list__title']}>
                         <Link
