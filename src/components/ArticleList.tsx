@@ -15,6 +15,7 @@ import styles from './ArticleList.module.css'
 import truncate from 'truncate-html';
 import { useElementSize } from '@/hooks/useElementSize'
 import useMotion from '@/hooks/useMotion'
+import useScrollInView from '@/hooks/useScrollInView'
 
 export default function ArticleList({published = true, featured = null, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -24,6 +25,7 @@ export default function ArticleList({published = true, featured = null, sticky =
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 10, total: 0, totalPages: 0 });
   const motionRef = useMotion(articles);
+
   const fetchArticles = async (page: number = 1) => {
     try {
       const urlParams = new URLSearchParams();
@@ -55,6 +57,9 @@ export default function ArticleList({published = true, featured = null, sticky =
       console.error('Error fetching articles:', error);
     }
   };
+  const scrollref = useScrollInView(articles, (entry, observer) => {
+    fetchArticles(pagination.page + 1)
+  });
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -148,10 +153,10 @@ export default function ArticleList({published = true, featured = null, sticky =
           <div className={styles['article-list__empty__desc']}>Be the first to write an article!</div>
         </div>
       ) : !loading && pagination.page < pagination.totalPages && (
-        <div className={styles['article-list__loadmore']}>
+        <div className={styles['article-list__loadmore']} ref={scrollref as React.RefObject<HTMLDivElement>}>
           <button
             onClick={() => fetchArticles(pagination.page + 1)}
-            className={styles['article-list__loadmore__button']}
+            className={`scroll-in-view ${styles['article-list__loadmore__button']}`}
           >
             Load more
           </button>

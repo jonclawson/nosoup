@@ -62,6 +62,11 @@ jest.mock('@/hooks/useMotion', () => ({
   default: jest.fn(() => jest.fn()),
 }));
 
+jest.mock('@/hooks/useScrollInView', () => ({
+  __esModule: true,
+  default: jest.fn(() => jest.fn()),
+}));
+
 const mockArticle: Article = {
   id: '1',
   title: 'Test Article',
