@@ -15,7 +15,7 @@
   @apply w-full flex flex-wrap flex flex-row flex-wrap justify-between items-center content-start gap-2;
 }
 .image-slide__image-container {
-  @apply rounded ;
+  @apply rounded;
   width: 30%;
   border: 1px solid #ddd;
   position: relative;
@@ -29,6 +29,10 @@
   border: none;
   height: auto;
   min-height: 400px;
+}
+
+.image-slide--container-thumbs .image-slide__image-container {
+  @apply motion-button;
 }
 .image-slide__image {
   @apply w-full cursor-pointer animate-fade-in object-cover;
