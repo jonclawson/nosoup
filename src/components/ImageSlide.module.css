@@ -28,6 +28,14 @@
   width: 100%;
   border: none;
   height: auto;
+  min-height: 300px;
+}
+
+.image-slide--landscape .image-slide__image-container--main {
+  @apply w-full;
+  width: 100%;
+  border: none;
+  height: auto;
   min-height: 400px;
 }
 

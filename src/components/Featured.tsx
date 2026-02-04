@@ -23,6 +23,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState<{ page: number; size: number; total: number; totalPages: number }>({ page: 1, size: 1, total: 0, totalPages: 0 });
+  const [pages, setPages] = useState<Map<number, Article>>(new Map());
   const fetchArticles = async (page: number = 1) => {
     try {
       const urlParams = new URLSearchParams();
@@ -45,6 +46,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
         setLoading(false);
         setArticles([...data]);
         setPagination(pagination);
+        setPages(prevMap => (new Map(prevMap)).set(pagination.page, data[0]) as Map<number, Article>);
       } else {
         console.error('Failed to fetch articles:', response.statusText);
       }
@@ -65,7 +67,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
     },  30 * 1000);
 
     return () => clearInterval(interval);
-  }, [pagination, pagination.totalPages]);
+  }, [pagination, pagination.totalPages, paused]);
 
 
   return (
@@ -74,7 +76,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
         {loading && articles.length === 0 ? (
           Array.from({ length: 1 }).map((_, i) => <SkeletonBody key={i} />)
         ) : (
-          <div className={styles['featured__container']}>
+          <div className={styles['featured__container']} onClick={() => setPaused(true)}>
           {articles.map((article) => (
             <article key={article.id} className={`${styles['featured__item']} ${article.published ? styles['featured__item--published'] : styles['featured__item--draft']}`}>
               {article.fields.length > 0 && (
@@ -82,7 +84,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
                 <ArticleFields article={article} type="featured" />
               </div>
               )}
-              <div className={styles['featured__content']} ref={teaserRef} onClick={() => setPaused(true)}>
+              <div className={styles['featured__content']} ref={teaserRef} >
                 <div className={styles['featured__header']}>
                   <h2 className={styles['featured__title']}>
                     <Link
@@ -132,13 +134,31 @@ export default function Featured({published = true, sticky = true, tag}: { publi
             </article>
           ))}
             { !loading && pagination.page <= pagination.totalPages && (
-              
+              <div className={styles['featured__pagination']}>
+                {pages.size > 0 && [...pages].map(([p, a]) => (
+                  <button
+                    key={p}
+                    onClick={() => fetchArticles(p)}
+                    className={styles['featured__page_number']}
+                    title={a?.title || ''}
+                  >
+                    {!!a?.fields && !!a?.fields.find(f => f.type === 'image') &&
+                      <img 
+                        src={a.fields.find((f: Field) => f.type === 'image')?.value || ''} 
+                        alt={a.title} 
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    }
+                  </button>
+                  ))
+                }
                 <button
                   onClick={() => fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1)}
                   className={styles['featured__next']}
                 >
                   Next &rarr;
                 </button>
+              </div>
             )}
 
             {articles.length === 0 && !loading && (

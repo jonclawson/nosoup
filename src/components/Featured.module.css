@@ -78,8 +78,16 @@
   @apply text-red-600 hover:text-red-900 text-sm;
 }
 
+.featured__pagination {
+  @apply flex m-4 items-center justify-center space-x-2 ;
+}
+
+.featured__page_number {
+  @apply w-5 h-5 bg-gray-300 text-gray-500 rounded-full hover:bg-gray-500 cursor-pointer motion-button animate-fade-in-left ;
+}
+
 .featured__next {
-  @apply px-4 py-2  text-gray-500 cursor-pointer;
+  @apply px-3 py-2 mx-1 text-gray-300 hover:text-gray-500 text-lg font-bold cursor-pointer motion-button ;
 }
 
 .featured__empty {

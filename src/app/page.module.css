@@ -31,5 +31,5 @@
 }
 
 .page__tags {
-  @apply flex-auto flex-wrap flex gap-8 justify-between;
+  @apply flex-auto flex-wrap flex gap-8 justify-between py-2;
 }

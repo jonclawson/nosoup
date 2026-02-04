@@ -46,9 +46,11 @@ export default function HomePage() {
       </div>
       <div className="section-outer">
         <div className="section">
+          <div className="section-inner">
           <Setting title="Show Tags" type="show" setting="show_tags" loading="footer">
             <Tags style={styles['page__tags']} />
           </Setting>
+          </div>
         </div>
       </div>
     </div>
