@@ -27,11 +27,11 @@
 }
 
 .featured__fields {
-  @apply mb-4 flex flex-col flex-shrink-0 max-w-[33%];
+  @apply mb-4 flex flex-col flex-shrink-0;
 }
 
 .featured__content {
-  @apply py-6 flex-grow;
+  @apply py-6;
 }
 
 .featured__header {

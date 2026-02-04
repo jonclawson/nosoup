@@ -7,16 +7,26 @@ import ImageSlide from './ImageSlide';
 import CodeField from './CodeField';
 import LinkField from './LinkField';
 
-export default function ArticleFields({ article }: { article: Article | null }) {
+export default function ArticleFields({ article, type }: { article: Article | null, type?: 'featured' | 'standard' }) {
 
-  const images = article?.fields ? article.fields.filter((field) => field.type === 'image') : [];
-  const otherFields = article?.fields ? article.fields.filter((field) => field.type !== 'image') : [];
+  let images: Field[] = [];
+  let fields = [];
+  switch (type) {
+    case 'featured':
+      fields = article?.fields ? article.fields.filter((field) => field.type === 'image' || field.type === 'code').slice(0, 1) : [];
+      break;
+      case 'standard':
+      default:
+      images = article?.fields ? article.fields.filter((field) => field.type === 'image') : [];
+      fields = article?.fields ? article.fields.filter((field) => field.type !== 'image') : [];
+      break;
+  }
 
   return  <>
             {images.length > 0 && <div className={`${styles['article-fields__field']} ${styles['article-fields__field--image']}`}>
               <ImageSlide images={images} />
             </div>}
-            {otherFields && otherFields.length > 0 && otherFields.map((field) => (
+            {fields && fields.length > 0 && fields.map((field) => (
               <div key={field.id} className={`${styles['article-fields__field']} ${styles['article-fields__field--' + field.type]}`}>
                 {
                     (() => {

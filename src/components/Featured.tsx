@@ -60,7 +60,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
   useEffect(() => {
     const interval = setInterval(() => {
       if (!paused) {
-        fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
+        // fetchArticles(pagination.page + 1 > pagination.totalPages ? 1 : pagination.page + 1);
       }
     },  30 * 1000);
 
@@ -79,7 +79,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
             <article key={article.id} className={`${styles['featured__item']} ${article.published ? styles['featured__item--published'] : styles['featured__item--draft']}`}>
               {article.fields.length > 0 && (
               <div className={styles['featured__fields']}>
-                <ArticleFields article={article} />
+                <ArticleFields article={article} type="featured" />
               </div>
               )}
               <div className={styles['featured__content']} ref={teaserRef} onClick={() => setPaused(true)}>

@@ -8,17 +8,18 @@
   @apply flex flex-grow;
 }
 .article-fields__field--code {
-  @apply flex flex-grow-2;
+  @apply flex flex-grow-2 min-w-[420px] min-h-[300px];
 }
 .article-fields__field--link {
   @apply flex;
 }
 .article-fields__image-container {
   /* @apply mb-4 relative w-full h-64 overflow-hidden rounded-lg; */
+  @apply max-h-96 overflow-hidden rounded-lg;
 }
 .article-fields__image {
   /* @apply object-cover; */
-  @apply w-auto h-auto
+  @apply w-auto h-auto mb-4 relative w-full rounded-lg;
 }
 
 .article-fields__code {
