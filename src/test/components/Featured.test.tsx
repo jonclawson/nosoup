@@ -42,9 +42,9 @@ jest.mock('@/components/DeleteButton', () => {
   };
 });
 
-jest.mock('@/components/SkeletonArticle', () => {
-  return function SkeletonArticleMock() {
-    return <div data-testid="skeleton-article">Skeleton</div>;
+jest.mock('@/components/SkeletonBody', () => {
+  return function SkeletonBodyMock() {
+    return <div data-testid="skeleton-body">Skeleton</div>;
   };
 });
 
@@ -88,7 +88,7 @@ describe('Featured', () => {
   it('shows a single skeleton while loading', () => {
     (global.fetch as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
     render(<Featured />);
-    expect(screen.getAllByTestId('skeleton-article')).toHaveLength(1);
+    expect(screen.getAllByTestId('skeleton-body')).toHaveLength(1);
   });
 
   it('fetches articles with featured/tab and default filters', async () => {

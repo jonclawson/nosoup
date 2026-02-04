@@ -1,4 +1,3 @@
-'use client'
 export default function SkeletonArticle() {
   return (
     <div className="overflow-hidden animate-pulse">

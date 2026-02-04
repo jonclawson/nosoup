@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__container}>
-        <Setting setting="footer_text" >
+        <Setting setting="footer_text" loading="footer">
           &copy; {new Date().getFullYear()} NoSoup. All rights reserved.
         </Setting>
       </div>

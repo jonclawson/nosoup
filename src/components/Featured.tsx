@@ -7,13 +7,13 @@ import Dompurify from './Dompurify'
 import type { Article, Field, Author } from '@/lib/types'
 import ArticleFields from './ArticleFields'
 import { useEffect, useState } from 'react'
-import SkeletonArticle from './SkeletonArticle'
 import ArticleTags from './ArticleTags'
 import { useSession } from "next-auth/react"
 import { handleDownload } from '@/lib/handle-downloads'
 import styles from './Featured.module.css'
 import truncate from 'truncate-html';
 import { useElementSize } from '@/hooks/useElementSize'
+import SkeletonBody from './SkeletonBody'
 
 export default function Featured({published = true, sticky = true, tag}: { published?: boolean | null; featured?: boolean | null; sticky?: boolean | null; tag?: string }) {
   const router = useRouter()
@@ -72,7 +72,7 @@ export default function Featured({published = true, sticky = true, tag}: { publi
     <div className={styles['featured']}>
       <div className={styles['featured__list']}>
         {loading && articles.length === 0 ? (
-          Array.from({ length: 1 }).map((_, i) => <SkeletonArticle key={i} />)
+          Array.from({ length: 1 }).map((_, i) => <SkeletonBody key={i} />)
         ) : (
           <div className={styles['featured__container']}>
           {articles.map((article) => (

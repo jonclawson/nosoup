@@ -4,9 +4,10 @@ import ContentEdit from './ContentEdit';
 import SkeletonLine from './SkeletonLine';
 import { useStateContext } from '@/contexts/StateContext';
 import { useSession } from 'next-auth/react';
-import SkeletonArticle from './SkeletonArticle';
+import SkeletonBody from './SkeletonBody';
+import Skeleton from './Skeleton';
 
-export default function Setting({ title, type, setting, children, loading }: { title?: string, type?: string, setting: string, children: React.ReactNode, loading?: boolean }) {
+export default function Setting({ title, type, setting, children, loading }: { title?: string, type?: string, setting: string, children: React.ReactNode, loading?: boolean | string }) {
   const { data: session } = useSession();
   const [value, setValue] = React.useState<any>(null);
   const [error, setError] = React.useState<string | null>(null)
@@ -73,11 +74,14 @@ export default function Setting({ title, type, setting, children, loading }: { t
           return <SkeletonLine />
         case 'show':
           if (loading) {
-            return <SkeletonLine />
+            return <Skeleton type={loading} />
           }
           break;
         default:
-          return <SkeletonArticle />
+          if (loading) {
+            return <Skeleton type={loading} />
+          }
+          return <SkeletonBody />
       }
     }
 
