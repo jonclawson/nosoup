@@ -31,5 +31,5 @@
 }
 
 .page__tags {
-  @apply justify-between mt-8;
+  @apply flex-auto flex-wrap flex gap-8 justify-between;
 }
