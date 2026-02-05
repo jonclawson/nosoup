@@ -205,9 +205,16 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
+      - name: Set Vercel Project Name
+        run: |
+          if [ -n "${{ secrets.VERCEL_PROJECT_NAME }}" ]; then
+            echo "VERCEL_PROJECT_NAME=${{ secrets.VERCEL_PROJECT_NAME }}" >> $GITHUB_ENV
+          else
+            echo "VERCEL_PROJECT_NAME=nosoup" >> $GITHUB_ENV
+          fi
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --project=$VERCEL_PROJECT_NAME --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Run Prisma Migrations & Generate Prisma Client
         run: |
@@ -235,7 +242,7 @@ jobs:
 
       - name: Deploy to Vercel
         # run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prod --project=$VERCEL_PROJECT_NAME --token=${{ secrets.VERCEL_TOKEN }}
         env:
           DATABASE_URL: ${{ steps.get_db_url.outputs.database_url }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }} # Per environment if needed
@@ -278,7 +285,7 @@ jobs:
           if [ -n "${{ secrets.R2_BUCKET_NAME }}" ]; then
             echo "TF_VAR_r2_bucket_name=${{ secrets.R2_BUCKET_NAME }}" >> $GITHUB_ENV
           fi
-          
+
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
         working-directory: terraform
