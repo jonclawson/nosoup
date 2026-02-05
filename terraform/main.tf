@@ -64,7 +64,7 @@ resource "neon_database" "nosoup" {
 
 locals {
   # Use the connection URI provided by Neon project, append database name
-  database_url = "${neon_project.nosoup_db.connection_uri}/${var.database_name}?sslmode=require"
+  database_url = neon_database.nosoup.connection_string
 }
 
 # Cloudflare R2 Bucket for file storage
