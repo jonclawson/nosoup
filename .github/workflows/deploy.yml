@@ -121,6 +121,20 @@ jobs:
       #     TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
       #     TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
       #     TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+      - name: Set Optional Terraform Variables
+        run: |
+          if [ -n "${{ secrets.VERCEL_PROJECT_NAME }}" ]; then
+            echo "TF_VAR_vercel_project_name=${{ secrets.VERCEL_PROJECT_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.NEON_PROJECT_NAME }}" ]; then
+            echo "TF_VAR_neon_project_name=${{ secrets.NEON_PROJECT_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.DATABASE_NAME }}" ]; then
+            echo "TF_VAR_database_name=${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.R2_BUCKET_NAME }}" ]; then
+            echo "TF_VAR_r2_bucket_name=${{ secrets.R2_BUCKET_NAME }}" >> $GITHUB_ENV
+          fi
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -139,10 +153,10 @@ jobs:
           TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           # Optional per environment
-          TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
-          TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
-          TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
-          TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
+          # TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
+          # TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
+          # TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
+          # TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
 
   deploy:
     if: ${{ github.event.inputs.destroy != 'destroy' }}
@@ -250,6 +264,21 @@ jobs:
           TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Set Optional Terraform Variables
+        run: |
+          if [ -n "${{ secrets.VERCEL_PROJECT_NAME }}" ]; then
+            echo "TF_VAR_vercel_project_name=${{ secrets.VERCEL_PROJECT_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.NEON_PROJECT_NAME }}" ]; then
+            echo "TF_VAR_neon_project_name=${{ secrets.NEON_PROJECT_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.DATABASE_NAME }}" ]; then
+            echo "TF_VAR_database_name=${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.R2_BUCKET_NAME }}" ]; then
+            echo "TF_VAR_r2_bucket_name=${{ secrets.R2_BUCKET_NAME }}" >> $GITHUB_ENV
+          fi
+          
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
         working-directory: terraform
@@ -267,7 +296,7 @@ jobs:
           TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           # Optional per environment
-          TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
-          TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
-          TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
-          TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
+          # TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
+          # TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
+          # TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
+          # TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
