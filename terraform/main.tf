@@ -174,7 +174,7 @@ resource "cloudflare_r2_bucket_cors" "nosoup_cors" {
   rules = [{
     id              = "AllowVercelApp"
     allowed = {
-      origins = ["https://${vercel_project.nosoup.name}.vercel.app"]
+      origins = [var.nextauth_url]
       methods = ["GET", "HEAD"]
       headers = ["*"]
     }

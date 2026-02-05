@@ -31,7 +31,7 @@ output "r2_public_url" {
 
 output "deployment_url" {
   description = "URL of the Vercel deployment"
-  value       = "https://${vercel_project.nosoup.name}.vercel.app"
+  value       = var.nextauth_url
 }
 
 output "bucket_dev_url" {

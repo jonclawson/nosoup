@@ -9,13 +9,17 @@ on:
         description: 'Destroy infrastructure (type "destroy" to confirm)'
         required: false
         default: ''
+      environment:
+        description: 'Target environment (e.g., production, staging)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
 
 jobs:
   test:
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
+    if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
@@ -35,6 +39,7 @@ jobs:
         run: npm test
 
   playwright:
+    if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Run Playwright E2E
     needs: test
     runs-on: ubuntu-latest
@@ -81,10 +86,11 @@ jobs:
           path: playwright-report
 
   terraform:
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
+    if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Provision Infrastructure
     needs: playwright
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,12 +138,18 @@ jobs:
           TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
           TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          # Optional per environment
+          TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
+          TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
+          TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
+          TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
 
   deploy:
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'destroy' }}
+    if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Deploy to Vercel
     needs: terraform
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -212,13 +224,14 @@ jobs:
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           DATABASE_URL: ${{ steps.get_db_url.outputs.database_url }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }} # Per environment if needed
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
   destroy:
     name: Destroy Infrastructure
     if: github.event.inputs.destroy == 'destroy'
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -253,3 +266,8 @@ jobs:
           TF_VAR_nextauth_secret: ${{ secrets.NEXTAUTH_SECRET }}
           TF_VAR_r2_access_key_id: ${{ secrets.R2_ACCESS_KEY_ID }}
           TF_VAR_r2_secret_access_key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          # Optional per environment
+          TF_VAR_vercel_project_name: ${{ secrets.VERCEL_PROJECT_NAME && secrets.VERCEL_PROJECT_NAME || null }}
+          TF_VAR_neon_project_name: ${{ secrets.NEON_PROJECT_NAME && secrets.NEON_PROJECT_NAME || null }}
+          TF_VAR_database_name: ${{ secrets.DATABASE_NAME && secrets.DATABASE_NAME || null }}
+          TF_VAR_r2_bucket_name: ${{ secrets.R2_BUCKET_NAME && secrets.R2_BUCKET_NAME || null }}
