@@ -57,12 +57,12 @@ resource "neon_project" "nosoup_db" {
 }
 
 
-resource "neon_database" "nosoup" {
-  project_id = neon_project.nosoup_db.id
-  branch_id  = neon_project.nosoup_db.default_branch_id
-  name       = var.database_name
-  owner_name = neon_project.nosoup_db.database_user
-}
+# resource "neon_database" "nosoup" {
+#   project_id = neon_project.nosoup_db.id
+#   branch_id  = neon_project.nosoup_db.default_branch_id
+#   name       = var.database_name
+#   owner_name = neon_project.nosoup_db.database_user
+# }
 
 locals {
   # Use the connection URI provided by Neon project, append database name
