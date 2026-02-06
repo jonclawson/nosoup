@@ -45,7 +45,9 @@ resource "neon_project" "nosoup_db" {
   pg_version         = 16
   # compute_provisioner = "k8s-pod"
   history_retention_seconds = 21600  # max 6 hours for free tier
-
+  branch {
+      database_name = var.database_name
+  }
   lifecycle {
     prevent_destroy = false  # Set to true in production to prevent accidental deletion
     ignore_changes = [
@@ -64,7 +66,7 @@ resource "neon_database" "nosoup" {
 
 locals {
   # Use the connection URI provided by Neon project, append database name
-  database_url = neon_database.nosoup.connection_string
+  database_url = "${neon_project.nosoup_db.connection_uri}"
 }
 
 # Cloudflare R2 Bucket for file storage
