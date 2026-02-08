@@ -11,6 +11,17 @@ import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
 const afacadFlux = Afacad_Flux({ subsets: ["latin"] });
 import type { Viewport } from 'next'
+
+export async function generateMetadata() {
+  return {
+    icons: {
+      icon: [
+        { url: `/files/favicon.png` },
+        { url: `favicon.icon` },
+      ],
+    },
+  };
+}
  
 export const viewport: Viewport = {
   width: 'device-width',
