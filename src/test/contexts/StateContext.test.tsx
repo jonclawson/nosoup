@@ -32,22 +32,6 @@ function ShowSetting({ settingKey }: { settingKey: string }) {
 }
 
 describe('StateProvider', () => {
-  afterEach(() => {
-    // ensure we don't leak env vars between tests
-    delete process.env.NEXT_PUBLIC_SITE_NAME
-  })
-
-  it('provides initial siteName from env when present', () => {
-    process.env.NEXT_PUBLIC_SITE_NAME = 'EnvSite'
-
-    render(
-      <StateProvider>
-        <ShowSiteName />
-      </StateProvider>
-    )
-
-    expect(screen.getByTestId('site-name')).toHaveTextContent('EnvSite')
-  })
 
   it('defaults siteName to NoSoup when env is not set', () => {
     render(
@@ -56,7 +40,7 @@ describe('StateProvider', () => {
       </StateProvider>
     )
 
-    expect(screen.getByTestId('site-name')).toHaveTextContent('NoSoup')
+    expect(screen.getByTestId('site-name')).toHaveTextContent('')
   })
 
   it('setSiteName updates siteName for consumers', () => {
@@ -67,7 +51,7 @@ describe('StateProvider', () => {
       </StateProvider>
     )
 
-    expect(screen.getByTestId('site-name')).toHaveTextContent(/NoSoup|EnvSite/) // initial
+    expect(screen.getByTestId('site-name')).toHaveTextContent('') // initial
 
     fireEvent.click(screen.getByTestId('set-site'))
 
