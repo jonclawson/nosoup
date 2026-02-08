@@ -12,7 +12,7 @@ interface StateContextType {
 const StateContext = createContext<StateContextType | undefined>(undefined);
 
 export const StateProvider = ({ children }: { children: ReactNode }) => {
-  const [siteName, setSiteName] = useState(process.env.NEXT_PUBLIC_SITE_NAME || 'NoSoup');
+  const [siteName, setSiteName] = useState('');
   const [settings, setSettings] = useState<Record<string, any>>({});
   const setSetting = (key: string, value: any) => {
     setSettings((prevSettings) => ({

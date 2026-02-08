@@ -28,6 +28,9 @@ export default function SiteName() {
           setSiteName(data.value)
           setSiteNameSetting(data)
         }
+        else {
+          setSiteName('NoSoup')
+        }
       } catch (error) {
         console.error('Error fetching site name:', error)
         setError('Error fetching site name')
