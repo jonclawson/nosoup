@@ -11,5 +11,5 @@
 }
 
 .nav__link_add {
-  @apply text-white bg-blue-600 hover:bg-blue-700 px-1  rounded-md text-sm font-medium;
+  @apply text-white bg-blue-600 hover:bg-blue-700 px-2  rounded-md text-sm font-medium;
 }
