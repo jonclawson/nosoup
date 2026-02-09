@@ -15,11 +15,11 @@
 }
 
 .page__featured__title {
-  @apply text-2xl text-gray-900;
+  @apply text-2xl;
 }
 
 .page__featured__desc {
-  @apply mt-2 text-sm text-gray-700;
+  @apply mt-2 text-sm;
 }
 
 .page__featured__actions {
@@ -27,7 +27,7 @@
 }
 
 .page__featured__link {
-  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700;
+  @apply inline-flex items-center justify-center px-4 py-2 nav-link motion-button;
 }
 
 .page__tags {

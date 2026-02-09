@@ -15,11 +15,11 @@
 }
 
 .articles__title {
-  @apply text-2xl text-gray-900;
+  @apply text-2xl;
 }
 
 .articles__desc {
-  @apply mt-2 text-sm text-gray-700;
+  @apply mt-2 text-sm;
 }
 
 .articles__actions {

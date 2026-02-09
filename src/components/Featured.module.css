@@ -3,7 +3,6 @@
 /* BEM-style classes for src/components/Featured.tsx */
 
 .featured {
-  @apply bg-white /*mt-8*/ ;
 }
 
 .featured__list {
@@ -23,7 +22,7 @@
 }
 
 .featured__item--draft {
-  @apply bg-pink-100;
+  @apply bg-pink-100/30;
 }
 
 .featured__fields {
@@ -55,7 +54,7 @@
 }
 
 .featured__excerpt {
-  @apply text-gray-700 flex-grow min-w-0;
+  @apply flex-grow min-w-0;
 }
 
 .featured__actions {
@@ -95,9 +94,9 @@
 }
 
 .featured__empty__title {
-  @apply text-gray-500 text-lg;
+  @apply text-lg;
 }
 
 .featured__empty__desc {
-  @apply text-gray-400 text-sm mt-2;
+  @apply text-sm mt-2;
 }

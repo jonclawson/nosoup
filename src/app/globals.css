@@ -48,10 +48,10 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  /* :root {
+  :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-  } */
+  }
 }
 
 body {
@@ -95,7 +95,7 @@ h4, h5, h6 {
 @utility section-outer {
    display: block;
    width: 100%;
-   @apply even:bg-white odd:bg-gray-50;
+   @apply odd:bg-gray-100/50;
 }
 
 @utility section {

@@ -3,7 +3,6 @@
 /* BEM-style classes for src/components/ArticleList.tsx */
 
 .article-list {
-  @apply mt-8;
 }
 
 .article-list__list {
@@ -19,7 +18,7 @@
 }
 
 .article-list__item--draft {
-  @apply bg-pink-100;
+  @apply bg-pink-100/30;
 }
 
 .article-list__content {
@@ -31,11 +30,11 @@
 }
 
 .article-list__title {
-  @apply text-2xl text-gray-900 mb-2;
+  @apply text-2xl mb-2;
 }
 
 .article-list__meta {
-  @apply flex items-center text-sm text-gray-500 mb-3;
+  @apply flex items-center text-sm mb-3;
 }
 
 .article-list__meta__dot {
@@ -51,7 +50,7 @@
 }
 
 .article-list__excerpt {
-  @apply text-gray-700  flex-grow;
+  @apply flex-grow;
 }
 
 .article-list__actions {
@@ -79,11 +78,11 @@
 }
 
 .article-list__empty__title {
-  @apply text-gray-500 text-lg;
+  @apply  text-lg;
 }
 
 .article-list__empty__desc {
-  @apply text-gray-400 text-sm mt-2;
+  @apply  text-sm mt-2;
 }
 
 .article-list__loadmore {

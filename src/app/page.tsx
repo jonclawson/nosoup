@@ -37,7 +37,7 @@ export default function HomePage() {
           </Setting>
         </div>
       </div>
-      <div className="section-outer bg-white">
+      <div className="section-outer">
         <div className="section">
           <div className="section-inner">
           <Featured />

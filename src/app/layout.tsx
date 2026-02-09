@@ -1,4 +1,4 @@
-import { Afacad_Flux } from "next/font/google";
+import { Mulish } from "next/font/google";
 import "./globals.css";
 import styles from "./layout.module.css";
 import Providers from "@/components/Providers";
@@ -9,7 +9,7 @@ import SiteName from "@/components/SiteName";
 import Search from "@/components/Search";
 import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
-const afacadFlux = Afacad_Flux({ subsets: ["latin"] });
+const mulish = Mulish({ subsets: ["latin"] });
 import type { Viewport } from 'next'
 
 export async function generateMetadata() {
@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={afacadFlux.className} suppressHydrationWarning={true}>
+      <body className={mulish.className} suppressHydrationWarning={true}>
         <Providers>
             <div className={styles["layout__container"]}>
               <nav className={styles["layout__nav"]}>

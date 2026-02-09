@@ -7,15 +7,15 @@
 }
 
 .auth-status__profile {
-  @apply text-sm text-gray-700 hover:text-gray-900;
+  @apply text-sm;
 }
 
 .auth-status__signout {
-  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+  @apply px-3 py-2 rounded-md text-sm font-medium;
 }
 
 .auth-status__link {
-  @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+  @apply px-3 py-2 rounded-md text-sm font-medium;
 }
 
 .auth-status__signup {
