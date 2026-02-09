@@ -59,7 +59,7 @@
 }
 
 .article-list__link {
-  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+  @apply nav-link motion-button;
 }
 
 .article-list__admin {

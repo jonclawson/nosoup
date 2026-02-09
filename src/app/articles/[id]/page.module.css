@@ -1,5 +1,4 @@
-@import "tailwindcss" reference;
-/* @import "@tailwindcss/typography" reference; */
+@reference "../../globals.css";
 /* BEM-style classes for src/app/articles/[id]/page.tsx */
 
 .article-page {
@@ -11,7 +10,7 @@
 }
 
 .article-page__back__link {
-  @apply text-blue-600 hover:text-blue-900 text-sm font-medium;
+  @apply nav-link motion-button ;
 }
 
 .article-page__error {
