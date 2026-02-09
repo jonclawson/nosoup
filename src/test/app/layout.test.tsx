@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 // Mocks must be declared before importing the module under test
 jest.mock('next/font/google', () => ({
-  Afacad_Flux: () => ({ className: 'inter-class' }),
+  Mulish: () => ({ className: 'inter-class' }),
 }));
 
 jest.mock('@/components/Providers', () => {
