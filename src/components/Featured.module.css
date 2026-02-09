@@ -63,7 +63,7 @@
 }
 
 .featured__link {
-  @apply text-blue-600 hover:text-blue-900 text-sm font-medium self-end;
+  @apply nav-link motion-button text-center rounded-md;
 }
 
 .featured__admin {
@@ -87,7 +87,7 @@
 }
 
 .featured__next {
-  @apply px-3 py-2 mx-1 text-gray-300 hover:text-gray-500 text-lg font-bold cursor-pointer motion-button ;
+  @apply nav-link motion-button ;
 }
 
 .featured__empty {
