@@ -82,7 +82,8 @@
 }
 
 .featured__page_number {
-  @apply w-5 h-5 bg-gray-300 text-gray-500 rounded-full hover:bg-gray-500 cursor-pointer motion-button animate-fade-in-left ;
+  @apply w-5 h-5 bg-gray-300 text-gray-500 rounded-full border-1 hover:bg-gray-500 cursor-pointer motion-button animate-fade-in-left ;
+  border-color: var(--foreground);
 }
 
 .featured__next {
