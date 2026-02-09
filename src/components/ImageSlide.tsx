@@ -23,7 +23,7 @@ export default function ImageSlide({ images, layout }: { images: any[], layout?:
               onLoad={() => setLoaded(true)}
               alt=""
               className={styles['image-slide__image'] + ' ' + styles['image-slide__image--main']}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 100vw (max-height: 478px), (max-width: 1200px) 50vw, 33vw"
               fill={false} 
             />
           </div>

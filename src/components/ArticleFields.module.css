@@ -27,7 +27,7 @@
 }
 
 .article-fields__link {
-  @apply text-blue-600 hover:text-blue-900 mb-4 block flex flex-shrink-0 flex-grow-0;
+  @apply text-blue-600 hover:text-blue-900 m-2 block flex flex-shrink-0 flex-grow-0;
 }
 
 .article-fields__code-iframe {
