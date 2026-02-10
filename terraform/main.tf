@@ -196,3 +196,9 @@ resource "vercel_project_environment_variable" "r2_dev_url" {
   value      = "https://${cloudflare_r2_managed_domain.dev_url.domain}"
   target     = ["production", "preview", "development"]
 }
+
+resource "vercel_project_domain" "nosoup_domain" {
+  count      = var.custom_domain != null ? 1 : 0
+  project_id = vercel_project.nosoup.id
+  domain     = var.custom_domain
+}

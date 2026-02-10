@@ -39,6 +39,12 @@ variable "database_name" {
   default     = "nosoup"
 }
 
+variable "custom_domain" {
+  description = "Custom domain to attach to Vercel (example.com). Set to null to disable."
+  type        = string
+  default     = null
+}
+
 variable "nextauth_url" {
   description = "NextAuth URL for authentication"
   type        = string

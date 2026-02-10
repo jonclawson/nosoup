@@ -135,6 +135,9 @@ jobs:
           if [ -n "${{ secrets.R2_BUCKET_NAME }}" ]; then
             echo "TF_VAR_r2_bucket_name=${{ secrets.R2_BUCKET_NAME }}" >> $GITHUB_ENV
           fi
+          if [ -n "${{ secrets.CUSTOM_DOMAIN }}" ]; then
+            echo "TF_VAR_custom_domain=${{ secrets.CUSTOM_DOMAIN }}" >> $GITHUB_ENV
+          fi
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -287,6 +290,9 @@ jobs:
           fi
           if [ -n "${{ secrets.R2_BUCKET_NAME }}" ]; then
             echo "TF_VAR_r2_bucket_name=${{ secrets.R2_BUCKET_NAME }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.CUSTOM_DOMAIN }}" ]; then
+            echo "TF_VAR_custom_domain=${{ secrets.CUSTOM_DOMAIN }}" >> $GITHUB_ENV
           fi
 
       - name: Terraform Destroy
