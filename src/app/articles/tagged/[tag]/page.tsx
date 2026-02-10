@@ -12,7 +12,8 @@ export default function ArticlesPage({ params }: {
   }>
 }) {
   const { data: session, status } = useSession()
-  const { tag } = use(params)
+  const { tag: rawTag } = use(params)
+  const tag = decodeURIComponent(rawTag)
   useDocument({ title: `Articles tagged with ${tag}` })
 
   return (
