@@ -7,7 +7,7 @@
 }
 
 .site-name__logo {
-  @apply h-8 inline-block mr-2;
+  @apply max-h-8 inline-block mr-2;
 }
 
 .site-name__link {
