@@ -45,6 +45,12 @@
   @apply mb-4 flex flex-row flex-grow gap-4;
 }
 
+@media (max-width: 768px) {
+  .article-list__summary {
+    @apply flex-col flex-grow gap-0;
+  }
+}
+
 .article-list__fields {
   @apply mb-4 flex flex-col flex-grow;
 }
