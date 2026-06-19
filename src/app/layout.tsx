@@ -16,8 +16,7 @@ export async function generateMetadata() {
   return {
     icons: {
       icon: [
-        { url: `/files/favicon.png` },
-        { url: `favicon.ico` },
+        { url: `/favicon.ico` },
       ],
     },
   };
