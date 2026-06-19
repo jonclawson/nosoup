@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import Setting from "@/components/Setting";
 const mulish = Mulish({ subsets: ["latin"] });
 import type { Viewport } from 'next'
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export async function generateMetadata() {
   return {
@@ -65,6 +66,7 @@ export default function RootLayout({
             </main>
           <Footer />
           </div>
+          <GoogleAnalytics></GoogleAnalytics>
         </Providers>
       </body>
     </html>

@@ -41,6 +41,11 @@ jest.mock('@/components/Setting', () => {
   MockSetting.displayName = 'MockSetting';
   return MockSetting;
 });
+jest.mock('@/components/GoogleAnalytics', () => {
+  const MockSetting = ({ children }) => <div data-testid="google_analytics">{children}</div>;
+  MockSetting.displayName = 'MockSetting';
+  return MockSetting;
+});
 
 import RootLayout from '@/app/layout';
 
