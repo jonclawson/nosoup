@@ -41,7 +41,6 @@ jobs:
   playwright:
     if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Run Playwright E2E
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -88,7 +87,7 @@ jobs:
   terraform:
     if: ${{ github.event.inputs.destroy != 'destroy' }}
     name: Provision Infrastructure
-    needs: playwright
+    needs: [test, playwright]
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     steps:
