@@ -4,8 +4,13 @@
 /* BEM-style classes for src/components/Footer.tsx */
 
 .footer {
-  @apply bg-gray-800 text-white py-4 mt-auto;
+  @apply bg-[#0a0a0a] text-white py-4 mt-auto;
 }
 .footer__container {
   @apply section mx-auto text-center;
+}
+@media (prefers-color-scheme: dark) {
+  .footer {
+   @apply bg-slate-100/20;
+  }
 }

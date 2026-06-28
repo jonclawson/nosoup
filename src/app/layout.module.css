@@ -8,8 +8,16 @@
   @apply min-h-screen flex flex-col;
 }
 
+
+
 .layout__nav {
   @apply shadow-sm border-b;
+}
+
+@media (prefers-color-scheme: dark) {
+  .layout__nav {
+   @apply bg-slate-100/20;
+  }
 }
 
 .layout__nav-inner {
